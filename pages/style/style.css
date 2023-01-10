@@ -1,0 +1,169 @@
+@charset "UTF-8";
+* {
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
+:focus, :active {
+  outline: none;
+}
+
+a:focus, a:active {
+  outline: none;
+}
+
+nav, footer, header, aside {
+  display: block;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  font-size: 100%;
+  line-height: 1;
+  font-size: 14px;
+  -ms-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+input, button, textarea {
+  font-family: inherit;
+}
+
+input::-ms-clear {
+  display: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+button::-moz-focus-inner {
+  padding: 0;
+  border: 0;
+}
+
+a, a:visited {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+ul li {
+  list-style: none;
+}
+
+img {
+  vertical-align: top;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-size: inherit;
+  font-weight: 400;
+}
+
+html, body {
+  width: 100vw;
+  height: 100vh;
+}
+
+.wrapper {
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  background-color: #dfdfdf;
+  /*
+  font-size: calc(16px + (24 - 16) * ((100vw - 320px) / (1200 - 320)));
+  ↑ На экране шириной 320 пикселей шрифт имеет размер 16 пикселей, 
+  а на экране шириной 1200 пикселей – размер 24 пикселя. */
+}
+
+.log-in-section {
+  display: inline-flex;
+  flex-direction: column;
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  box-shadow: 0 0 10px 3px gray;
+  border-radius: 20px;
+  padding: 10px;
+  font: 28px "Calibri", sans-serif;
+  text-align: center;
+}
+.log-in-section > header {
+  font-size: 28px;
+  font-weight: bold;
+  color: blue;
+}
+.log-in-section > input {
+  display: inline-block;
+  border: 1px solid black;
+  font: inherit;
+  border-radius: 3px;
+  margin-top: 3px;
+  text-align: center;
+}
+.log-in-section > input:focus {
+  box-shadow: 0 0 5px 1px gray;
+}
+.log-in-section > label[for=show-password] {
+  align-self: center;
+  display: inline-flex;
+  flex-direction: row;
+}
+.log-in-section > label[for=show-password] > input {
+  margin-right: 5px;
+}
+.log-in-section > #log-in-btn {
+  width: -webkit-max-content;
+  width: -moz-max-content;
+  width: max-content;
+  align-self: center;
+  padding: 5px 10px;
+  border-radius: 3px;
+  background-color: royalblue;
+  color: white;
+  font: inherit;
+  margin: 5px 0 7px 0;
+  cursor: pointer;
+}
+
+.create-account {
+  border-top: 3px solid dodgerblue;
+}
+.create-account > label {
+  font-size: 16px;
+  color: royalblue;
+}
+.create-account > #create-account-btn {
+  display: block;
+  padding: 5px;
+  border-radius: 3px;
+  background-color: limegreen;
+  color: white;
+  cursor: pointer;
+  margin-bottom: 5px;
+}
+
+@media (max-width: 1200px) {
+  /* Стили CSS для ширины от 992px до 1200px */
+  /* Устройства со средним экраном (ноутбуки и компьютеры)*/
+}
+@media (max-width: 992px) {
+  /* Стили CSS для ширины от 768px до 992px */
+  /* Устроства с маленьким экраном (планшеты) */
+}
+@media (max-width: 767px) {
+  /* Стили CSS для ширины до 768px */
+  /* Устройства с очень маленьким экраном (смартфоны) */
+}
