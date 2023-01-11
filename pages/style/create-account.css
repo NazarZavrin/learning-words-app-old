@@ -71,15 +71,28 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 html, body {
+  display: flex;
+  flex-direction: column;
   width: 100vw;
-  height: 100vh;
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+  min-height: 100vh;
+  justify-content: center;
+  align-items: center;
 }
 
 .wrapper {
+  display: flex;
   width: 100%;
-  height: 100%;
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+  min-height: 100vh;
   padding: 20px;
   background-color: #dfdfdf;
+  justify-content: center;
+  align-items: center;
   /*
   font-size: calc(16px + (24 - 16) * ((100vw - 320px) / (1200 - 320)));
   ↑ На экране шириной 320 пикселей шрифт имеет размер 16 пикселей, 
@@ -89,10 +102,7 @@ html, body {
 .info-form {
   display: inline-flex;
   flex-direction: column;
-  position: relative;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  max-width: 100%;
   background-color: white;
   box-shadow: 0 0 10px 3px gray;
   border-radius: 20px;
@@ -115,9 +125,18 @@ html, body {
   align-self: center;
   display: inline-flex;
   flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }
 .info-form > label[for=show-password] > input {
   margin-right: 5px;
+}
+.info-form > .warning {
+  font-style: normal;
+  display: inline-block;
+  font-size: 18px;
+  color: red;
+  text-align: left;
 }
 .info-form > #create-account-btn {
   padding: 5px;

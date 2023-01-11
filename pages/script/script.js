@@ -19,7 +19,7 @@ logInBtn.addEventListener("click", async event => {
         "password": passwordInput.value,
     }
     if (infoInput.value.startsWith("@")) {
-        requestBody.id = infoInput.value;
+        requestBody.userId = infoInput.value;
     } else {
         // email validation
         requestBody.email = infoInput.value;
@@ -27,12 +27,16 @@ logInBtn.addEventListener("click", async event => {
     
     
     let response = await fetch("/get-log-in-key", {
-        method: "POST",
+        method: "PATCH",
         body: JSON.stringify(requestBody),
     });
     if (response.ok) {
         let passkey = await response.text();
-        location.href = "/profile/" + passkey;
+        if (passkey === "Wrong password") {
+            console.log("Wrong password. Try again.");
+        } else {
+            location.href = "/profile/" + passkey;
+        }
     } else {
         console.log("Error " + response.status);
         return;

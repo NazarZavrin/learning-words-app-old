@@ -1,28 +1,22 @@
 const express = require('express');
 const app = express();
 const path = require('path');
-const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-const uri = "mongodb+srv://nazar:learnwords@main-cluster.dlb856s.mongodb.net/?retryWrites=true&w=majority";
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 const util = require('util');
 const crypto = require('crypto');
+const { createAccountRouter } = require('./routers/create-account-router.js');
 
-const PORT = process.env.PORT || 3000;
-let database;
-app.set('view engine', 'ejs');
-app.set('views', path.join(path.resolve(), 'pages'));
+const { MongoClient, ServerApiVersion } = require('mongodb');
+let uri, client, database;
 
-async function getRandomHexStr(){
-    let randomBytesPromise = util.promisify(crypto.randomBytes);
-    let randomBuffer = await randomBytesPromise(16);
-    return randomBuffer.toString('hex');
-}
-
-app.use(async (req, res, next) => {
+async function connectToDb(req, res, next) {
+    // console.log("Connect to db if needed. URL: " + req.originalUrl);
     if (database === undefined) {
+        let uri = "mongodb+srv://nazar:learnwords@main-cluster.dlb856s.mongodb.net/?retryWrites=true&w=majority";
+        let client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
         try {
             await client.connect();
             database = client.db("userData");
+            // console.log("Connected to the db.");
         } catch (error) {
             console.log(error);
             await client.close();
@@ -30,38 +24,17 @@ app.use(async (req, res, next) => {
         }
     }
     next();
-});
+}
 
-app.use(express.static(path.join(path.resolve(), 'pages')));
+const PORT = process.env.PORT || 3000;
+app.set('view engine', 'ejs');
+app.set('views', path.join(path.resolve(), 'pages'));
 
-app.get("/create-account", (req, res) => {
-    console.log("/create-account");
-    res.sendFile(path.join(path.resolve(), 'pages', 'create-account.html'));
-})
-app.post("/create-account/:id", (req, res, next) => {
-    // id check
+app.use(connectToDb, express.static(path.join(path.resolve(), 'pages')));
 
-    next();
-}, (req, res, next) => {
-    express.text({
-        limit: parseInt(req.get('content-length')),
-    })(req, res, next);
-}, async (req, res) => {
-    console.log("/create-account/:id");
-    // name, email, id, password check
-    let userData = JSON.parse(req.body);
-    
-    console.log(typeof database);
-    let insertResult = await database.collection("users").insertOne(userData);
-    console.log(insertResult);
-    if (insertResult.acknowledged) {
-        res.send("success");
-    } else {
-        res.send("fail");
-    }
-})
+app.use("/create-account", createAccountRouter);
 
-app.post("/get-log-in-key", (req, res, next) => {
+app.patch("/get-log-in-key", (req, res, next) => {
     express.text({
         limit: req.get('content-length')
     })(req, res, next);
@@ -71,7 +44,7 @@ app.post("/get-log-in-key", (req, res, next) => {
     if (req.body.email) {
         filter = { email: req.body.email };
     } else {
-        filter = { id: req.body.id };
+        filter = { userId: req.body.userId };
     }
     let user = await database.collection("users").findOne(filter);
     if (user.password === req.body.password) {
@@ -80,7 +53,7 @@ app.post("/get-log-in-key", (req, res, next) => {
         if (updateResult.acknowledged) {
             res.send(passkey);
         } else {
-            res.status(500).send("Failed to update document with passkey.");
+            res.send("Failed to update document with passkey.");
         }
     } else {
         res.send("Wrong password");
@@ -101,3 +74,11 @@ app.get("/profile/:passkey", async (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server has been started on port ${PORT}...`);
 })
+
+async function getRandomHexStr(){
+    let randomBytesPromise = util.promisify(crypto.randomBytes);
+    let randomBuffer = await randomBytesPromise(16);
+    return randomBuffer.toString('hex');
+}
+
+module.exports = {client, connectToDb};
