@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const path = require('path');
-const { MongoClient, ServerApiVersion } = require('mongodb');
-let database;
 //https://www.youtube.com/watch?v=084rmLU1UgA
 
+// ↓ connecting to the database
+const { MongoClient, ServerApiVersion } = require('mongodb');
+let database;
 async function connectToDb(req, res, next) {
     // console.log("Connect to db if needed. URL: " + req.originalUrl);
     if (database === undefined) {
@@ -22,16 +23,15 @@ async function connectToDb(req, res, next) {
     }
     next();
 }
-
 router.use(connectToDb);
 
 router.get("/", (req, res) => {
-    console.log("/create-account");
+    // console.log("/create-account");
     res.sendFile(path.join(path.resolve(), 'pages', 'create-account.html'));
 })
 router.post("/:userId", async (req, res, next) => {
-    // userId check
-    console.log("/create-account/:userId");
+    // ↓ userId check
+    // console.log("/create-account/:userId");
     let numOfDocsWithId = await database.collection("users").countDocuments({userId: req.params.userId});
     if (numOfDocsWithId !== 0) {
         res.send("This ID is already taken. Please, create another.");
@@ -43,8 +43,8 @@ router.post("/:userId", async (req, res, next) => {
         limit: parseInt(req.get('content-length')),
     })(req, res, next);
 }, async (req, res) => {
-    // email check
     req.body = JSON.parse(req.body);
+    // ↓ email check
     let numOfDocsWithEmail = await database.collection("users").countDocuments({email: req.body.email});
     if (numOfDocsWithEmail !== 0) {
         res.send("User with such email already exists. Try to log in or provide another email.");

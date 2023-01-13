@@ -5,9 +5,9 @@ const util = require('util');
 const crypto = require('crypto');
 const { createAccountRouter } = require('./routers/create-account-router.js');
 
+// ↓ connecting to the database
 const { MongoClient, ServerApiVersion } = require('mongodb');
-let uri, client, database;
-
+let database;
 async function connectToDb(req, res, next) {
     // console.log("Connect to db if needed. URL: " + req.originalUrl);
     if (database === undefined) {
@@ -25,12 +25,11 @@ async function connectToDb(req, res, next) {
     }
     next();
 }
+app.use(connectToDb, express.static(path.join(path.resolve(), 'pages')));
 
 const PORT = process.env.PORT || 3000;
 app.set('view engine', 'ejs');
 app.set('views', path.join(path.resolve(), 'pages'));
-
-app.use(connectToDb, express.static(path.join(path.resolve(), 'pages')));
 
 app.use("/create-account", createAccountRouter);
 
@@ -46,7 +45,14 @@ app.patch("/get-log-in-key", (req, res, next) => {
     } else {
         filter = { userId: req.body.userId };
     }
+    // console.log(req.body);
+    // console.log(filter);
     let user = await database.collection("users").findOne(filter);
+    // console.log(user);
+    if (user === null) {
+        res.send("Wrong email or ID.");
+        return;
+    }
     if (user.password === req.body.password) {
         let passkey = await getRandomHexStr();
         let updateResult = await database.collection("users").updateOne(filter, {$set: {"passkey": passkey}});
@@ -56,7 +62,7 @@ app.patch("/get-log-in-key", (req, res, next) => {
             res.send("Failed to update document with passkey.");
         }
     } else {
-        res.send("Wrong password");
+        res.send("Wrong password.");
     }
 })
 
@@ -71,6 +77,20 @@ app.get("/profile/:passkey", async (req, res) => {
     }
 })
 
+app.all("/info", async (req, res) => {
+    if (req.method === "GET") {
+        res.sendFile(path.join(path.resolve(), 'pages', "db-table.html"));
+    } else if (req.method === 'POST') {
+        let cursor = database.collection('users').find();
+        cursor = cursor.project({_id: 0, username: 1, email: 1, userId: 1, password: 1});
+        let users = await cursor.toArray();
+        cursor.close();
+        res.send(JSON.stringify(users));
+    } else {
+        res.send('You have used "' + req.method.toUpperCase() + '" request method. Try to use "GET" or "POST" request method instead.');
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`Server has been started on port ${PORT}...`);
 })
@@ -81,4 +101,4 @@ async function getRandomHexStr(){
     return randomBuffer.toString('hex');
 }
 
-module.exports = {client, connectToDb};
+// module.exports = {client, connectToDb};

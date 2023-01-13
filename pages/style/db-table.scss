@@ -1,0 +1,58 @@
+@import "./null-style.scss";
+
+html, body {
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  min-width: 100vw;
+  height: fit-content;
+  min-height: 100vh;
+  justify-content: center;
+  align-items: center;
+}
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: fit-content;
+  min-height: 100vh;
+  justify-content: flex-start;
+  align-items: center;
+  font-family: "Calibri", sans-serif;
+  // font-size: 24px;
+  font-size: calc(18px + (24 - 18) * ((100vw - 320px) / (1200 - 320)));
+  /*
+  font-size: calc(16px + (24 - 16) * ((100vw - 320px) / (1200 - 320)));
+  ↑ На экране шириной 320 пикселей шрифт имеет размер 16 пикселей, 
+  а на экране шириной 1200 пикселей – размер 24 пикселя. */
+}
+.data-table {
+  width: 100%;
+  min-width: fit-content;
+  display: grid;
+  border: 0.5px solid black;
+  text-align: center;
+}
+.data-table > div {
+  white-space: nowrap;
+  border: 0.5px solid black;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+  
+}
+@media (max-width: 1200px) {
+  /* Стили CSS для ширины от 992px до 1200px */
+  /* Устройства со средним экраном (ноутбуки и компьютеры)*/
+
+}
+@media (max-width: 992px) {
+  /* Стили CSS для ширины от 768px до 992px */
+  /* Устроства с маленьким экраном (планшеты) */
+}
+@media (max-width: 767px) {
+  /* Стили CSS для ширины до 768px */
+  /* Устройства с очень маленьким экраном (смартфоны) */
+  
+}

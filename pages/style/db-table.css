@@ -73,7 +73,10 @@ h1, h2, h3, h4, h5, h6 {
 html, body {
   display: flex;
   flex-direction: column;
-  width: 100vw;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  min-width: 100vw;
   height: -webkit-fit-content;
   height: -moz-fit-content;
   height: fit-content;
@@ -84,94 +87,39 @@ html, body {
 
 .wrapper {
   display: flex;
+  flex-direction: column;
   width: 100%;
   height: -webkit-fit-content;
   height: -moz-fit-content;
   height: fit-content;
   min-height: 100vh;
-  padding: 20px;
-  background-color: #dfdfdf;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
+  font-family: "Calibri", sans-serif;
+  font-size: calc(18px + 6 * (100vw - 320px) / 880);
   /*
   font-size: calc(16px + (24 - 16) * ((100vw - 320px) / (1200 - 320)));
   ↑ На экране шириной 320 пикселей шрифт имеет размер 16 пикселей, 
   а на экране шириной 1200 пикселей – размер 24 пикселя. */
 }
 
-.log-in-section {
-  display: inline-flex;
-  flex-direction: column;
-  max-width: 100%;
-  background-color: white;
-  box-shadow: 0 0 10px 3px gray;
-  border-radius: 20px;
-  padding: 10px;
-  font: 28px "Calibri", sans-serif;
+.data-table {
+  width: 100%;
+  min-width: -webkit-fit-content;
+  min-width: -moz-fit-content;
+  min-width: fit-content;
+  display: grid;
+  border: 0.5px solid black;
   text-align: center;
-}
-.log-in-section > header {
-  font-size: 28px;
-  font-weight: bold;
-  color: blue;
-}
-.log-in-section > input {
-  display: inline-block;
-  border: 1px solid black;
-  font: inherit;
-  border-radius: 3px;
-  margin-top: 3px;
-  text-align: center;
-}
-.log-in-section > input:focus {
-  box-shadow: 0 0 5px 1px gray;
-}
-.log-in-section > label[for=show-password] {
-  align-self: center;
-  display: inline-flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-}
-.log-in-section > label[for=show-password] > input {
-  margin-right: 5px;
-}
-.log-in-section > .warning {
-  font-style: normal;
-  display: inline-block;
-  font-size: 18px;
-  color: red;
-  text-align: left;
-}
-.log-in-section > #log-in-btn {
-  width: -webkit-max-content;
-  width: -moz-max-content;
-  width: max-content;
-  align-self: center;
-  padding: 5px 10px;
-  border-radius: 3px;
-  background-color: royalblue;
-  color: white;
-  font: inherit;
-  margin: 5px 0 7px 0;
-  cursor: pointer;
 }
 
-.create-account {
-  border-top: 3px solid dodgerblue;
-}
-.create-account > label {
-  font-size: 16px;
-  color: royalblue;
-}
-.create-account > #create-account-btn {
-  display: block;
+.data-table > div {
+  white-space: nowrap;
+  border: 0.5px solid black;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
   padding: 5px;
-  border-radius: 3px;
-  background-color: limegreen;
-  color: white;
-  cursor: pointer;
-  margin-bottom: 5px;
 }
 
 @media (max-width: 1200px) {

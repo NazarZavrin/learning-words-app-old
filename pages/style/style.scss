@@ -60,6 +60,13 @@ html, body {
       margin-right: 5px;
     }
   }
+  & > .warning{
+    font-style: normal;
+    display: inline-block;
+    font-size: 18px;
+    color: red;
+    text-align: left;
+  }
   & > #log-in-btn {
     width: max-content;
     align-self: center;

@@ -1,4 +1,6 @@
 "use strict";
+import { createWarningAfterElement, setWarning } from "./useful.js";
+
 const userNameInput = document.getElementById('username');
 const emailInput = document.getElementById('email');
 const userIdInput = document.getElementById('userId');
@@ -6,9 +8,9 @@ const passwordInput = document.getElementById('password');
 const showPassword = document.querySelector("input[type='checkbox']");
 const createAccountBtn = document.getElementById("create-account-btn");
 
-userNameInput.addEventListener("blur", userNameIsCorrect);
-emailInput.addEventListener("blur", emailIsCorrect);
-userIdInput.addEventListener("focus", (event) => {
+userNameInput?.addEventListener("blur", userNameIsCorrect);
+emailInput?.addEventListener("blur", emailIsCorrect);
+userIdInput?.addEventListener("focus", (event) => {
     if (event.target.value === "") {
         event.target.value = "@";
         setTimeout(() => {
@@ -19,11 +21,11 @@ userIdInput.addEventListener("focus", (event) => {
         event.target.value = "@" + event.target.value;
     }
 })
-userIdInput.addEventListener("blur", idIsCorrect);
-passwordInput.addEventListener("blur", passwordIsCorrect);
+userIdInput?.addEventListener("blur", userIdIsCorrect);
+passwordInput?.addEventListener("blur", passwordIsCorrect);
 
-showPassword.addEventListener("change", event => {
-    if (passwordInput.type === "password") {
+showPassword?.addEventListener("change", function(event) {
+    if (passwordInput.type === "password" && this.checked === true) {
         passwordInput.type = "text";
     } else {
         passwordInput.type = "password";
@@ -31,7 +33,7 @@ showPassword.addEventListener("change", event => {
 })
 
 // id urlencoded
-createAccountBtn.addEventListener("click", async event => {
+createAccountBtn?.addEventListener("click", async event => {
     let everythingIsCorrect = true;
     everythingIsCorrect = userNameIsCorrect(event) && everythingIsCorrect;
     everythingIsCorrect = emailIsCorrect(event) && everythingIsCorrect;
@@ -43,7 +45,7 @@ createAccountBtn.addEventListener("click", async event => {
             setWarning(userIdInput, "");
         }
     }
-    everythingIsCorrect = idIsCorrect(event) && everythingIsCorrect;
+    everythingIsCorrect = userIdIsCorrect(event) && everythingIsCorrect;
     if (everythingIsCorrect === false) {
         return;
     }
@@ -62,29 +64,32 @@ createAccountBtn.addEventListener("click", async event => {
     });
     if (response.ok) {
         let text = await response.text();
-        console.log(text);
+        if (text.endsWith(".")) {
+            alert(text);
+        } else {
+            response = await fetch("/get-log-in-key", {
+                method: "PATCH",
+                body: JSON.stringify(requestBody),
+            });
+            if (response.ok) {
+                let passkey = await response.text();
+                if (passkey.endsWith(".")) {
+                    passkey = passkey[0].toLowerCase() + passkey.substring(1);
+                    alert("Failed to log in: " + passkey);
+                } else {
+                    location.href = "/profile/" + passkey;
+                }
+            } else {
+                console.log("Error " + response.status);
+            }
+        }
     } else {
         console.log("Error " + response.status);
     }
 })
 
-function createWarningElementAfter(element){
-    // console.log("warning after:");
-    // console.log(element);
-    for (let i = 0; !element.nextElementSibling.matches('.warning') && i < 10; i++) {
-        element.insertAdjacentHTML("afterend", '<b class="warning"></b>');
-    }
-}
-function setWarning(element, warningText, elemName = ""){
-    if (element.nextElementSibling.matches('.warning')) {
-        element.nextElementSibling.textContent = warningText;
-    } else if (warningText) {
-        console.log(elemName + ":", warningText);
-    }
-}
-
 function userNameIsCorrect(event) {
-    createWarningElementAfter(userNameInput);
+    createWarningAfterElement(userNameInput);
     let warningText = "";
     if (userNameInput.value.length > 50) {
         warningText = "Username must not exceed 50 characters.";
@@ -98,7 +103,7 @@ const emailRegex = /^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9.
 // console.log("Some-Email@gmail.com".match(emailRegex));
 // console.log("wrong@email@gmail.com".match(emailRegex));
 function emailIsCorrect(event){
-    createWarningElementAfter(emailInput);
+    createWarningAfterElement(emailInput);
     let warningText = "";
     if (emailInput.value.length > 50) {
         warningText = "Email must not exceed 50 characters.";
@@ -108,9 +113,9 @@ function emailIsCorrect(event){
     setWarning(emailInput, warningText, "emailInput");
     return warningText.length > 0 ? false : true;
 }
-const idRegex = /^@[a-zA-Z0-9_.-]+$/;
-function idIsCorrect(event){
-    createWarningElementAfter(userIdInput);
+const userIdRegex = /^@[a-zA-Z0-9_.-]+$/;
+function userIdIsCorrect(event){
+    createWarningAfterElement(userIdInput);
     let warningText = "";
     if (userIdInput.value.length > 20) {
         warningText = "ID must not exceed 20 characters.";
@@ -122,14 +127,14 @@ function idIsCorrect(event){
         warningText = 'ID must include only one "@" symbol.';
     } else if (userIdInput.value.search(/\s/) >= 0) {
         warningText = "ID must not include space symbols.";
-    } else if (!userIdInput.value.match(idRegex)) {
+    } else if (!userIdInput.value.match(userIdRegex)) {
         warningText = "Incorrect ID.";
     }
     setWarning(userIdInput, warningText, "userIdInput");
     return warningText.length > 0 ? false : true;
 }
 function passwordIsCorrect(event) {
-    createWarningElementAfter(passwordInput);
+    createWarningAfterElement(passwordInput);
     let warningText = "";
     if (passwordInput.value.length > 20) {
         warningText = "Password must not exceed 20 characters.";
