@@ -71,7 +71,8 @@ app.get("/profile/:passkey", async (req, res) => {
     let result = await cursor.toArray();
     cursor.close();
     if (result.length === 1) {
-        res.send(result.pop());
+        // res.send(result.pop());
+        res.render("profile", {user: result.pop(), });
     } else {
         res.status(500).send("Log in error. Try again.");
     }

@@ -81,8 +81,6 @@ html, body {
   height: -moz-fit-content;
   height: fit-content;
   min-height: 100vh;
-  justify-content: center;
-  align-items: center;
 }
 
 .wrapper {

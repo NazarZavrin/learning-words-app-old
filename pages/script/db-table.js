@@ -1,5 +1,5 @@
 "use strict";
-document.body.children[0].insertAdjacentHTML("afterbegin", "w:" + document.documentElement.clientWidth + ", h: " + document.documentElement.clientHeight);
+document.body.children[0].insertAdjacentHTML("afterbegin", "<div>w:" + document.documentElement.clientWidth + ", h: " + document.documentElement.clientHeight + "</div>");
 let tableElement = document.getElementsByClassName('data-table')[0];
 updateTable(tableElement);
 async function updateTable(tableElement){

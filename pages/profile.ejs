@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= user.username %></title>
+    <link rel="stylesheet" href="/style/profile.css">
+</head>
+<body>
+    <main class="wrapper">
+        <header class="header">
+            <div class="header__info-btn">
+                <div></div>
+            </div>
+            <div class="header__profile-label">Profile</div>
+        </header>
+        <section class="content">
+            <aside class="profile-info">
+                <div class="username"><%= user.username %></div>
+                <div class="userId"><%= user.userId %></div>
+                <div class="email"><%= user.email %></div>
+            </aside>
+            <section class="favourite-words"></section>
+            <section class="favourite-groups"></section>
+            <section class="all-groups"></section>
+        </section>
+    </main>
+    <script src="/script/profile.js" type="module"></script>
+</body>
+</html>

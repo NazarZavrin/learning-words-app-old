@@ -1,0 +1,125 @@
+@import "./null-style.scss";
+
+html, body {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: fit-content;
+  min-height: 100vh;
+  justify-content: center;
+  align-items: center;
+}
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: fit-content;
+  min-height: 100vh;
+//   padding: 20px;
+//   background-color: #dfdfdf;
+//   justify-content: flex-start;
+//   align-items: center;
+  font: 20px "Calibri", sans-serif;
+  /*
+  font-size: calc(16px + (24 - 16) * ((100vw - 320px) / (1200 - 320)));
+  ↑ На экране шириной 320 пикселей шрифт имеет размер 16 пикселей, 
+  а на экране шириной 1200 пикселей – размер 24 пикселя. */
+}
+.header {
+    width: 100%;
+    height: 50px;
+    color: white;
+    background-color: dodgerblue;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    & > .header__profile-label{
+        font-size: 28px;
+        height: 100%;
+        padding: 0 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+    }
+}
+.header__info-btn {
+    position: relative;
+    z-index: 3;
+    display: inline-flex;
+    // justify-content: center;
+    // align-items: center;
+    width: 50px;
+    height: 50px;
+    border: 1px solid blue;
+    cursor: pointer;
+    &::before, &::after, & > div {
+        content: '';
+        position: absolute;
+        left: 50%;
+        width: 75%;
+        height: 10%;
+        background-color: white;
+        transform-origin: center center;
+        transform: translate(-50%, -50%);
+        border-radius: 5px;
+        transition: all 0.5s ease;
+    }
+    &::before{
+        top: 25%;
+    }
+    & > div {
+        top: 50%;
+    }
+    &::after {
+        top: 75%;
+    }
+    &.active{
+        &::before {
+            top: 50%;
+            transform: translate(-50%, -50%) rotateZ(45deg);
+        }
+        & > div {
+            opacity: 0;
+        }
+        &::after{
+            top: 50%;
+            transform: translate(-50%, -50%) rotateZ(-45deg);
+        }
+    }
+}
+.content{
+    position: relative;
+    background-color: lightblue;
+    flex: 1 1 100%;
+}
+.profile-info {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: gray;
+    transform: translateX(-100%);
+    transition: all 0.5s ease;
+    &.active {
+        transform: translateX(0);
+    }
+}
+.profile-info > * {
+    color: white;
+}
+.username {
+}
+.userId {
+}
+.email {
+}
+.favourite-words {
+}
+.favourite-groups {
+}
+.all-groups {
+}
