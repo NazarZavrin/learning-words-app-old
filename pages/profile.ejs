@@ -17,9 +17,39 @@
         </header>
         <section class="content">
             <aside class="profile-info">
-                <div class="username"><%= user.username %></div>
-                <div class="userId"><%= user.userId %></div>
-                <div class="email"><%= user.email %></div>
+                <div class="info-block profile-info__username-block">
+                    <div class="username">
+                        <span><%= user.username %></span>
+                        <div class="edit-btn"><img src="/img/edit.png" alt="Edit"/></div>
+                    </div>
+                    <div class="edit-block profile-info__edit-username">
+                        <input type="text">
+                        <div class="save-btn"><img src="/img/tick.png" alt="Save"/></div>
+                        <div class="cancel-btn"><img src="/img/cross.png" alt="Cancel"/></div>
+                    </div>
+                </div>
+                <div class="info-block profile-info__userId-block">
+                    <div class="userId">
+                        <span><%= user.userId %></span>
+                        <div class="edit-btn"><img src="/img/edit.png" alt="Edit"/></div>
+                    </div>
+                    <div class="edit-block profile-info__edit-username">
+                        <input type="text">
+                        <div class="save-btn"><img src="/img/tick.png" alt="Save"/></div>
+                        <div class="cancel-btn"><img src="/img/cross.png" alt="Cancel"/></div>
+                    </div>
+                </div>
+                <div class="info-block profile-info__email-block">
+                    <div class="email">
+                        <span><%= user.email %></span>
+                        <div class="edit-btn"><img src="/img/edit.png" alt="Edit"/></div>
+                    </div>
+                    <div class="edit-block profile-info__edit-username">
+                        <input type="text">
+                        <div class="save-btn"><img src="/img/tick.png" alt="Save"/></div>
+                        <div class="cancel-btn"><img src="/img/cross.png" alt="Cancel"/></div>
+                    </div>
+                </div>
             </aside>
             <section class="favourite-words"></section>
             <section class="favourite-groups"></section>

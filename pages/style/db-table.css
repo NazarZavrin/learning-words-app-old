@@ -90,7 +90,7 @@ html, body {
   height: -webkit-fit-content;
   height: -moz-fit-content;
   height: fit-content;
-  min-height: 100vh;
+  min-height: 100%;
   justify-content: flex-start;
   align-items: center;
   font-family: "Calibri", sans-serif;

@@ -95,22 +95,90 @@ html, body {
 }
 .profile-info {
     position: absolute;
-    width: 100%;
+    // width: 100%;
+    max-width: 100vw;
+    padding: 40px;
     height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: gray;
+    background-color: white;
+    box-shadow: inset 0 0 7px 3px rgba(0, 0, 0, 0.5);
     transform: translateX(-100%);
     transition: all 0.5s ease;
+    border-radius: 0 30px 30px 0;
     &.active {
         transform: translateX(0);
     }
 }
-.profile-info > * {
-    color: white;
+.info-block {
+    display: flex;
+    width: 246px;
+    // ↑ .info-block's border*2 + .info-block's padding*2 + input + save and cancel buttons and their margins
+    // ↑ 3*2 + 5*2 + 150 + 30 + 10 + 30 + 10
+    flex-direction: column;
+    justify-content: center;
+    padding: 10px 5px;
+    margin-bottom: 5px;
+    // &:last-of-type{
+    //     margin-bottom: 0;
+    // }
+    border: 3px solid lightgray;
+    border-radius: 10px;
+    & > .username, .userId, .email {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        margin-bottom: 10px;
+        max-width: 100vw;
+        & > span {
+            display: block;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+    }
+    // align-items: center;
+    & .edit-btn, .save-btn, .cancel-btn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 30px;
+        height: 30px;
+        background-color: dodgerblue;
+        border-radius: 5px;
+        margin-left: 10px;
+        & > img {
+            max-width: 100%;
+        }
+    }
+    & > .edit-block {
+        display: none;
+        // display: flex;
+        width: 100%;
+        flex-direction: row;
+        justify-content: center;
+        // align-items: center;
+        
+        & > input {
+            font: inherit;
+            display: block;
+            width: 150px;
+            border: 1px solid gray;
+            border-radius: 5px;
+        }
+        & > .save-btn {
+            background-color: limegreen;
+            & > img {
+                max-width: 80%;
+            }
+        }
+        & > .cancel-btn {
+            background-color: red;
+        }
+    }
 }
+
 .username {
 }
 .userId {
