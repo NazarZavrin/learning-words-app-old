@@ -57,10 +57,10 @@ createAccountBtn?.addEventListener("click", async event => {
             requestBody[id] = element.value;
         }
     }
-    console.log(requestBody);
     let response = await fetch("/create-account/" + requestBody.userId, {
         method: "POST",
         body: JSON.stringify(requestBody),
+        headers: {"Content-Type": "application/json"}
     });
     if (response.ok) {
         let text = await response.text();
@@ -70,6 +70,7 @@ createAccountBtn?.addEventListener("click", async event => {
             response = await fetch("/get-log-in-key", {
                 method: "PATCH",
                 body: JSON.stringify(requestBody),
+                headers: {"Content-Type": "application/json"}
             });
             if (response.ok) {
                 let passkey = await response.text();

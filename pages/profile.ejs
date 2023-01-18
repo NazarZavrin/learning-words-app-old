@@ -18,38 +18,43 @@
         <section class="content">
             <aside class="profile-info">
                 <div class="info-block profile-info__username-block">
+                    <div>Username</div>
                     <div class="username">
                         <span><%= user.username %></span>
                         <div class="edit-btn"><img src="/img/edit.png" alt="Edit"/></div>
                     </div>
-                    <div class="edit-block profile-info__edit-username">
+                    <div class="edit-block profile-info__edit-username hide">
                         <input type="text">
                         <div class="save-btn"><img src="/img/tick.png" alt="Save"/></div>
                         <div class="cancel-btn"><img src="/img/cross.png" alt="Cancel"/></div>
                     </div>
                 </div>
                 <div class="info-block profile-info__userId-block">
+                    <div>ID</div>
                     <div class="userId">
                         <span><%= user.userId %></span>
                         <div class="edit-btn"><img src="/img/edit.png" alt="Edit"/></div>
                     </div>
-                    <div class="edit-block profile-info__edit-username">
+                    <div class="edit-block profile-info__edit-username hide">
                         <input type="text">
                         <div class="save-btn"><img src="/img/tick.png" alt="Save"/></div>
                         <div class="cancel-btn"><img src="/img/cross.png" alt="Cancel"/></div>
                     </div>
                 </div>
                 <div class="info-block profile-info__email-block">
+                    <div>Email</div>
                     <div class="email">
                         <span><%= user.email %></span>
                         <div class="edit-btn"><img src="/img/edit.png" alt="Edit"/></div>
                     </div>
-                    <div class="edit-block profile-info__edit-username">
+                    <div class="edit-block profile-info__edit-username hide">
                         <input type="text">
                         <div class="save-btn"><img src="/img/tick.png" alt="Save"/></div>
                         <div class="cancel-btn"><img src="/img/cross.png" alt="Cancel"/></div>
                     </div>
                 </div>
+                <div id="log-out-btn">Log out</div>
+                <div id="delete-account-btn">Delete account</div>
             </aside>
             <section class="favourite-words"></section>
             <section class="favourite-groups"></section>

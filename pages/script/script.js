@@ -29,6 +29,7 @@ logInBtn.addEventListener("click", async event => {
     let response = await fetch("/get-log-in-key", {
         method: "PATCH",
         body: JSON.stringify(requestBody),
+        headers: {"Content-Type": "application/json"}
     });
     if (response.ok) {
         let passkey = await response.text();

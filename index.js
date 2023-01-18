@@ -34,11 +34,12 @@ app.set('views', path.join(path.resolve(), 'pages'));
 app.use("/create-account", createAccountRouter);
 
 app.patch("/get-log-in-key", (req, res, next) => {
-    express.text({
-        limit: req.get('content-length')
+    express.json({
+        limit: req.get('content-length'),
+        type: 'application/json',
     })(req, res, next);
 }, async (req, res) => {
-    req.body = JSON.parse(req.body);
+    // req.body = JSON.parse(req.body);
     let filter;
     if (req.body.email) {
         filter = { email: req.body.email };
@@ -47,12 +48,18 @@ app.patch("/get-log-in-key", (req, res, next) => {
     }
     // console.log(req.body);
     // console.log(filter);
-    let user = await database.collection("users").findOne(filter);
+    let cursor = database.collection("users").find(filter);
+    let result = await cursor.toArray();
+    cursor.close();
     // console.log(user);
-    if (user === null) {
+    if (result.length === 0) {
         res.send("Wrong email or ID.");
         return;
+    } else if (result.length > 1){
+        res.send("Server error. Try to change log in info (from email to ID or conversely).");
+        return;
     }
+    let user = result[0];
     if (user.password === req.body.password) {
         let passkey = await getRandomHexStr();
         let updateResult = await database.collection("users").updateOne(filter, {$set: {"passkey": passkey}});
@@ -74,7 +81,40 @@ app.get("/profile/:passkey", async (req, res) => {
         // res.send(result.pop());
         res.render("profile", {user: result.pop(), });
     } else {
-        res.status(500).send("Log in error. Try again.");
+        res.send("Log in error. Try again.");
+    }
+})
+app.patch("/profile/:passkey/change/:infoPart", (req, res, next) => {
+    express.text({
+        limit: req.get('content-length'),
+    })(req, res, next);
+}, async (req, res) => {
+    console.log(req.body);
+    console.log(req.params.infoPart);
+    // if infoPart is userId or email check if new value is unique
+    if (req.params.infoPart === 'userId') {
+        // ↓ userId check
+        let numOfDocsWithId = await database.collection("users").countDocuments({userId: req.body});
+        if (numOfDocsWithId !== 0) {
+            res.json({success: false, message: "This ID is already taken. Please, provide another."});
+            return;
+        }
+    } else if (req.params.infoPart === 'email'){
+        // ↓ email check
+        let numOfDocsWithEmail = await database.collection("users").countDocuments({email: req.body});
+        if (numOfDocsWithEmail !== 0) {
+            res.json({success: false, message: "User with such email already exists. Please, provide another email."});
+            return;
+        }
+    } else if (req.params.infoPart !== "username") {
+        res.json({success: false, message: "Wrong characteristic: " + req.params.infoPart + "."});
+        return;
+    }
+    let updateResult = await database.collection("users").updateOne({passkey: req.params.passkey}, {$set: {[req.params.infoPart]: req.body}});
+    if (updateResult.acknowledged) {
+        res.json({success: true, newValue: req.body});
+    } else {
+        res.json({success: false});
     }
 })
 
@@ -88,7 +128,7 @@ app.all("/info", async (req, res) => {
         cursor.close();
         res.send(JSON.stringify(users));
     } else {
-        res.send('You have used "' + req.method.toUpperCase() + '" request method. Try to use "GET" or "POST" request method instead.');
+        res.send('Wrong request method: "' + req.method.toUpperCase() + '".');
     }
 });
 

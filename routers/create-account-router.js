@@ -30,8 +30,8 @@ router.get("/", (req, res) => {
     res.sendFile(path.join(path.resolve(), 'pages', 'create-account.html'));
 })
 router.post("/:userId", async (req, res, next) => {
-    // ↓ userId check
     // console.log("/create-account/:userId");
+    // ↓ userId check
     let numOfDocsWithId = await database.collection("users").countDocuments({userId: req.params.userId});
     if (numOfDocsWithId !== 0) {
         res.send("This ID is already taken. Please, create another.");
@@ -39,11 +39,12 @@ router.post("/:userId", async (req, res, next) => {
     }
     next();
 }, (req, res, next) => {
-    express.text({
+    express.json({
         limit: parseInt(req.get('content-length')),
+        type: 'application/json',
     })(req, res, next);
 }, async (req, res) => {
-    req.body = JSON.parse(req.body);
+    // console.log(req.body);
     // ↓ email check
     let numOfDocsWithEmail = await database.collection("users").countDocuments({email: req.body.email});
     if (numOfDocsWithEmail !== 0) {
@@ -53,9 +54,9 @@ router.post("/:userId", async (req, res, next) => {
     let insertResult = await database.collection("users").insertOne(req.body);
     console.log(insertResult);
     if (insertResult.acknowledged) {
-        res.send("success");
+        res.send("Success");
     } else {
-        res.send("failed to add ");
+        res.send("Server error. Failed to add user.");
     }
 })
 
