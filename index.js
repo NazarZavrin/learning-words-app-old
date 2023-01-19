@@ -4,6 +4,7 @@ const path = require('path');
 const util = require('util');
 const crypto = require('crypto');
 const { createAccountRouter } = require('./routers/create-account-router.js');
+const { profileRouter } = require('./routers/profile-router.js');
 
 // ↓ connecting to the database
 const { MongoClient, ServerApiVersion } = require('mongodb');
@@ -32,6 +33,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(path.resolve(), 'pages'));
 
 app.use("/create-account", createAccountRouter);
+app.use("/profile", profileRouter);
 
 app.patch("/get-log-in-key", (req, res, next) => {
     express.json({
@@ -73,50 +75,7 @@ app.patch("/get-log-in-key", (req, res, next) => {
     }
 })
 
-app.get("/profile/:passkey", async (req, res) => {
-    let cursor = database.collection("users").find({passkey: req.params.passkey});
-    let result = await cursor.toArray();
-    cursor.close();
-    if (result.length === 1) {
-        // res.send(result.pop());
-        res.render("profile", {user: result.pop(), });
-    } else {
-        res.send("Log in error. Try again.");
-    }
-})
-app.patch("/profile/:passkey/change/:infoPart", (req, res, next) => {
-    express.text({
-        limit: req.get('content-length'),
-    })(req, res, next);
-}, async (req, res) => {
-    console.log(req.body);
-    console.log(req.params.infoPart);
-    // if infoPart is userId or email check if new value is unique
-    if (req.params.infoPart === 'userId') {
-        // ↓ userId check
-        let numOfDocsWithId = await database.collection("users").countDocuments({userId: req.body});
-        if (numOfDocsWithId !== 0) {
-            res.json({success: false, message: "This ID is already taken. Please, provide another."});
-            return;
-        }
-    } else if (req.params.infoPart === 'email'){
-        // ↓ email check
-        let numOfDocsWithEmail = await database.collection("users").countDocuments({email: req.body});
-        if (numOfDocsWithEmail !== 0) {
-            res.json({success: false, message: "User with such email already exists. Please, provide another email."});
-            return;
-        }
-    } else if (req.params.infoPart !== "username") {
-        res.json({success: false, message: "Wrong characteristic: " + req.params.infoPart + "."});
-        return;
-    }
-    let updateResult = await database.collection("users").updateOne({passkey: req.params.passkey}, {$set: {[req.params.infoPart]: req.body}});
-    if (updateResult.acknowledged) {
-        res.json({success: true, newValue: req.body});
-    } else {
-        res.json({success: false});
-    }
-})
+
 
 app.all("/info", async (req, res) => {
     if (req.method === "GET") {

@@ -161,7 +161,7 @@ html, body {
 .content {
   position: relative;
   background-color: lightblue;
-  flex: 1 1 100%;
+  flex: 1 1 auto;
 }
 
 .profile-info {
@@ -169,18 +169,25 @@ html, body {
   max-width: 100vw;
   padding: 40px;
   height: 100%;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   background-color: white;
-  box-shadow: inset 0 0 7px 3px rgba(0, 0, 0, 0.5);
+  border: 3px solid gray;
   transform: translateX(-100%);
   transition: all 0.5s ease;
   border-radius: 0 30px 30px 0;
 }
 .profile-info.active {
   transform: translateX(0);
+}
+.profile-info > :first-child {
+  margin-top: auto;
+}
+.profile-info > :last-child {
+  margin-bottom: auto;
 }
 
 .info-block {
@@ -227,25 +234,40 @@ html, body {
 .info-block > .edit-block {
   display: flex;
   width: 100%;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
   margin-top: 10px;
 }
-.info-block > .edit-block > input {
+.info-block > .edit-block > .input-block {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: center;
+}
+.info-block > .edit-block > .input-block > input {
   font: inherit;
   display: block;
   width: 150px;
   border: 1px solid gray;
   border-radius: 5px;
+  padding: 0 3px;
 }
-.info-block > .edit-block > .save-btn {
+.info-block > .edit-block > .input-block > .save-btn {
   background-color: limegreen;
 }
-.info-block > .edit-block > .save-btn > img {
+.info-block > .edit-block > .input-block > .save-btn > img {
   max-width: 80%;
 }
-.info-block > .edit-block > .cancel-btn {
+.info-block > .edit-block > .input-block > .cancel-btn {
   background-color: red;
+}
+.info-block > .edit-block > .warning {
+  font-style: normal;
+  display: inline-block;
+  font-size: 14px;
+  color: red;
+  text-align: left;
+  word-wrap: break-word;
 }
 
 #log-out-btn, #delete-account-btn {
@@ -258,7 +280,7 @@ html, body {
 
 #delete-account-btn {
   background-color: red;
-  margin-bottom: 0;
+  margin-bottom: auto;
 }
 
 .hide {

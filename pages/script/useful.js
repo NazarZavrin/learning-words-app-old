@@ -1,14 +1,78 @@
 export function createWarningAfterElement(element){
+    // console.log(element);
     // console.log("warning after:");
     // console.log(element);
-    if (!element.nextElementSibling.matches('.warning')) {
+    if (!element.nextElementSibling?.matches('.warning')) {
         element.insertAdjacentHTML("afterend", '<b class="warning"></b>');
     }
 }
-export function setWarning(element, warningText, elemName = ""){
-    if (element.nextElementSibling.matches('.warning')) {
-        element.nextElementSibling.textContent = warningText;
+export function setWarning(element, warningText, description = ""){
+    if (element?.matches('.warning')) {
+        element.textContent = warningText;
     } else if (warningText) {
-        console.log(elemName + ":", warningText);
+        console.log(description + ":", warningText);
     }
+}
+export function userNameIsCorrect(inputElement, elementForWarning = null, event = {}) {
+    elementForWarning = elementForWarning || inputElement;
+    // console.log(arguments);
+    createWarningAfterElement(elementForWarning);
+    let warningText = "";
+    if (inputElement.value.length > 50) {
+        warningText = "Username must not exceed 50 characters.";
+    } else if (inputElement.value.length < 3) {
+        warningText = "Username must not be less than 3 characters.";
+    }
+    setWarning(elementForWarning.nextElementSibling, warningText, "username");
+    return warningText.length > 0 ? false : true;
+}
+const emailRegex = /^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+$/;
+// console.log("Some-Email@gmail.com".match(emailRegex));
+// console.log("wrong@email@gmail.com".match(emailRegex));
+export function emailIsCorrect(inputElement, elementForWarning = null, event = {}){
+    elementForWarning = elementForWarning || inputElement;
+    createWarningAfterElement(elementForWarning);
+    let warningText = "";
+    if (inputElement.value.length > 50) {
+        warningText = "Email must not exceed 50 characters.";
+    } else if (!inputElement.value.match(emailRegex)) {
+        warningText = "Incorrect email.";
+    }
+    setWarning(elementForWarning.nextElementSibling, warningText, "email");
+    return warningText.length > 0 ? false : true;
+}
+const userIdRegex = /^@[a-zA-Z0-9_.-]+$/;
+export function userIdIsCorrect(inputElement, elementForWarning = null, event = {}){
+    elementForWarning = elementForWarning || inputElement;
+    createWarningAfterElement(elementForWarning);
+    let warningText = "";
+    if (inputElement.value.length > 20) {
+        warningText = "ID must not exceed 20 characters.";
+    } else if (inputElement.value.length < 5) {
+        warningText = "ID must not be less than 5 characters.";
+    } else if (!inputElement.value.startsWith("@")) {
+        warningText = 'ID must begin with "@" symbol.';
+    } else if (inputElement.value.match(/@/g).length > 1) {
+        warningText = 'ID must include only one "@" symbol.';
+    } else if (inputElement.value.search(/\s/) >= 0) {
+        warningText = "ID must not include space symbols.";
+    } else if (!inputElement.value.match(userIdRegex)) {
+        warningText = "Incorrect ID.";
+    }
+    setWarning(elementForWarning.nextElementSibling, warningText, "userId");
+    return warningText.length > 0 ? false : true;
+}
+export function passwordIsCorrect(inputElement, elementForWarning = null, event = {}) {
+    elementForWarning = elementForWarning || inputElement;
+    createWarningAfterElement(elementForWarning);
+    let warningText = "";
+    if (inputElement.value.length > 20) {
+        warningText = "Password must not exceed 20 characters.";
+    } else if (inputElement.value.length < 4) {
+        warningText = "Password must not be less than 4 characters.";
+    } else if (inputElement.value.search(/\s/) >= 0) {
+        warningText = "ID must not include space symbols.";
+    }
+    setWarning(elementForWarning.nextElementSibling, warningText, "password");
+    return warningText.length > 0 ? false : true;
 }

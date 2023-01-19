@@ -1,7 +1,9 @@
 "use strict";
 console.log(HTMLElement.prototype);
-console.log("check userinput (while updating profile characteristics) with functions userIdIsCorrect and similar (create-account.js)");
-console.log("/profile router");
+console.log("add posibitity to delete account");
+console.log("change password, enter password to change infoPart");
+
+import { setWarning, userNameIsCorrect, emailIsCorrect, userIdIsCorrect, } from "./useful.js";
 
 const infoBtn = document.querySelector(".header__info-btn");
 const profileLabel = document.querySelector(".header__profile-label");
@@ -24,20 +26,23 @@ infoSidebar.addEventListener("click", async event => {
             let currentValue = editBlock.previousElementSibling.children[0].textContent;
             let input = editBlock.querySelector("input");
             input.value = currentValue;
+            setWarning(editBlock.lastElementChild, "");
         }
         
     } else if (event.target.closest(".save-btn")){
         let editBlock = event.target.closest(".edit-block");
-        editBlock.classList.add("hide");
         let infoPart = editBlock.previousElementSibling.className.split(" ").shift();
         let infoPartInput = event.target.closest(".save-btn").previousElementSibling;
         let newValue = infoPartInput.value;
         let currentValue = editBlock.previousElementSibling.children[0].textContent;
         if (newValue === currentValue) {
-            console.log("Values coincide.");
+            console.log("Old and new values coincide.");
             return;
         }
-        // console.log(newValue);
+        if (infoPartIsCorrect(infoPart, infoPartInput) === false) {
+            return;
+        }
+        editBlock.classList.add("hide");
         infoPartInput.value = "";
         let response = await fetch(location.href + "/change/" + infoPart, {
             method: "PATCH",
@@ -56,7 +61,9 @@ infoSidebar.addEventListener("click", async event => {
         console.log(result.message || result);
         alert(result.message || result);
     } else if (event.target.closest(".cancel-btn")){
-        event.target.closest(".edit-block").classList.add("hide");
+        let editBlock = event.target.closest(".edit-block");
+        editBlock.classList.add("hide");
+        setWarning(editBlock.lastElementChild, "");
     }
 
 })
@@ -66,3 +73,12 @@ logOutBtn.addEventListener("click", event => {
     location.href = "/";
 })
 
+function infoPartIsCorrect(infoPart, infoPartInput){
+    if (infoPart === "username") {
+        return userNameIsCorrect(infoPartInput, infoPartInput.parentElement);
+    } else if (infoPart === "userId"){
+        return userIdIsCorrect(infoPartInput, infoPartInput.parentElement);
+    } else if (infoPart === "email") {
+        return emailIsCorrect(infoPartInput, infoPartInput.parentElement);
+    }
+}

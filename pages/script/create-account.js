@@ -1,5 +1,5 @@
 "use strict";
-import { createWarningAfterElement, setWarning } from "./useful.js";
+import { setWarning, userNameIsCorrect, emailIsCorrect, userIdIsCorrect, passwordIsCorrect } from "./useful.js";
 
 const userNameInput = document.getElementById('username');
 const emailInput = document.getElementById('email');
@@ -8,8 +8,8 @@ const passwordInput = document.getElementById('password');
 const showPassword = document.querySelector("input[type='checkbox']");
 const createAccountBtn = document.getElementById("create-account-btn");
 
-userNameInput?.addEventListener("blur", userNameIsCorrect);
-emailInput?.addEventListener("blur", emailIsCorrect);
+userNameInput?.addEventListener("blur", userNameIsCorrect.bind(null, userNameInput, null));
+emailInput?.addEventListener("blur", emailIsCorrect.bind(null, emailInput, null));
 userIdInput?.addEventListener("focus", (event) => {
     if (event.target.value === "") {
         event.target.value = "@";
@@ -21,8 +21,8 @@ userIdInput?.addEventListener("focus", (event) => {
         event.target.value = "@" + event.target.value;
     }
 })
-userIdInput?.addEventListener("blur", userIdIsCorrect);
-passwordInput?.addEventListener("blur", passwordIsCorrect);
+userIdInput?.addEventListener("blur", userIdIsCorrect.bind(null, userIdInput, null));
+passwordInput?.addEventListener("blur", passwordIsCorrect.bind(null, passwordInput, null));
 
 showPassword?.addEventListener("change", function(event) {
     if (passwordInput.type === "password" && this.checked === true) {
@@ -35,9 +35,9 @@ showPassword?.addEventListener("change", function(event) {
 // id urlencoded
 createAccountBtn?.addEventListener("click", async event => {
     let everythingIsCorrect = true;
-    everythingIsCorrect = userNameIsCorrect(event) && everythingIsCorrect;
-    everythingIsCorrect = emailIsCorrect(event) && everythingIsCorrect;
-    everythingIsCorrect = passwordIsCorrect(event) && everythingIsCorrect;
+    everythingIsCorrect = userNameIsCorrect(userNameInput, null, event) && everythingIsCorrect;
+    everythingIsCorrect = emailIsCorrect(emailInput, null, event) && everythingIsCorrect;
+    everythingIsCorrect = passwordIsCorrect(passwordInput, null, event) && everythingIsCorrect;
     if (!userIdInput.value.startsWith("@")) {
         let acception = confirm('ID must begin with "@" symbol. Add it before your id?');
         if (acception) {
@@ -45,7 +45,7 @@ createAccountBtn?.addEventListener("click", async event => {
             setWarning(userIdInput, "");
         }
     }
-    everythingIsCorrect = userIdIsCorrect(event) && everythingIsCorrect;
+    everythingIsCorrect = userIdIsCorrect(userIdInput, null, event) && everythingIsCorrect;
     if (everythingIsCorrect === false) {
         return;
     }
@@ -89,61 +89,3 @@ createAccountBtn?.addEventListener("click", async event => {
     }
 })
 
-function userNameIsCorrect(event) {
-    createWarningAfterElement(userNameInput);
-    let warningText = "";
-    if (userNameInput.value.length > 50) {
-        warningText = "Username must not exceed 50 characters.";
-    } else if (userNameInput.value.length < 3) {
-        warningText = "Username must not be less than 3 characters.";
-    }
-    setWarning(userNameInput, warningText, "userNameInput");
-    return warningText.length > 0 ? false : true;
-}
-const emailRegex = /^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+$/;
-// console.log("Some-Email@gmail.com".match(emailRegex));
-// console.log("wrong@email@gmail.com".match(emailRegex));
-function emailIsCorrect(event){
-    createWarningAfterElement(emailInput);
-    let warningText = "";
-    if (emailInput.value.length > 50) {
-        warningText = "Email must not exceed 50 characters.";
-    } else if (!emailInput.value.match(emailRegex)) {
-        warningText = "Incorrect email.";
-    }
-    setWarning(emailInput, warningText, "emailInput");
-    return warningText.length > 0 ? false : true;
-}
-const userIdRegex = /^@[a-zA-Z0-9_.-]+$/;
-function userIdIsCorrect(event){
-    createWarningAfterElement(userIdInput);
-    let warningText = "";
-    if (userIdInput.value.length > 20) {
-        warningText = "ID must not exceed 20 characters.";
-    } else if (userIdInput.value.length < 5) {
-        warningText = "ID must not be less than 5 characters.";
-    } else if (!userIdInput.value.startsWith("@")) {
-        warningText = 'ID must begin with "@" symbol.';
-    } else if (userIdInput.value.match(/@/g).length > 1) {
-        warningText = 'ID must include only one "@" symbol.';
-    } else if (userIdInput.value.search(/\s/) >= 0) {
-        warningText = "ID must not include space symbols.";
-    } else if (!userIdInput.value.match(userIdRegex)) {
-        warningText = "Incorrect ID.";
-    }
-    setWarning(userIdInput, warningText, "userIdInput");
-    return warningText.length > 0 ? false : true;
-}
-function passwordIsCorrect(event) {
-    createWarningAfterElement(passwordInput);
-    let warningText = "";
-    if (passwordInput.value.length > 20) {
-        warningText = "Password must not exceed 20 characters.";
-    } else if (passwordInput.value.length < 4) {
-        warningText = "Password must not be less than 4 characters.";
-    } else if (passwordInput.value.search(/\s/) >= 0) {
-        warningText = "ID must not include space symbols.";
-    }
-    setWarning(passwordInput, warningText, "passwordInput");
-    return warningText.length > 0 ? false : true;
-}

@@ -1,7 +1,6 @@
 const express = require('express');
-const router = express.Router();
+const createAccountRouter = express.Router();
 const path = require('path');
-//https://www.youtube.com/watch?v=084rmLU1UgA
 
 // ↓ connecting to the database
 const { MongoClient, ServerApiVersion } = require('mongodb');
@@ -23,13 +22,13 @@ async function connectToDb(req, res, next) {
     }
     next();
 }
-router.use(connectToDb);
+createAccountRouter.use(connectToDb);
 
-router.get("/", (req, res) => {
+createAccountRouter.get("/", (req, res) => {
     // console.log("/create-account");
     res.sendFile(path.join(path.resolve(), 'pages', 'create-account.html'));
 })
-router.post("/:userId", async (req, res, next) => {
+createAccountRouter.post("/:userId", async (req, res, next) => {
     // console.log("/create-account/:userId");
     // ↓ userId check
     let numOfDocsWithId = await database.collection("users").countDocuments({userId: req.params.userId});
@@ -60,4 +59,4 @@ router.post("/:userId", async (req, res, next) => {
     }
 })
 
-module.exports.createAccountRouter = router;
+module.exports.createAccountRouter = createAccountRouter;
