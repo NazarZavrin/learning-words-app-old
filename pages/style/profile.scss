@@ -1,4 +1,5 @@
 @import "./null-style.scss";
+@import "./modal-window.scss";// edit to update 55g
 
 html, body {
   display: flex;
@@ -51,7 +52,6 @@ html, body {
     // align-items: center;
     width: 50px;
     height: 50px;
-    border: 1px solid blue;
     cursor: pointer;
     &::before, &::after, & > div {
         content: '';
@@ -144,7 +144,7 @@ html, body {
         color: gray;
         font-size: 14px;
     }
-    & > .username, .userId, .email {
+    & > .username, .userId, .email, .password {
         display: flex;
         flex-direction: row;
         justify-content: center;
@@ -169,6 +169,15 @@ html, body {
         & > img {
             max-width: 100%;
         }
+    }
+    & > div.password {
+        // display: flex;
+        // flex-direction: row;
+        font: inherit; color: inherit;
+        margin-top: 5px;
+        // & > span {
+
+        // }
     }
     & > .edit-block {
         // display: none;
@@ -226,6 +235,32 @@ html, body {
 #delete-account-btn {
     background-color: red;
     margin-bottom: auto;// for centring elements in .profile-info
+}
+.change-password-modal-window {
+    padding: 10px;
+    white-space: nowrap;
+    & input:not([type="checkbox"]) {
+        font: inherit;
+        display: inline-block;
+        width: 150px;
+        border: 1px solid gray;
+        border-radius: 5px;
+        padding: 0 3px;
+    }
+    & > .old-password-block, & > .new-password-block {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 3px;
+        & > div {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            & > input {
+                margin-right: 5px;
+            }
+        }
+    }
 }
 .favourite-words {
 }

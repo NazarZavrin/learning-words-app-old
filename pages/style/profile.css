@@ -70,6 +70,58 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 400;
 }
 
+.favourite-words {
+  width: 100px;
+  height: 100px;
+  background-color: dodgerblue;
+  color: white;
+}
+
+.background {
+  z-index: 100;
+  background-color: rgba(0, 0, 0, 0.7);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-width: 100vw;
+  height: 100%;
+  min-height: 100vh;
+}
+
+.modal-window {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border: 3px solid gray;
+  border-radius: 5px;
+  font: 20px "Calibri", sans-serif;
+  opacity: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-window-cross {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+  background-color: red;
+  border-radius: 50%;
+}
+.modal-window-cross > img {
+  max-width: 100%;
+}
+
 html, body {
   display: flex;
   flex-direction: column;
@@ -122,7 +174,6 @@ html, body {
   display: inline-flex;
   width: 50px;
   height: 50px;
-  border: 1px solid blue;
   cursor: pointer;
 }
 .header__info-btn::before, .header__info-btn::after, .header__info-btn > div {
@@ -206,14 +257,14 @@ html, body {
   color: gray;
   font-size: 14px;
 }
-.info-block > .username, .info-block .userId, .info-block .email {
+.info-block > .username, .info-block .userId, .info-block .email, .info-block .password {
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
   max-width: 100vw;
 }
-.info-block > .username > span, .info-block .userId > span, .info-block .email > span {
+.info-block > .username > span, .info-block .userId > span, .info-block .email > span, .info-block .password > span {
   display: block;
   max-width: 80%;
   word-wrap: break-word;
@@ -230,6 +281,11 @@ html, body {
 }
 .info-block .edit-btn > img, .info-block .save-btn > img, .info-block .cancel-btn > img {
   max-width: 100%;
+}
+.info-block > div.password {
+  font: inherit;
+  color: inherit;
+  margin-top: 5px;
 }
 .info-block > .edit-block {
   display: flex;
@@ -281,6 +337,33 @@ html, body {
 #delete-account-btn {
   background-color: red;
   margin-bottom: auto;
+}
+
+.change-password-modal-window {
+  padding: 10px;
+  white-space: nowrap;
+}
+.change-password-modal-window input:not([type=checkbox]) {
+  font: inherit;
+  display: inline-block;
+  width: 150px;
+  border: 1px solid gray;
+  border-radius: 5px;
+  padding: 0 3px;
+}
+.change-password-modal-window > .old-password-block, .change-password-modal-window > .new-password-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 3px;
+}
+.change-password-modal-window > .old-password-block > div, .change-password-modal-window > .new-password-block > div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.change-password-modal-window > .old-password-block > div > input, .change-password-modal-window > .new-password-block > div > input {
+  margin-right: 5px;
 }
 
 .hide {

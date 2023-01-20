@@ -1,3 +1,44 @@
+export function showModalWindow(bodyElement, elementsArray, elementToClose, {className = "", showCross = true} = {}){
+    // options: className(string), showCross(boolean)
+    let modalWindow = createElement({name: "div", class: "modal-window " + className});
+    elementsArray.forEach(element => {
+        modalWindow.append(element);
+    });
+    if (showCross == true) {
+        let cross = createElement({name: "div", class: "modal-window-cross"});
+        cross.innerHTML = '<img src="/img/cross.png" alt="Close">';
+        modalWindow.append(cross);
+        cross.addEventListener("click", event => {
+            background.remove();
+            background = null;
+        });
+    }
+    let background = createElement({name: "div", class: "background"});
+    background.append(modalWindow);
+    bodyElement.prepend(background);
+    background.addEventListener("click", event => {
+        if (!event.target.closest(".modal-window")) {
+            background.remove();
+            background = null;
+        }
+    });
+    elementToClose.addEventListener("click", event => {
+        background.remove();
+        background = null;
+    });
+}
+export function createElement({name: elemName = "div", style = "", content = "", class: className = ""} = {}){
+    let element = document.createElement(elemName);
+    if (elemName == "input") {
+        element.value = content;
+    } else {
+        element.textContent = content;
+    }
+    if (className) element.className = className;
+    if (style) element.style.cssText = style;
+    return element;
+}
+
 export function createWarningAfterElement(element){
     // console.log(element);
     // console.log("warning after:");
