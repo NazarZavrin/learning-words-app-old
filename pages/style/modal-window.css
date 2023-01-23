@@ -7,7 +7,7 @@
 
 .background {
   z-index: 100;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.5);
   position: absolute;
   top: 0;
   left: 0;
@@ -32,8 +32,7 @@
   justify-content: center;
   align-items: center;
 }
-
-.modal-window-cross {
+.modal-window > .modal-window-cross {
   position: absolute;
   top: 0;
   left: 100%;
@@ -46,6 +45,6 @@
   background-color: red;
   border-radius: 50%;
 }
-.modal-window-cross > img {
+.modal-window > .modal-window-cross > img {
   max-width: 100%;
 }

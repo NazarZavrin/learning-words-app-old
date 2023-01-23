@@ -54,11 +54,29 @@ profileRouter.patch("/:passkey/change/:infoPart", (req, res, next) => {
             res.json({success: false, message: "This ID is already taken. Please, provide another."});
             return;
         }
-    } else if (req.params.infoPart === 'email'){
+    } else if (req.params.infoPart === 'email') {
         // ↓ email check
         let numOfDocsWithEmail = await database.collection("users").countDocuments({email: req.body});
         if (numOfDocsWithEmail !== 0) {
             res.json({success: false, message: "User with such email already exists. Please, provide another email."});
+            return;
+        }
+    } else if (req.params.infoPart === 'password') {
+        req.body = JSON.parse(req.body);
+        // ↓ old password check
+        let cursor = database.collection("users").find({passkey: req.params.passkey});
+        let result = await cursor.toArray();
+        cursor.close();
+        if (result.length === 1) {
+            let user = result[0];
+            if (req.body.oldPassword === user.password) {
+                req.body = req.body.newPassword;
+            } else {
+                res.json({success: false, message: "Old password don't match."});
+                return;
+            }
+        } else {
+            res.json({success: false});
             return;
         }
     } else if (req.params.infoPart !== "username") {
@@ -67,7 +85,11 @@ profileRouter.patch("/:passkey/change/:infoPart", (req, res, next) => {
     }
     let updateResult = await database.collection("users").updateOne({passkey: req.params.passkey}, {$set: {[req.params.infoPart]: req.body}});
     if (updateResult.acknowledged) {
-        res.json({success: true, newValue: req.body});
+        let responseObj = {success: true};
+        if (req.params.infoPart !== 'password') {// don't send password to client
+            responseObj.newValue = req.body;
+        }
+        res.json(responseObj);
     } else {
         res.json({success: false});
     }

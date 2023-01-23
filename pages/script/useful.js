@@ -1,6 +1,6 @@
-export function showModalWindow(bodyElement, elementsArray, elementToClose, {className = "", showCross = true} = {}){
+export function showModalWindow(bodyElement, elementsArray, {showCross = true, style = "", className = "", attributes = [], handlers: eventHandlers = []} = {}){
     // options: className(string), showCross(boolean)
-    let modalWindow = createElement({name: "div", class: "modal-window " + className});
+    let modalWindow = createElement({name: "div", class: "modal-window " + className, style: style});
     elementsArray.forEach(element => {
         modalWindow.append(element);
     });
@@ -13,18 +13,18 @@ export function showModalWindow(bodyElement, elementsArray, elementToClose, {cla
             background = null;
         });
     }
+    eventHandlers.forEach(({eventName, handler, options = {}}) => modalWindow.addEventListener(eventName, handler, options));
+    modalWindow.closeWindow = function () {
+        background.remove();
+        background = null;
+    }
     let background = createElement({name: "div", class: "background"});
     background.append(modalWindow);
     bodyElement.prepend(background);
     background.addEventListener("click", event => {
         if (!event.target.closest(".modal-window")) {
-            background.remove();
-            background = null;
+            background.children[0].closeWindow();
         }
-    });
-    elementToClose.addEventListener("click", event => {
-        background.remove();
-        background = null;
     });
 }
 export function createElement({name: elemName = "div", style = "", content = "", class: className = ""} = {}){

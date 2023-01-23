@@ -7,7 +7,7 @@
 
 .background {
     z-index: 100;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.5);
     // opacity: 0.7;
     position: absolute;
     top: 0; left: 0;
@@ -30,19 +30,19 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-}
-.modal-window-cross{
-    position: absolute;
-    top: 0; left: 100%;
-    transform: translate(-50%, -50%);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 30px;
-    height: 30px;
-    background-color: red;
-    border-radius: 50%;
-    & > img {
-        max-width: 100%;
+    & > .modal-window-cross{
+        position: absolute;
+        top: 0; left: 100%;
+        transform: translate(-50%, -50%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 30px;
+        height: 30px;
+        background-color: red;
+        border-radius: 50%;
+        & > img {
+            max-width: 100%;
+        }
     }
 }

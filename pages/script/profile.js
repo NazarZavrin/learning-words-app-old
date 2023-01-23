@@ -4,7 +4,7 @@ console.log("add posibitity to delete account");
 console.log("change password, enter password to change infoPart");
 console.log("add modals");
 
-import { setWarning, userNameIsCorrect, emailIsCorrect, userIdIsCorrect, showModalWindow, createElement, } from "./useful.js";
+import { setWarning, createWarningAfterElement, userNameIsCorrect, emailIsCorrect, userIdIsCorrect, showModalWindow, createElement, } from "./useful.js";
 
 const infoBtn = document.querySelector(".header__info-btn");
 const profileLabel = document.querySelector(".header__profile-label");
@@ -53,7 +53,7 @@ infoSidebar.addEventListener("click", async event => {
             method: "PATCH",
             body: newValue,
         })
-        let result = "Update error. Please try again.";
+        let result;
         if (response.ok) {
             result = await response.json();
             console.log(result);
@@ -62,8 +62,8 @@ infoSidebar.addEventListener("click", async event => {
                 return;
             }
         }
-        console.log(result.message || result);
-        alert(result.message || result);
+        console.log(result?.message || "Update error. Please try again.");
+        alert(result?.message || "Update error. Please try again.");
     } else if (event.target.closest(".cancel-btn")){
         let editBlock = event.target.closest(".edit-block");
         editBlock.classList.add("hide");
@@ -91,6 +91,7 @@ function changePassword(event){
     let oldPasswordLabel = createElement({name: "label", content: "Enter old password:"},);
     let oldPasswordInput = createElement({name: "input"});
     oldPasswordInput.setAttribute("type", "password");
+    oldPasswordInput.setAttribute("autocomplete", "off");
     let oldPasswordBlock = createElement({name: "form", class: "old-password-block"});
     oldPasswordBlock.innerHTML = `<div class="show-old-password">
     <input type="checkbox">Show old password</div>`;
@@ -98,16 +99,66 @@ function changePassword(event){
     let newPasswordLabel = createElement({name: "label", content: "Enter new password:"},);
     let newPasswordInput = createElement({name: "input"});
     newPasswordInput.setAttribute("type", "password");
+    newPasswordInput.setAttribute("autocomplete", "off");
     let newPasswordBlock = createElement({name: "form", class: "new-password-block"});
     newPasswordBlock.innerHTML = `<div class="show-new-password">
-    <input type="checkbox">Show new password</div>`;
+    <input type="checkbox" autocomplete="off">Show new password</div>`;
     newPasswordBlock.prepend(newPasswordInput);
     let changePasswordBtnStyles = `
     background-color: dodgerblue; color: white;
     border-radius: 3px;
     padding: 0 3px;`;
     let changePasswordBtn = createElement({content: "Change password", style: changePasswordBtnStyles});
+    changePasswordBtn.addEventListener("click", async event => {
+        if (oldPasswordInput.value.length < 4) {
+            createWarningAfterElement(oldPasswordInput);
+            setWarning(oldPasswordInput.nextElementSibling, "Old password must not be less than 4 characters.", "oldPasswordInput");
+        } else if (newPasswordInput.value.length < 4) {
+            createWarningAfterElement(newPasswordInput);
+            setWarning(newPasswordInput.nextElementSibling, "New password must not be less than 4 characters.", "newPasswordInput");
+        } else {
+            let requestBody = {
+                oldPassword: oldPasswordInput.value,
+                newPassword: newPasswordInput.value
+            }
+            let response = await fetch(location.href + "/change/password", {
+                method: "PATCH",
+                body: JSON.stringify(requestBody),
+            })
+            let result;
+            if (response.ok) {
+                result = await response.json();
+                console.log(result);
+                if (result.success) {
+                    event.target.closest(".modal-window").closeWindow();
+                    return;
+                }
+            }
+            if (result.message.includes("password don't match")) {
+                createWarningAfterElement(oldPasswordInput);
+                setWarning(oldPasswordInput.nextElementSibling, result.message, "oldPasswordInput");
+                return;
+            }
+            console.log(result?.message || "Update error. Please try again.");
+            alert(result?.message || "Update error. Please try again.");
+        }
+    })
+    function clickModalWindow(event){
+        let showPasswordBlock = event.target.closest(".show-old-password") || event.target.closest(".show-new-password");
+        if (showPasswordBlock) {
+            let passwordInput = showPasswordBlock.parentElement.querySelector('input:not([type="checkbox"])');
+            let checkBox = showPasswordBlock.children[0];
+            if (event.target !== checkBox) checkBox.checked = !checkBox.checked;
+            if (passwordInput.type === "password" && checkBox.checked) {
+                passwordInput.type = "text";
+            } else {
+                passwordInput.type = "password";
+            }
+        }
+        
+    }
     showModalWindow(document.body, 
         [header, oldPasswordLabel, oldPasswordBlock, newPasswordLabel, newPasswordBlock, changePasswordBtn], 
-    changePasswordBtn, {className: "change-password-modal-window"});
+    {className: "change-password-modal-window", handlers: [{eventName: "click", handler: clickModalWindow}]});
+
 }

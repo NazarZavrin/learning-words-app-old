@@ -79,7 +79,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .background {
   z-index: 100;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.5);
   position: absolute;
   top: 0;
   left: 0;
@@ -104,8 +104,7 @@ h1, h2, h3, h4, h5, h6 {
   justify-content: center;
   align-items: center;
 }
-
-.modal-window-cross {
+.modal-window > .modal-window-cross {
   position: absolute;
   top: 0;
   left: 100%;
@@ -118,7 +117,7 @@ h1, h2, h3, h4, h5, h6 {
   background-color: red;
   border-radius: 50%;
 }
-.modal-window-cross > img {
+.modal-window > .modal-window-cross > img {
   max-width: 100%;
 }
 
@@ -341,7 +340,6 @@ html, body {
 
 .change-password-modal-window {
   padding: 10px;
-  white-space: nowrap;
 }
 .change-password-modal-window input:not([type=checkbox]) {
   font: inherit;
@@ -359,11 +357,23 @@ html, body {
 }
 .change-password-modal-window > .old-password-block > div, .change-password-modal-window > .new-password-block > div {
   display: flex;
+  width: -webkit-max-content;
+  width: -moz-max-content;
+  width: max-content;
   flex-direction: row;
+  justify-content: center;
   align-items: center;
 }
 .change-password-modal-window > .old-password-block > div > input, .change-password-modal-window > .new-password-block > div > input {
   margin-right: 5px;
+}
+.change-password-modal-window .warning {
+  font-style: normal;
+  display: inline-block;
+  font-size: 14px;
+  color: red;
+  text-align: left;
+  word-wrap: break-word;
 }
 
 .hide {

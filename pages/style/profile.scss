@@ -238,7 +238,7 @@ html, body {
 }
 .change-password-modal-window {
     padding: 10px;
-    white-space: nowrap;
+    // white-space: nowrap;
     & input:not([type="checkbox"]) {
         font: inherit;
         display: inline-block;
@@ -254,12 +254,22 @@ html, body {
         margin-bottom: 3px;
         & > div {
             display: flex;
+            width: max-content;
             flex-direction: row;
+            justify-content: center;
             align-items: center;
             & > input {
                 margin-right: 5px;
             }
         }
+    }
+    & .warning{
+        font-style: normal;
+        display: inline-block;
+        font-size: 14px;
+        color: red;
+        text-align: left;
+        word-wrap: break-word;
     }
 }
 .favourite-words {
