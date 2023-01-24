@@ -1,10 +1,16 @@
 "use strict";
 console.log(HTMLElement.prototype);
-console.log("add posibitity to delete account");
-console.log("change password, enter password to change infoPart");
-console.log("add modals");
+console.log("now:");
+// console.log("add posibitity to delete account");
 
-import { setWarning, createWarningAfterElement, userNameIsCorrect, emailIsCorrect, userIdIsCorrect, showModalWindow, createElement, } from "./useful.js";
+console.log("during studying at college:");
+console.log("как отправлять запросы (например пост) в node js? (study node-fetch)");
+console.log("make a route, which checks if password is correct and returns correct/incorrect. use it while changing profile's info and delete account");
+console.log("at the end of developping:");
+console.log("enter password to change infoPart");
+console.log("add modals instead of alert()");
+
+import { setWarning, createWarningAfterElement, userNameIsCorrect, emailIsCorrect, userIdIsCorrect, showModalWindow, createElement, showPassword, } from "./useful.js";
 
 const infoBtn = document.querySelector(".header__info-btn");
 const profileLabel = document.querySelector(".header__profile-label");
@@ -72,9 +78,13 @@ infoSidebar.addEventListener("click", async event => {
 
 })
 const logOutBtn = document.getElementById("log-out-btn");
-logOutBtn.addEventListener("click", event => {
+logOutBtn.addEventListener("click", async event => {
     // fetch register log out
     location.href = "/";
+})
+const deleteAccountBtn = document.getElementById("delete-account-btn");
+deleteAccountBtn.addEventListener("click", async event => {
+    passwordRequest(event);
 })
 
 function infoPartIsCorrect(infoPart, infoPartInput){
@@ -85,6 +95,67 @@ function infoPartIsCorrect(infoPart, infoPartInput){
     } else if (infoPart === "email") {
         return emailIsCorrect(infoPartInput, infoPartInput.parentElement);
     }
+}
+function passwordRequest(event) {
+    let header = createElement({name: "header", content: "To verify personality enter your password:"},);
+    let passwordInput = createElement({name: "input"});
+    passwordInput.setAttribute("type", "password");
+    passwordInput.setAttribute("autocomplete", "off");
+    let passwordBlock = createElement({name: "form", class: "password-block"});
+    passwordBlock.innerHTML = `<div class="show-password">
+    <input type="checkbox">Show password</div>`;
+    passwordBlock.prepend(passwordInput);
+    let checkPasswordBtnStyles = `
+    background-color: dodgerblue; color: white;
+    border-radius: 3px;
+    padding: 1px 3px;`;
+    let checkPasswordBtn = createElement({content: "OK", style: checkPasswordBtnStyles});
+    checkPasswordBtn.addEventListener("click", async event => {
+        let everythingIsCorrect = true;
+        if (passwordInput.value.length < 4) {
+            createWarningAfterElement(passwordInput);
+            setWarning(passwordInput.nextElementSibling, "Password must not be less than 4 characters.", "passwordInput");
+            everythingIsCorrect = false;
+        } else {
+            setWarning(passwordInput.nextElementSibling, "");
+        }
+        if (everythingIsCorrect === false) {
+            return;
+        }
+        console.log(passwordInput.value);
+        // return;
+        let response = await fetch(location.href + "/delete", {
+            method: "DELETE",
+            body: JSON.stringify({password: passwordInput.value}),
+            headers: {'Content-Type': 'application/json'}
+        })
+        let result;
+        if (response.ok) {
+            result = await response.json();
+            console.log(result);
+            if (result.success) {
+                event.target.closest(".modal-window").closeWindow();
+                location.href = "/";
+                return;
+            }
+        }
+        if (result.message.includes("Password don't match")) {
+            createWarningAfterElement(passwordInput);
+            setWarning(passwordInput.nextElementSibling, result.message, "passwordInput");
+            return;
+        }
+        console.log(result?.message || "Deletion error. Please try again.");
+        alert(result?.message || "Deletion error. Please try again.");
+    })
+    function clickModalWindow(event) {
+        if (passwordInput) {
+            showPassword([".show-password"], passwordInput, event);
+        }
+    }
+    showModalWindow(document.body, 
+        [header, passwordBlock, checkPasswordBtn], 
+    {className: "check-password-modal-window", handlers: [{eventName: "click", handler: clickModalWindow}]});
+    
 }
 function changePassword(event){
     let header = createElement({name: "header", content: "Changing password"},);
@@ -107,44 +178,62 @@ function changePassword(event){
     let changePasswordBtnStyles = `
     background-color: dodgerblue; color: white;
     border-radius: 3px;
-    padding: 0 3px;`;
+    padding: 3px;`;
     let changePasswordBtn = createElement({content: "Change password", style: changePasswordBtnStyles});
     changePasswordBtn.addEventListener("click", async event => {
+        let everythingIsCorrect = true;
+        
         if (oldPasswordInput.value.length < 4) {
             createWarningAfterElement(oldPasswordInput);
             setWarning(oldPasswordInput.nextElementSibling, "Old password must not be less than 4 characters.", "oldPasswordInput");
-        } else if (newPasswordInput.value.length < 4) {
+            everythingIsCorrect = false;
+        } else {
+            setWarning(oldPasswordInput.nextElementSibling, "");
+        }
+        if (newPasswordInput.value.length < 4) {
             createWarningAfterElement(newPasswordInput);
             setWarning(newPasswordInput.nextElementSibling, "New password must not be less than 4 characters.", "newPasswordInput");
+            everythingIsCorrect = false;
         } else {
-            let requestBody = {
-                oldPassword: oldPasswordInput.value,
-                newPassword: newPasswordInput.value
-            }
-            let response = await fetch(location.href + "/change/password", {
-                method: "PATCH",
-                body: JSON.stringify(requestBody),
-            })
-            let result;
-            if (response.ok) {
-                result = await response.json();
-                console.log(result);
-                if (result.success) {
-                    event.target.closest(".modal-window").closeWindow();
-                    return;
-                }
-            }
-            if (result.message.includes("password don't match")) {
-                createWarningAfterElement(oldPasswordInput);
-                setWarning(oldPasswordInput.nextElementSibling, result.message, "oldPasswordInput");
+            setWarning(newPasswordInput.nextElementSibling, "");
+        }
+        if (everythingIsCorrect === false) {
+            return;
+        }
+        let requestBody = {
+            oldPassword: oldPasswordInput.value,
+            newPassword: newPasswordInput.value
+        }
+        console.log(requestBody);
+        let response = await fetch(location.href + "/change/password", {
+            method: "PATCH",
+            body: JSON.stringify(requestBody),
+        })
+        let result;
+        if (response.ok) {
+            result = await response.json();
+            console.log(result);
+            if (result.success) {
+                event.target.closest(".modal-window").closeWindow();
                 return;
             }
-            console.log(result?.message || "Update error. Please try again.");
-            alert(result?.message || "Update error. Please try again.");
         }
+        if (result.message.includes("password don't match")) {
+            createWarningAfterElement(oldPasswordInput);
+            setWarning(oldPasswordInput.nextElementSibling, result.message, "oldPasswordInput");
+            return;
+        }
+        console.log(result?.message || "Update error. Please try again.");
+        alert(result?.message || "Update error. Please try again.");
     })
     function clickModalWindow(event){
-        let showPasswordBlock = event.target.closest(".show-old-password") || event.target.closest(".show-new-password");
+        if (oldPasswordInput) {
+            showPassword([".show-old-password"], oldPasswordInput, event);
+        }
+        if (newPasswordInput) {
+            showPassword([".show-new-password"], newPasswordInput, event);
+        }
+        /*let showPasswordBlock = event.target.closest(".show-old-password") || event.target.closest(".show-new-password");
         if (showPasswordBlock) {
             let passwordInput = showPasswordBlock.parentElement.querySelector('input:not([type="checkbox"])');
             let checkBox = showPasswordBlock.children[0];
@@ -154,7 +243,7 @@ function changePassword(event){
             } else {
                 passwordInput.type = "password";
             }
-        }
+        }*/
         
     }
     showModalWindow(document.body, 
@@ -162,3 +251,4 @@ function changePassword(event){
     {className: "change-password-modal-window", handlers: [{eventName: "click", handler: clickModalWindow}]});
 
 }
+

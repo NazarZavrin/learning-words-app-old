@@ -94,5 +94,35 @@ profileRouter.patch("/:passkey/change/:infoPart", (req, res, next) => {
         res.json({success: false});
     }
 })
+profileRouter.delete("/:passkey/delete", (req, res, next) => {
+    express.json({
+        limit: req.get('content-length'),
+    })(req, res, next);
+}, async (req, res) => {
+    // console.log(req.body);
+    // ↓ password check
+    let cursor = database.collection("users").find({passkey: req.params.passkey});
+    let result = await cursor.toArray();
+    cursor.close();
+    if (result.length === 1) {
+        let user = result[0];
+        if (req.body.password === user.password) {
+            let deleteResult = await database.collection("users").deleteOne({passkey: req.params.passkey});
+            if (deleteResult.acknowledged) {
+                res.json({success: true});
+            } else {
+                res.json({success: false});
+            }
+            return;
+        } else {
+            res.json({success: false, message: "Password don't match."});
+            return;
+        }
+    } else {
+        res.json({success: false});
+        return;
+    }
+    res.json({success: false, message: "req.body"});
+})
 
 module.exports.profileRouter = profileRouter;

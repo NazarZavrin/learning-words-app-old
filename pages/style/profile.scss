@@ -1,5 +1,5 @@
 @import "./null-style.scss";
-@import "./modal-window.scss";// edit to update 55g
+@import "./modal-window.scss";// edit to update ff
 
 html, body {
   display: flex;
@@ -236,7 +236,11 @@ html, body {
     background-color: red;
     margin-bottom: auto;// for centring elements in .profile-info
 }
-.change-password-modal-window {
+.change-password-modal-window, .check-password-modal-window {
+    header {
+        text-align: center;
+        margin-bottom: 5px;
+    }
     padding: 10px;
     // white-space: nowrap;
     & input:not([type="checkbox"]) {
@@ -247,7 +251,7 @@ html, body {
         border-radius: 5px;
         padding: 0 3px;
     }
-    & > .old-password-block, & > .new-password-block {
+    & > .old-password-block, & > .new-password-block, & > .password-block {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -271,7 +275,27 @@ html, body {
         text-align: left;
         word-wrap: break-word;
     }
-}
+}/*
+.check-password-modal-window {
+    padding: 10px;
+    // white-space: nowrap;
+    & input:not([type="checkbox"]) {
+        font: inherit;
+        display: inline-block;
+        width: 150px;
+        border: 1px solid gray;
+        border-radius: 5px;
+        padding: 0 3px;
+    }
+    & .warning{
+        font-style: normal;
+        display: inline-block;
+        font-size: 14px;
+        color: red;
+        text-align: left;
+        word-wrap: break-word;
+    }
+}*/
 .favourite-words {
 }
 .favourite-groups {

@@ -38,7 +38,39 @@ export function createElement({name: elemName = "div", style = "", content = "",
     if (style) element.style.cssText = style;
     return element;
 }
-
+export function showPassword(parentsToShowSelectors, passwordInput, event){
+    if (!parentsToShowSelectors) {
+        console.warn("parentsToShowSelectors is", parentsToShowSelectors);
+        return;
+    } else if (!passwordInput){
+        console.warn("passwordInput is", passwordInput);
+        return;
+    } else if (!event){
+        console.warn("event is", event);
+        return;
+    }
+    let showPasswordElement;
+    for (let i = 0; i < parentsToShowSelectors.length; i++) {
+        if (event.target.closest(parentsToShowSelectors[i])) {
+            showPasswordElement = event.target.closest(parentsToShowSelectors[i]);
+            break;
+        }
+    }
+    // console.log(showPasswordElement);
+    if (showPasswordElement) {
+        let checkboxElement = showPasswordElement.querySelector('input[type="checkbox"]');
+        // console.log(checkboxElement);
+        // console.log(passwordInput);
+        // console.log(event.target);
+        if (event.target !== checkboxElement) checkboxElement.checked = !checkboxElement.checked;
+        // console.log(checkboxElement.checked);
+        if (passwordInput.type === "password" && checkboxElement.checked) {
+            passwordInput.type = "text";
+        } else {
+            passwordInput.type = "password";
+        }
+    }
+}
 export function createWarningAfterElement(element){
     // console.log(element);
     // console.log("warning after:");

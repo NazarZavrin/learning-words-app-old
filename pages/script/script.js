@@ -77,17 +77,17 @@ function infoIsCorrect(event, requestBody = {}){
             requestBody.email = infoInput.value;
         }
     }
-    setWarning(infoInput, warningText, "infoInput");
+    setWarning(infoInput.nextElementSibling, warningText, "infoInput");
     return warningText.length > 0 ? false : true;
 }
 function passwordEntered(event){
     if (passwordInput.value === "") {
         createWarningAfterElement(passwordInput);
-        setWarning(passwordInput, "Please, enter password.", "passwordInput");
+        setWarning(passwordInput.nextElementSibling, "Please, enter password.", "passwordInput");
         return false;
     } else {
         createWarningAfterElement(passwordInput);
-        setWarning(passwordInput, "");
+        setWarning(passwordInput.nextElementSibling, "");
         return true;
     }
 }
