@@ -113,16 +113,26 @@ profileRouter.delete("/:passkey/delete", (req, res, next) => {
             } else {
                 res.json({success: false});
             }
-            return;
         } else {
             res.json({success: false, message: "Password don't match."});
-            return;
         }
+        return;
     } else {
         res.json({success: false});
         return;
     }
-    res.json({success: false, message: "req.body"});
 })
+// profileRouter.use("/:passkey/groups", groupsRouter)
+profileRouter.post("/:passkey/favoutite-group", (req, res, next) => {
+    express.text({
+        limit: req.get('content-length'),
+    })(req, res, next);
+}, async (req, res) => {
+    console.log(req.body);
+    res.json({success: false, message: "Group with such name already exists."})
+})
+
+
+
 
 module.exports.profileRouter = profileRouter;
