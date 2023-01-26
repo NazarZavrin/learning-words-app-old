@@ -2,7 +2,7 @@
 console.log(HTMLElement.prototype);
 console.log("now:");
 // console.log("add posibitity to delete account");
-
+console.log("delete groups of the user after deletion of the user");
 console.log("during studying at college:");
 console.log("как отправлять запросы (например пост) в node js? (study node-fetch)");
 console.log("make a route, which checks if password is correct and returns correct/incorrect. use it while changing profile's info and delete account");

@@ -1,28 +1,32 @@
 const express = require('express');
 const profileRouter = express.Router();
-const path = require('path');
 
-// ↓ connecting to the database
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const {groupsRouter} = require('./groups-router.js');
+// const path = require('path');
+const {findIfUnique} = require('../useful-for-server.js');
+
+
 let database;
-async function connectToDb(req, res, next) {
-    // console.log("Connect to db if needed. URL: " + req.originalUrl);
-    if (database === undefined) {
-        let uri = "mongodb+srv://nazar:learnwords@main-cluster.dlb856s.mongodb.net/?retryWrites=true&w=majority";
-        let client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-        try {
-            await client.connect();
-            database = client.db("userData");
-            // console.log("Connected to the db.");
-        } catch (error) {
-            console.log(error);
-            await client.close();
-            res.send("Database connection error.");
-        }
+let {connectToDb} = require("../connect-to-db.js");
+
+profileRouter.use(async (req, res, next) => {
+    // console.log(typeof connectToDb);
+    // console.log(typeof database);
+    let connectionResult = await connectToDb(req, res);
+    if (typeof connectionResult === 'string') {
+        res.send(connectionResult);
+        return;
+    } else {
+        database = connectionResult;
+        // console.log(typeof database);
+        next();
     }
+});
+
+profileRouter.use("/:passkey/groups", (req, res, next) => {
+    req.passkey = req.params.passkey;
     next();
-}
-profileRouter.use(connectToDb);
+}, groupsRouter)
 
 profileRouter.get("/:passkey", async (req, res) => {
     let cursor = database.collection("users").find({passkey: req.params.passkey});
@@ -101,38 +105,30 @@ profileRouter.delete("/:passkey/delete", (req, res, next) => {
 }, async (req, res) => {
     // console.log(req.body);
     // ↓ password check
-    let cursor = database.collection("users").find({passkey: req.params.passkey});
-    let result = await cursor.toArray();
-    cursor.close();
-    if (result.length === 1) {
-        let user = result[0];
-        if (req.body.password === user.password) {
-            let deleteResult = await database.collection("users").deleteOne({passkey: req.params.passkey});
-            if (deleteResult.acknowledged) {
-                res.json({success: true});
-            } else {
-                res.json({success: false});
-            }
-        } else {
-            res.json({success: false, message: "Password don't match."});
-        }
-        return;
-    } else {
+    let user = await findIfUnique(database.collection("users"), {passkey: req.params.passkey});
+    if (user === false) {
         res.json({success: false});
         return;
     }
+    if (req.body.password === user.password) {
+        let deleteResult = await database.collection("users").deleteOne({passkey: req.params.passkey});
+        if (deleteResult.acknowledged) {
+            deleteResult = await database.collection("groups").deleteMany({ownersObjectId: user._id});
+            if (!deleteResult.acknowledged) {
+                let error = {
+                    message: "Could not delete groups after deletion of account.",
+                    userObjectId: user._id,
+                    time: Date.now(),
+                };
+                await database.collection("errors").insertOne(error);
+            }
+            res.json({success: true});
+        } else {
+            res.json({success: false});
+        }
+    } else {
+        res.json({success: false, message: "Password don't match."});
+    }
 })
-// profileRouter.use("/:passkey/groups", groupsRouter)
-profileRouter.post("/:passkey/favoutite-group", (req, res, next) => {
-    express.text({
-        limit: req.get('content-length'),
-    })(req, res, next);
-}, async (req, res) => {
-    console.log(req.body);
-    res.json({success: false, message: "Group with such name already exists."})
-})
 
-
-
-
-module.exports.profileRouter = profileRouter;
+module.exports = {profileRouter};

@@ -434,9 +434,24 @@ html, body {
   max-height: 100%;
 }
 .favourite-groups > .favourite-groups__groups {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
   width: 100%;
-  height: 15px;
+  padding: 5px;
   background-color: white;
+}
+.favourite-groups > .favourite-groups__groups > .group {
+  border: 1px solid #000;
+  border-radius: 3px;
+  padding: 1px 3px;
+  margin: 3px;
+}
+.favourite-groups > .favourite-groups__groups > .loading {
+  display: inline-block;
+  margin: auto;
+  height: 50px;
+  max-height: 100%;
 }
 
 .hide {

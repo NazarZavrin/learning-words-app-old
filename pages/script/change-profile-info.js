@@ -126,7 +126,7 @@ function changePassword(event){
                 return;
             }
         }
-        if (result.message.includes("password don't match")) {
+        if (result?.message.includes("password don't match")) {
             createWarningAfterElement(oldPasswordInput);
             setWarning(oldPasswordInput.nextElementSibling, result.message, "oldPasswordInput");
             return;
