@@ -19,7 +19,7 @@ groupsRouter.use(async (req, res, next) => {
     }
 });
 
-groupsRouter.post("/favourite-groups", (req, res, next) => {
+groupsRouter.post(/\/(favourite-groups)?/, (req, res, next) => {
     express.text({
         limit: req.get('content-length'),
     })(req, res, next);
@@ -40,7 +40,9 @@ groupsRouter.post("/favourite-groups", (req, res, next) => {
         res.json({success: false, message: "Group with such name already exists."});
         return;
     }
-    Object.assign(groupObject, {isFavourite: true, creationTime: Date.now(), });
+    // console.log(req.method, req.url);
+    let addingGroupToFavourites = req.url.includes("favourite-groups");
+    Object.assign(groupObject, {isFavourite: addingGroupToFavourites, creationTime: Date.now(), });
     let insertResult = await database.collection("groups").insertOne(groupObject);
     if (!insertResult.acknowledged) {
         res.json({success: false});
@@ -53,28 +55,41 @@ groupsRouter.post("/favourite-groups", (req, res, next) => {
     }
     res.json({success: true});
 })
-
-groupsRouter.get("/favourite-groups", async (req, res) => {
+groupsRouter.get(/^\/(favourite-groups)?$/, async (req, res) => {
     // console.log(req.passkey);
+    // console.log("/view/buildings".match(/\/(favourite-groups)?/));
+    // console.log(req.method, req.url);
+    let gettingFavouriteGroups = req.url.includes("favourite-groups");
     let user = await findIfUnique(database.collection("users"), {passkey: req.passkey});
     if (user === false) {
         res.json({success: false});
         return;
     }
-    let cursor = database.collection("groups").find({ownersObjectId: user._id, isFavourite: true});
+    let cursor = database.collection("groups").find({ownersObjectId: user._id, isFavourite: gettingFavouriteGroups});
     let result = await cursor.project({_id: 0, name: 1}).toArray();
     cursor.close();
     // console.log(result);
     res.json({success: true, groups: result});
 })
 
-groupsRouter.get("/", async (req, res) => {
+groupsRouter.get("/view/:groupName", async (req, res) => {
+    // console.log(req.params.groupName);
     // console.log(req.passkey);
-    let user = await database.collection("users").findOne({passkey: req.passkey});
-    let cursor = database.collection('groups').find({ownersObjectId: user._id});
-    let result = await cursor.toArray();
-    cursor.close();
-    res.json(result);
+    let user = await findIfUnique(database.collection("users"), {passkey: req.passkey});
+    if (user === false) {
+        res.send("failure");
+        return;
+    }
+    let group = await findIfUnique(database.collection("groups"), {ownersObjectId: user._id, name: req.params.groupName});
+    if (group === false) {
+        res.send("failure");
+        return;
+    }
+    // console.log(result);
+    res.render("view-group", {
+        name: group.name,
+        isFavourite: group.isFavourite,
+    });
 })
 
 module.exports = {groupsRouter}

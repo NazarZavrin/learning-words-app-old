@@ -1,0 +1,29 @@
+<section id="view-group">
+    <header>
+        <section>
+            <div class="back"><img src="/img/round-arrow.png" alt="Back"></div>
+            <div class="group-name"><%= name %></div>
+            <div class="edit-group-name">
+                <img src="/img/edit.png" alt="Edit">
+                <span>Change name</span>
+            </div>
+            
+        </section>
+        <section>
+            <div class="new-word">
+                <img src="/img/plus.png" alt="New word">
+                <span>Add new word</span>
+            </div>
+            <div class="change-status">
+                <img src="/img/star.png" alt="Favourite">
+                <span>
+                    <%= isFavourite === false ? "Add to favorites" : "Remove from favorites" %>
+                </span>
+                <div class="delete-group">
+                    <img src="/img/cross.png" alt="Delete group">
+                    <span>Delete group</span>
+                </div>
+            </div>
+        </section>
+    </header>
+</section>

@@ -8,22 +8,27 @@ const infoSidebar = document.querySelector(".profile-info");
 
 
 const favouriteGroupsContent = content.querySelector(".favourite-groups__groups");
-favouriteGroupsContent.innerHTML = '<img src="/img/rounded-blocks.gif" class="loading">';
+const groupsContent = content.querySelector(".groups__groups");
+favouriteGroupsContent.innerHTML = groupsContent.innerHTML = '<img src="/img/rounded-blocks.gif" class="loading">';
 content.addEventListener("click", event => {
     if (!event.target.closest(".profile-info.active")) {
         infoBtn.classList.remove("active");
         infoSidebar.classList.remove("active");
     }
-    if (event.target.closest(".favourite-groups .new-group-btn")) {
-        createNewFavouriteGroup(event);
+    if (event.target.closest(".new-group-btn")) {
+        createNewGroup(event);
+    }
+    if (event.target.closest(".group")) {
+        viewGroup(event);
     }
 })
-function createNewFavouriteGroup(event) {
+function createNewGroup(event) {
     let header = createElement({name: "header", content: "Enter the name of new group:"},);
     let groupNameInput = createElement({name: "input"});
     groupNameInput.setAttribute("autocomplete", "off");
-    let createNewFavouriteGroupBtn = createElement({content: "OK", class: "new-favourite-group-btn"});
-    createNewFavouriteGroupBtn.addEventListener("click", async event => {
+    let createNewGroupBtn = createElement({content: "OK", class: "create-new-group-btn"});
+    let addingFavouriteGroup = Boolean(event.target.closest(".favourite-groups"));
+    createNewGroupBtn.addEventListener("click", async event => {
         let everythingIsCorrect = true;
         if (groupNameInput.value.length == 0) {
             createWarningAfterElement(groupNameInput);
@@ -31,7 +36,7 @@ function createNewFavouriteGroup(event) {
             everythingIsCorrect = false;
         } else if (groupNameInput.value.length > 20) {
             createWarningAfterElement(groupNameInput);
-            setWarning(groupNameInput.nextElementSibling, "Name of the group must not exceed 50 characters.", "groupNameInput");
+            setWarning(groupNameInput.nextElementSibling, "Name of the group must not exceed 20 characters.", "groupNameInput");
             everythingIsCorrect = false;
         } else {
             setWarning(groupNameInput.nextElementSibling, "");
@@ -41,7 +46,9 @@ function createNewFavouriteGroup(event) {
         }
         console.log(groupNameInput.value);
         // return;
-        let response = await fetch(location.href + "/groups/favourite-groups", {
+        let requestUrl = location.href + "/groups";
+        requestUrl += addingFavouriteGroup ? "/favourite-groups" : "";
+        let response = await fetch(requestUrl, {
             method: "POST",
             body: groupNameInput.value,
         })
@@ -52,7 +59,7 @@ function createNewFavouriteGroup(event) {
             // console.log(Date.now());
             if (result.success) {
                 event.target.closest(".modal-window").closeWindow();
-                await updateFavouriteGroups();
+                await updateGroups(addingFavouriteGroup);
                 return;
             }
         }
@@ -61,39 +68,88 @@ function createNewFavouriteGroup(event) {
         setWarning(groupNameInput.nextElementSibling, result.message, "groupNameInput");
         console.log(result?.message);
     })
-    showModalWindow(document.body, [header, groupNameInput, createNewFavouriteGroupBtn], 
+    showModalWindow(document.body, [header, groupNameInput, createNewGroupBtn], 
         {className: "new-favourite-group-modal-window", handlers: [{eventName: "click"}]});
 }
 
 
 window.addEventListener("load", async event => {
-    await updateFavouriteGroups();
+    await updateGroups(true);
+    await updateGroups();
 })
 
-async function updateFavouriteGroups() {
-    let response = await fetch(location.href + "/groups/favourite-groups");
+async function updateGroups(updateFavouriteGroups = false) {
+    let requestUrl = location.href + '/groups';
+    requestUrl += updateFavouriteGroups ? "/favourite-groups" : "";
+    let response = await fetch(requestUrl);
     let result = {};
+    let groupsElement = updateFavouriteGroups ? favouriteGroupsContent : groupsContent;
     if (response.ok) {
         result = await response.json();
         console.log(result);
         // console.log(Date.now());
         if (result.success && result.groups) {
             // await new Promise((resolve, reject) => {
-            //     setTimeout(() => resolve(1), 1000);// to see a job of loading icon
+            //     setTimeout(() => resolve(1), 1000);// to see how the loading icon works
             // })
-            favouriteGroupsContent.innerHTML = "";
+            groupsElement.innerHTML = "";
             if (result.groups.length === 0) {
-                favouriteGroupsContent.textContent = "No one favourite group was found.";
+                let message = "No one ";
+                message += updateFavouriteGroups ? "favourite " : "";
+                groupsElement.textContent = message + "group was found.";
             } else {
                 result.groups.forEach(group => {
                     let groupElement = createElement({content: String(group.name), class: 'group'});
-                    favouriteGroupsContent.append(groupElement);
+                    groupsElement.append(groupElement);
                 })
             }
             return;
         }
     }
     result.message = String(result?.message || "Can not get groups. Please try again.");
-    favouriteGroupsContent.textContent = result.message;
+    groupsElement.textContent = result.message;
     console.log(result?.message);
+}
+
+function viewGroup(event){
+    console.log("viewGroup");
+    let groupName = event.target.closest(".group")?.textContent;
+    if (!groupName) {
+        console.log("viewGroup() error: groupName is " + groupName);
+    }
+    fetch(location.href + '/groups/view/' + groupName)
+    .then(response => {
+        if (response.ok) {
+            return response.text();
+        } else {
+            return new Error("Couldn't get group " + groupName);
+        }
+    })
+    .then(result => {
+        console.log(result.slice(0, 50));
+        if (result.includes("view-group")) {
+            document.body.insertAdjacentHTML("afterbegin", result);
+            addHandlersToViewGroupBlock();
+        } else if (result === "failure") {
+            return new Error("Couldn't get group " + groupName);
+        }
+        else {
+            return new Error(result);
+        }
+    })
+    .catch(error => {
+        alert(error);
+        // if (error.message.includes("Couldn't get group")){
+        //     alert(error.message);
+        // }
+    })
+}
+function addHandlersToViewGroupBlock(){
+    let viewGroupBlock = document.querySelector("#view-group");
+    let header = viewGroupBlock.querySelector("#view-group > header");
+    header.addEventListener("click", event => {
+        if (event.target.closest(".back")) {
+            viewGroupBlock.remove();
+        }
+    })
 }

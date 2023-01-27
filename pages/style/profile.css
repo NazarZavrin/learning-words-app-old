@@ -372,7 +372,7 @@ html, body {
 .change-password-modal-window > .old-password-block > div > input, .change-password-modal-window > .new-password-block > div > input, .change-password-modal-window > .password-block > div > input, .check-password-modal-window > .old-password-block > div > input, .check-password-modal-window > .new-password-block > div > input, .check-password-modal-window > .password-block > div > input, .new-favourite-group-modal-window > .old-password-block > div > input, .new-favourite-group-modal-window > .new-password-block > div > input, .new-favourite-group-modal-window > .password-block > div > input {
   margin-right: 5px;
 }
-.change-password-modal-window > .new-favourite-group-btn, .check-password-modal-window > .new-favourite-group-btn, .new-favourite-group-modal-window > .new-favourite-group-btn {
+.change-password-modal-window > .create-new-group-btn, .check-password-modal-window > .create-new-group-btn, .new-favourite-group-modal-window > .create-new-group-btn {
   background-color: dodgerblue;
   color: white;
   padding: 0 5px;
@@ -389,37 +389,49 @@ html, body {
   word-wrap: break-word;
 }
 
-.favourite-groups {
+.favourite-groups, .groups {
   width: 100%;
   display: flex;
   flex-direction: column;
 }
-.favourite-groups > .favourite-groups__header {
-  background-color: #00CF41;
-  border: 3px solid #29A63C;
-  height: 50px;
+.favourite-groups > *[class*=header], .groups > *[class*=header] {
   display: flex;
   flex-direction: row;
+  align-items: center;
   position: relative;
+  min-height: -webkit-fit-content;
+  min-height: -moz-fit-content;
+  min-height: fit-content;
+  background-color: #00CF41;
+  border: 3px solid #29A63C;
+  color: white;
 }
-.favourite-groups > .favourite-groups__header > .favourite-groups__icon {
-  height: 100%;
-  background-color: lime;
+.favourite-groups > *[class*=header] > *[class*=groups__icon], .groups > *[class*=header] > *[class*=groups__icon] {
+  display: block;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
+  display: flex;
+  transform: translateX(15%) scale(1.25);
+  background-color: lime;
   box-shadow: inset 0 0 3px 1px #2A8C43;
-  transform: translateX(10%) scale(1.2);
 }
-.favourite-groups > .favourite-groups__header > .favourite-groups__icon > img {
-  max-height: 100%;
+.favourite-groups > *[class*=header] > *[class*=groups__icon] > img, .groups > *[class*=header] > *[class*=groups__icon] > img {
+  max-height: 80%;
+  margin: auto;
 }
-.favourite-groups > .favourite-groups__header > .new-group-btn {
-  height: 90%;
+.favourite-groups > *[class*=header] > *[class*=groups__label], .groups > *[class*=header] > *[class*=groups__label] {
+  width: 43%;
+  margin-left: 20px;
+  font-size: 24px;
+}
+.favourite-groups > *[class*=header] > .new-group-btn, .groups > *[class*=header] > .new-group-btn {
+  height: 45px;
   width: -webkit-max-content;
   width: -moz-max-content;
   width: max-content;
   background-color: lime;
   border-radius: 5px;
-  color: white;
   position: absolute;
   top: 50%;
   left: 100%;
@@ -430,10 +442,18 @@ html, body {
   align-items: center;
   padding-right: 5px;
 }
-.favourite-groups > .favourite-groups__header > .new-group-btn > img {
-  max-height: 100%;
+.favourite-groups > *[class*=header] > .new-group-btn > img, .groups > *[class*=header] > .new-group-btn > img {
+  max-height: 90%;
 }
-.favourite-groups > .favourite-groups__groups {
+.favourite-groups > .groups__header, .groups > .groups__header {
+  background-color: deepskyblue;
+  border: 3px solid dodgerblue;
+}
+.favourite-groups > .groups__header > .groups__icon, .groups > .groups__header > .groups__icon {
+  background-color: deepskyblue;
+  box-shadow: inset 0 0 3px 1px royalblue;
+}
+.favourite-groups > *[class*=groups__groups], .groups > *[class*=groups__groups] {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -441,17 +461,86 @@ html, body {
   padding: 5px;
   background-color: white;
 }
-.favourite-groups > .favourite-groups__groups > .group {
+.favourite-groups > *[class*=groups__groups] > .group, .groups > *[class*=groups__groups] > .group {
   border: 1px solid #000;
   border-radius: 3px;
   padding: 1px 3px;
   margin: 3px;
 }
-.favourite-groups > .favourite-groups__groups > .loading {
+.favourite-groups > *[class*=groups__groups] > .loading, .groups > *[class*=groups__groups] > .loading {
   display: inline-block;
   margin: auto;
   height: 50px;
   max-height: 100%;
+}
+
+#view-group {
+  z-index: 10;
+  background-color: white;
+  font: 20px "Calibri", sans-serif;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-width: 100vw;
+  height: 100%;
+  min-height: 100vh;
+}
+#view-group header {
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  background-color: gray;
+  color: white;
+}
+#view-group header > section {
+  width: 100%;
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+  display: flex;
+  flex-direction: row;
+}
+#view-group header > section:first-of-type {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+#view-group header > section:first-of-type > .back {
+  width: 50px;
+  height: 50px;
+  flex-shrink: 0;
+  transform: rotate(180deg);
+  background-color: dodgerblue;
+  display: flex;
+}
+#view-group header > section:first-of-type > .back > img {
+  max-height: 75%;
+  margin: auto;
+}
+#view-group header > section:first-of-type > .edit-group-name {
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+#view-group header > section:first-of-type > .edit-group-name > img {
+  height: 50px;
+}
+#view-group header > section:nth-of-type(2) > .new-word, #view-group header > section:nth-of-type(2) .change-status, #view-group header > section:nth-of-type(2) .delete-group {
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+#view-group header > section:nth-of-type(2) > .new-word > img, #view-group header > section:nth-of-type(2) .change-status > img, #view-group header > section:nth-of-type(2) .delete-group > img {
+  height: 50px;
 }
 
 .hide {
