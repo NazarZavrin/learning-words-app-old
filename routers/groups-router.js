@@ -24,7 +24,7 @@ groupsRouter.post(/\/(favourite-groups)?/, (req, res, next) => {
         limit: req.get('content-length'),
     })(req, res, next);
 }, async (req, res) => {
-    console.log(req.body);
+    // console.log(req.body);
     // let everythingIsOk = true;
     let user = await findIfUnique(database.collection("users"), {passkey: req.passkey});
     if (user === false) {
@@ -91,5 +91,53 @@ groupsRouter.get("/view/:groupName", async (req, res) => {
         isFavourite: group.isFavourite,
     });
 })
+groupsRouter.put("/add-word", (req, res, next) => {
+    express.json({limit: req.get('content-length')})(req, res, next);
+}, async (req, res) => {
+    // console.log(req.body);
+    // console.log(req.passkey);
+    let groupName = req.get("Group-Name");
+    // console.log(groupName);
+    let user = await findIfUnique(database.collection("users"), {passkey: req.passkey});
+    if (user === false) {
+        res.json({success: false});
+        return;
+    }
+    let wordObject = {
+        word: req.body.word,
+        translation: req.body.translation,
+        groupsName: groupName,
+        ownersObjectId: user._id,
+        creationTime: Date.now(),
+    }
+    let updateResult = await database.collection("groups").updateOne({ownersObjectId: user._id, name: groupName}, {$push: {words: wordObject}});
+    if (!updateResult.acknowledged) {
+        res.json({success: false});
+        return;
+    }
+    res.json({success: true});
+})
+groupsRouter.get("/get-words", async (req, res) => {
+    let groupName = req.get("Group-Name");
+    // console.log(groupName);
+    let user = await findIfUnique(database.collection("users"), {passkey: req.passkey});
+    if (!req.passkey || user === false) {
+        res.json({success: false});
+        return;
+    }
+    let group = await findIfUnique(database.collection("groups"), {ownersObjectId: user._id, name: groupName});
+    if (!groupName || group === false) {
+        res.json({success: false});
+        return;
+    }
+    let words = group?.words?.map(wordObject => {
+        return {word: wordObject.word, translation: wordObject.translation,}
+    })
+    if (typeof words === "undefined") {
+        words = [];
+    }
+    res.json({success: true, words: JSON.stringify(words)});
+})
+
 
 module.exports = {groupsRouter}

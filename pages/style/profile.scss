@@ -145,7 +145,7 @@ html, body {
         color: gray;
         font-size: 14px;
     }
-    & > .username, .userId, .email, .password {
+    & > .username, & > .userId, & > .email, & > .password {
         display: flex;
         flex-direction: row;
         justify-content: center;
@@ -158,7 +158,7 @@ html, body {
         }
     }
     // align-items: center;
-    & .edit-btn, .save-btn, .cancel-btn {
+    & .edit-btn, & .save-btn, & .cancel-btn {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -237,7 +237,7 @@ html, body {
     background-color: red;
     margin-bottom: auto;// for centring elements in .profile-info
 }
-.change-password-modal-window, .check-password-modal-window, .new-favourite-group-modal-window {
+.change-password-modal-window, .check-password-modal-window, .new-group-modal-window, .new-word-modal-window {
     header {
         text-align: center;
         margin-bottom: 5px;
@@ -268,7 +268,7 @@ html, body {
             }
         }
     }
-    & > .create-new-group-btn {
+    & > .create-new-group-btn, & > .create-new-word-btn {
         background-color: dodgerblue;
         color: white;
         padding: 0 5px;
@@ -379,20 +379,22 @@ html, body {
     }
 }
 #view-group {
+    // display: flex;
+    // flex-grow: 1;
     z-index: 10;
     background-color: white;
     font: 20px "Calibri", sans-serif;
     position: absolute;
     top: 0; left: 0;
-    width: 100%;
-    min-width: 100vw;
-    height: 100%;
-    min-height: 100vh;
-    header {
+    min-width: 100%;
+    width: 100vw;
+    min-height: 100%;
+    height: 100vh;
+    & > header {
         height: fit-content;
         display: flex;
         flex-direction: column;
-        // border: 1px solid black;
+        border: 5px solid gray;
         background-color: gray;
         color: white;
         & > section {
@@ -400,11 +402,13 @@ html, body {
             height: fit-content;
             display: flex;
             flex-direction: row;
+            
         }
         & > section:first-of-type{
             width: 100%;
             display: flex;
             flex-direction: row;
+            margin-bottom: 5px;
             & > .back {
                 width: 50px;
                 height: 50px;
@@ -412,37 +416,151 @@ html, body {
                 transform: rotate(180deg);
                 background-color: dodgerblue;
                 display: flex;
+                margin-right: 5px;
+                border-radius: 3px;
                 & > img {
                     max-height: 75%;
                     margin: auto;
                 }
             }
             & > .group-name {
-
+                flex-grow: 1;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+                padding: 0 5px;
+                margin-right: 5px;
+                border: 3px solid black;
+                background-color: white;
+                color: black;
+                border-radius: 3px;
             }
             & > .edit-group-name {
                 height: fit-content;
                 display: flex;
                 flex-direction: row;
                 align-items: center;
+                background-color: dodgerblue;
+                border-radius: 5px;
+                & > span {
+                    padding-right: 5px;
+                }
                 & > img {
                     height: 50px;
                 }
             }
         }
         & > section:nth-of-type(2){
-            & > .new-word, .change-status, .delete-group {
-                // width: 33%;
-                height: fit-content;
+            & > .new-word, & > .change-status, & > .delete-group {
+                // width: 32%;
+                flex-grow: 1;
+                // height: 100%;
                 display: flex;
                 flex-direction: row;
                 align-items: center;
+                border-radius: 5px;
+                margin-right: 5px;
+                & > span {
+                    padding-right: 5px;
+                }
+                &:last-of-type {
+                    margin-right: 0;
+                }
                 & > img {
                     height: 50px;
                 }
             }
+            & > .new-word {
+                background-color: lime;
+            }
+            & > .change-status {
+                background-color: #00CF41;
+            }
+            & > .delete-group {
+                background-color: red;
+            }
+            // & > *:first-of-type {
+            //     margin-left: auto;
+            // }
+            // & > *:last-of-type {
+            //     margin-right: auto;
+            // }
         }
     }
+    & > main {
+        padding: 5px;
+        & > .word-element {
+            display: inline-grid;
+            grid-template: auto auto / auto 3px auto;
+            border: 1px solid gray;
+            border-radius: 3px;
+            padding: 3px;
+            margin: 3px;
+            & > div {
+                // border: 0.5px solid #000;
+            }
+            & > .word-element__word {
+                grid-row-start: 1;
+                border-bottom: 1px solid black;
+                text-align: center;
+            }
+            & > .word-element__translation {
+                grid-row-start: 2;
+                text-align: center;
+            }
+            & > .word-element__btns {
+                grid-column-start: 3;
+                grid-row-start: 1;
+                grid-row-end: 3;
+                border-left: 1px solid black;
+                & > .edit-word-btn, & > .delete-word-btn {
+                    width: 25px;
+                    height: 25px;
+                    margin-left: 3px;
+                }
+                & > .edit-word-btn {
+                    background-color: dodgerblue;
+                    margin-bottom: 3px;
+                }
+                & > .delete-word-btn {
+                    background-color: red;
+                }
+            }
+            
+        }
+    }
+}
+@media (max-width: 1200px) {
+  /* Стили CSS для ширины от 992px до 1200px */
+  /* Устройства со средним экраном (ноутбуки и компьютеры)*/
+
+}
+@media (max-width: 992px) {
+  /* Стили CSS для ширины от 768px до 992px */
+  /* Устроства с маленьким экраном (планшеты) */
+}
+@media (max-width: 767px) {
+  /* Стили CSS для ширины до 768px */
+  /* Устройства с очень маленьким экраном (смартфоны) */
+  
+}
+@media (max-width: 400px) {
+    #view-group > header > section {
+        & > .change-status > span {
+            display: none;
+        }
+        & > .edit-group-name > span {
+            display: none;
+        }
+        & > .group-name {
+            word-break: break-all;
+            // font-size: calc(14px + (20 - 14) * ((100vw - 200px) / (400 - 200)));
+            // font-size: calc(16px + (24 - 16) * ((100vw - 320px) / (1200 - 320)));
+            // ↑ На экране шириной 320 пикселей шрифт имеет размер 16 пикселей, 
+            // а на экране шириной 1200 пикселей – размер 24 пикселя. */
+        }
+    } 
 }
 
 .hide {

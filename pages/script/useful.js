@@ -21,7 +21,7 @@ export function showModalWindow(bodyElement, elementsArray, {showCross = true, s
     let background = createElement({name: "div", class: "background"});
     background.append(modalWindow);
     bodyElement.prepend(background);
-    background.addEventListener("click", event => {
+    background.addEventListener("mousedown", event => {
         if (!event.target.closest(".modal-window")) {
             background.children[0].closeWindow();
         }

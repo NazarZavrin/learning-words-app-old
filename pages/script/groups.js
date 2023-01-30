@@ -69,7 +69,7 @@ function createNewGroup(event) {
         console.log(result?.message);
     })
     showModalWindow(document.body, [header, groupNameInput, createNewGroupBtn], 
-        {className: "new-favourite-group-modal-window", handlers: [{eventName: "click"}]});
+        {className: "new-group-modal-window"});
 }
 
 
@@ -112,11 +112,12 @@ async function updateGroups(updateFavouriteGroups = false) {
 }
 
 function viewGroup(event){
-    console.log("viewGroup");
+    // console.log("viewGroup");
     let groupName = event.target.closest(".group")?.textContent;
     if (!groupName) {
         console.log("viewGroup() error: groupName is " + groupName);
     }
+    // 
     fetch(location.href + '/groups/view/' + groupName)
     .then(response => {
         if (response.ok) {
@@ -126,10 +127,10 @@ function viewGroup(event){
         }
     })
     .then(result => {
-        console.log(result.slice(0, 50));
+        // console.log(result.slice(0, 50));
         if (result.includes("view-group")) {
             document.body.insertAdjacentHTML("afterbegin", result);
-            addHandlersToViewGroupBlock();
+            showWords(groupName);
         } else if (result === "failure") {
             return new Error("Couldn't get group " + groupName);
         }
@@ -144,12 +145,127 @@ function viewGroup(event){
         // }
     })
 }
-function addHandlersToViewGroupBlock(){
-    let viewGroupBlock = document.querySelector("#view-group");
+async function showWords(groupName) {
+    let viewGroupBlock = document.body.querySelector("#view-group");
+    let wordsSection = viewGroupBlock.querySelector(".words-section");
+    let response = await fetch(location.href + '/groups/get-words', {
+        headers: {"Group-Name": groupName,}
+    })
+    let result = {};
+    if (response.ok) {
+        result = await response.json();
+        console.log(result);
+        if (typeof result.words === "string") {
+            result.words = JSON.parse(result.words);
+            console.log(result.words);
+        }
+    }
+    if (!result.success) {
+        result.message = String(result?.message || "Can not get words of group " + groupName);
+        wordsSection.textContent = result.message;
+        return;
+    }
+
+    if (result.words.length === 0) {
+        wordsSection.textContent = "Group doesn't contain any word.";
+    }
+    for (let i = 0; i < result.words.length; i++) {
+        wordsSection.append(getWordElement(result.words[i]));
+    }
+    addHandlersToViewGroupBlock(groupName);
+}
+function getWordElement(wordObj) {
+    let wordElement = createElement({class: "word-element"});
+    let word = createElement({content: wordObj.word, class: "word-element__word"});
+    let translation = createElement({content: wordObj.translation, class: "word-element__translation"});
+    wordElement.append(word);
+    wordElement.append(translation);
+    let buttons = createElement({class: "word-element__btns"});// delete or edit word
+    let editWordBtn = createElement({class: "edit-word-btn"});
+    let deleteWordBtn = createElement({class: "delete-word-btn"});
+    buttons.append(editWordBtn);
+    buttons.append(deleteWordBtn);
+    wordElement.append(buttons);
+    return wordElement;
+}
+function addHandlersToViewGroupBlock(groupName){
+    let viewGroupBlock = document.body.querySelector("#view-group");
     let header = viewGroupBlock.querySelector("#view-group > header");
     header.addEventListener("click", event => {
         if (event.target.closest(".back")) {
             viewGroupBlock.remove();
         }
+        if (event.target.closest(".new-word")) {
+            let wordLabel = createElement({name: "header", content: "Enter new word:"},);
+            let wordInput = createElement({name: "input"});
+            wordInput.setAttribute("autocomplete", "off");
+            let translationLabel = createElement({name: "header", content: "Enter the translation of new word:"},);
+            let translationInput = createElement({name: "input"});
+            translationInput.setAttribute("autocomplete", "off");
+            let createNewWordBtn = createElement({content: "OK", class: "create-new-word-btn"});
+            createNewWordBtn.addEventListener("click", async event => {
+                createWarningAfterElement(createNewWordBtn);
+                setWarning(createNewWordBtn.nextElementSibling, '');
+                let everythingIsCorrect = true;
+                if (wordInput.value.length == 0) {
+                    createWarningAfterElement(wordInput);
+                    setWarning(wordInput.nextElementSibling, "Please, enter new word.", "wordInput");
+                    everythingIsCorrect = false;
+                } else if (wordInput.value.length > 20) {
+                    createWarningAfterElement(wordInput);
+                    setWarning(wordInput.nextElementSibling, "Length of new word must not exceed 20 characters.", "wordInput");
+                    everythingIsCorrect = false;
+                } else {
+                    setWarning(wordInput.nextElementSibling, "");
+                }
+                if (translationInput.value.length == 0) {
+                    createWarningAfterElement(translationInput);
+                    setWarning(translationInput.nextElementSibling, "Please, enter the translation of new word.", "translationInput");
+                    everythingIsCorrect = false;
+                } else if (translationInput.value.length > 20) {
+                    createWarningAfterElement(translationInput);
+                    setWarning(translationInput.nextElementSibling, "Length of translation must not exceed 20 characters.", "translationInput");
+                    everythingIsCorrect = false;
+                } else {
+                    setWarning(translationInput.nextElementSibling, "");
+                }
+                if (everythingIsCorrect === false) {
+                    return;
+                }
+                console.log(wordInput.value);
+                let requestBody = {
+                    word: wordInput.value,
+                    translation: translationInput.value,
+                };
+                // return;
+                let response = await fetch(location.href + "/groups/add-word", {
+                    method: "PUT",
+                    body: JSON.stringify(requestBody),
+                    headers: {
+                        "Group-Name": groupName,
+                        'Content-Type': 'application/json',
+                    }
+                })
+                let result = {};
+                if (response.ok) {
+                    result = await response.json();
+                    console.log(result);
+                    // console.log(Date.now());
+                    if (result.success) {
+                        event.target.closest(".modal-window").closeWindow();
+                        let wordsSection = viewGroupBlock.querySelector(".words-section");
+                        wordsSection.append(getWordElement(requestBody));
+                        return;
+                    }
+                }
+                result.message = String(result?.message || "Creation error. Please try again.");
+                createWarningAfterElement(createNewWordBtn);
+                setWarning(createNewWordBtn.nextElementSibling, result.message, "createNewWordBtn");
+                console.log(result?.message);
+            })
+            showModalWindow(document.body, [wordLabel, wordInput, translationLabel, translationInput, createNewWordBtn], 
+                {className: "new-word-modal-window"});
+        }
     })
+
 }

@@ -3,10 +3,14 @@ console.log(HTMLElement.prototype);
 console.log("now:");
 // console.log("add posibitity to delete account");
 // console.log("delete groups of the user after deletion of the user");
+console.log("check if content part can display groups with scrolling (.group > padding: 100px)");
+console.log('<section class="checkboxes"></section> to hide word/translation using height: 0');
+console.log("groups.js: fetch(location.href + '/groups/view/' + groupName) groupName might be in russian, send it in headers/body");
 console.log("during studying at college:");
 console.log("как отправлять запросы (например пост) в node js? (study node-fetch)");
 console.log("make a route, which checks if password is correct and returns correct/incorrect. use it while changing profile's info and delete account");
 console.log("at the end of developping:");
+console.log("forgot password? we will email you with temp password (node-emailer or smth else).");
 console.log("enter password to change infoPart");
 console.log("add modals instead of alert()");
 
