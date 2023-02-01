@@ -26,7 +26,7 @@ async function connectToDb(req, res, next) {
     }
     next();
 }
-app.use(connectToDb, express.static(path.join(path.resolve(), 'pages')));
+app.use(connectToDb, express.static(path.join(path.resolve(), 'pages'), {index: "main.html"}));
 
 const PORT = process.env.PORT || 3000;
 app.set('view engine', 'ejs');

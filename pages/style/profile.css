@@ -131,6 +131,12 @@ html, body {
   min-height: 100vh;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
+}
+
+body {
+  height: 100vh;
+  overflow: auto;
 }
 
 .wrapper {
@@ -475,6 +481,8 @@ html, body {
 }
 
 #view-group {
+  display: flex;
+  flex-direction: column;
   z-index: 10;
   background-color: white;
   font: 20px "Calibri", sans-serif;
@@ -580,11 +588,20 @@ html, body {
   background-color: red;
 }
 #view-group > main {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: row;
+  align-content: flex-start;
+  align-items: start;
+  flex-wrap: wrap;
   padding: 5px;
+}
+#view-group > main.loading {
+  background: no-repeat center center/auto 25% url("/img/rounded-blocks.gif");
 }
 #view-group > main > .word-element {
   display: inline-grid;
-  grid-template: auto auto/auto 3px auto;
+  grid-template: none none/auto 3px auto;
   border: 1px solid gray;
   border-radius: 3px;
   padding: 3px;
@@ -604,11 +621,15 @@ html, body {
   grid-row-start: 1;
   grid-row-end: 3;
   border-left: 1px solid black;
+  margin-left: 3px;
 }
 #view-group > main > .word-element > .word-element__btns > .edit-word-btn, #view-group > main > .word-element > .word-element__btns > .delete-word-btn {
   width: 25px;
   height: 25px;
   margin-left: 3px;
+}
+#view-group > main > .word-element > .word-element__btns > .edit-word-btn > img, #view-group > main > .word-element > .word-element__btns > .delete-word-btn > img {
+  max-width: 100%;
 }
 #view-group > main > .word-element > .word-element__btns > .edit-word-btn {
   background-color: dodgerblue;

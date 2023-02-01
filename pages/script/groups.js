@@ -148,6 +148,7 @@ function viewGroup(event){
 async function showWords(groupName) {
     let viewGroupBlock = document.body.querySelector("#view-group");
     let wordsSection = viewGroupBlock.querySelector(".words-section");
+    // return;
     let response = await fetch(location.href + '/groups/get-words', {
         headers: {"Group-Name": groupName,}
     })
@@ -165,12 +166,15 @@ async function showWords(groupName) {
         wordsSection.textContent = result.message;
         return;
     }
-
-    if (result.words.length === 0) {
-        wordsSection.textContent = "Group doesn't contain any word.";
-    }
+    // await new Promise((resolve, reject) => {
+    //     setTimeout(() => resolve(1), 1000);// to see how the loading icon works
+    // })
+    wordsSection.classList.remove("loading");
     for (let i = 0; i < result.words.length; i++) {
         wordsSection.append(getWordElement(result.words[i]));
+    }
+    if (result.words.length === 0) {
+        wordsSection.textContent = "Group doesn't contain any word.";
     }
     addHandlersToViewGroupBlock(groupName);
 }
@@ -182,7 +186,9 @@ function getWordElement(wordObj) {
     wordElement.append(translation);
     let buttons = createElement({class: "word-element__btns"});// delete or edit word
     let editWordBtn = createElement({class: "edit-word-btn"});
+    editWordBtn.innerHTML = "<img src='/img/edit.png'>";
     let deleteWordBtn = createElement({class: "delete-word-btn"});
+    deleteWordBtn.innerHTML = "<img src='/img/trash-can.png'>";
     buttons.append(editWordBtn);
     buttons.append(deleteWordBtn);
     wordElement.append(buttons);
