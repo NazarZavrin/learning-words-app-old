@@ -345,14 +345,20 @@ body {
   margin-bottom: auto;
 }
 
-.change-password-modal-window, .check-password-modal-window, .new-group-modal-window, .new-word-modal-window {
+.change-password-modal-window, .check-password-modal-window,
+.new-group-modal-window, .new-word-modal-window,
+.change-group-name-modal-window {
   padding: 10px;
 }
-.change-password-modal-window header, .check-password-modal-window header, .new-group-modal-window header, .new-word-modal-window header {
+.change-password-modal-window header, .check-password-modal-window header,
+.new-group-modal-window header, .new-word-modal-window header,
+.change-group-name-modal-window header {
   text-align: center;
   margin-bottom: 5px;
 }
-.change-password-modal-window input:not([type=checkbox]), .check-password-modal-window input:not([type=checkbox]), .new-group-modal-window input:not([type=checkbox]), .new-word-modal-window input:not([type=checkbox]) {
+.change-password-modal-window input:not([type=checkbox]), .check-password-modal-window input:not([type=checkbox]),
+.new-group-modal-window input:not([type=checkbox]), .new-word-modal-window input:not([type=checkbox]),
+.change-group-name-modal-window input:not([type=checkbox]) {
   font: inherit;
   display: inline-block;
   width: 150px;
@@ -360,13 +366,25 @@ body {
   border-radius: 5px;
   padding: 0 3px;
 }
-.change-password-modal-window > .old-password-block, .change-password-modal-window > .new-password-block, .change-password-modal-window > .password-block, .check-password-modal-window > .old-password-block, .check-password-modal-window > .new-password-block, .check-password-modal-window > .password-block, .new-group-modal-window > .old-password-block, .new-group-modal-window > .new-password-block, .new-group-modal-window > .password-block, .new-word-modal-window > .old-password-block, .new-word-modal-window > .new-password-block, .new-word-modal-window > .password-block {
+.change-password-modal-window > .old-password-block, .change-password-modal-window > .new-password-block, .change-password-modal-window > .password-block, .check-password-modal-window > .old-password-block, .check-password-modal-window > .new-password-block, .check-password-modal-window > .password-block,
+.new-group-modal-window > .old-password-block,
+.new-group-modal-window > .new-password-block,
+.new-group-modal-window > .password-block, .new-word-modal-window > .old-password-block, .new-word-modal-window > .new-password-block, .new-word-modal-window > .password-block,
+.change-group-name-modal-window > .old-password-block,
+.change-group-name-modal-window > .new-password-block,
+.change-group-name-modal-window > .password-block {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-bottom: 3px;
 }
-.change-password-modal-window > .old-password-block > div, .change-password-modal-window > .new-password-block > div, .change-password-modal-window > .password-block > div, .check-password-modal-window > .old-password-block > div, .check-password-modal-window > .new-password-block > div, .check-password-modal-window > .password-block > div, .new-group-modal-window > .old-password-block > div, .new-group-modal-window > .new-password-block > div, .new-group-modal-window > .password-block > div, .new-word-modal-window > .old-password-block > div, .new-word-modal-window > .new-password-block > div, .new-word-modal-window > .password-block > div {
+.change-password-modal-window > .old-password-block > div, .change-password-modal-window > .new-password-block > div, .change-password-modal-window > .password-block > div, .check-password-modal-window > .old-password-block > div, .check-password-modal-window > .new-password-block > div, .check-password-modal-window > .password-block > div,
+.new-group-modal-window > .old-password-block > div,
+.new-group-modal-window > .new-password-block > div,
+.new-group-modal-window > .password-block > div, .new-word-modal-window > .old-password-block > div, .new-word-modal-window > .new-password-block > div, .new-word-modal-window > .password-block > div,
+.change-group-name-modal-window > .old-password-block > div,
+.change-group-name-modal-window > .new-password-block > div,
+.change-group-name-modal-window > .password-block > div {
   display: flex;
   width: -webkit-max-content;
   width: -moz-max-content;
@@ -375,17 +393,33 @@ body {
   justify-content: center;
   align-items: center;
 }
-.change-password-modal-window > .old-password-block > div > input, .change-password-modal-window > .new-password-block > div > input, .change-password-modal-window > .password-block > div > input, .check-password-modal-window > .old-password-block > div > input, .check-password-modal-window > .new-password-block > div > input, .check-password-modal-window > .password-block > div > input, .new-group-modal-window > .old-password-block > div > input, .new-group-modal-window > .new-password-block > div > input, .new-group-modal-window > .password-block > div > input, .new-word-modal-window > .old-password-block > div > input, .new-word-modal-window > .new-password-block > div > input, .new-word-modal-window > .password-block > div > input {
+.change-password-modal-window > .old-password-block > div > input, .change-password-modal-window > .new-password-block > div > input, .change-password-modal-window > .password-block > div > input, .check-password-modal-window > .old-password-block > div > input, .check-password-modal-window > .new-password-block > div > input, .check-password-modal-window > .password-block > div > input,
+.new-group-modal-window > .old-password-block > div > input,
+.new-group-modal-window > .new-password-block > div > input,
+.new-group-modal-window > .password-block > div > input, .new-word-modal-window > .old-password-block > div > input, .new-word-modal-window > .new-password-block > div > input, .new-word-modal-window > .password-block > div > input,
+.change-group-name-modal-window > .old-password-block > div > input,
+.change-group-name-modal-window > .new-password-block > div > input,
+.change-group-name-modal-window > .password-block > div > input {
   margin-right: 5px;
 }
-.change-password-modal-window > .create-new-group-btn, .change-password-modal-window > .create-new-word-btn, .check-password-modal-window > .create-new-group-btn, .check-password-modal-window > .create-new-word-btn, .new-group-modal-window > .create-new-group-btn, .new-group-modal-window > .create-new-word-btn, .new-word-modal-window > .create-new-group-btn, .new-word-modal-window > .create-new-word-btn {
+.change-password-modal-window > .create-new-group-btn, .change-password-modal-window > .add-new-word-btn, .change-password-modal-window > .change-group-name-btn, .change-password-modal-window > .check-password-btn, .check-password-modal-window > .create-new-group-btn, .check-password-modal-window > .add-new-word-btn, .check-password-modal-window > .change-group-name-btn, .check-password-modal-window > .check-password-btn,
+.new-group-modal-window > .create-new-group-btn,
+.new-group-modal-window > .add-new-word-btn,
+.new-group-modal-window > .change-group-name-btn,
+.new-group-modal-window > .check-password-btn, .new-word-modal-window > .create-new-group-btn, .new-word-modal-window > .add-new-word-btn, .new-word-modal-window > .change-group-name-btn, .new-word-modal-window > .check-password-btn,
+.change-group-name-modal-window > .create-new-group-btn,
+.change-group-name-modal-window > .add-new-word-btn,
+.change-group-name-modal-window > .change-group-name-btn,
+.change-group-name-modal-window > .check-password-btn {
   background-color: dodgerblue;
   color: white;
   padding: 0 5px;
   margin-top: 5px;
   border-radius: 3px;
 }
-.change-password-modal-window .warning, .check-password-modal-window .warning, .new-group-modal-window .warning, .new-word-modal-window .warning {
+.change-password-modal-window .warning, .check-password-modal-window .warning,
+.new-group-modal-window .warning, .new-word-modal-window .warning,
+.change-group-name-modal-window .warning {
   max-width: 200px;
   font-style: normal;
   display: inline-block;
@@ -545,7 +579,7 @@ body {
   color: black;
   border-radius: 3px;
 }
-#view-group > header > section:first-of-type > .edit-group-name {
+#view-group > header > section:first-of-type > .change-group-name {
   height: -webkit-fit-content;
   height: -moz-fit-content;
   height: fit-content;
@@ -555,10 +589,10 @@ body {
   background-color: dodgerblue;
   border-radius: 5px;
 }
-#view-group > header > section:first-of-type > .edit-group-name > span {
+#view-group > header > section:first-of-type > .change-group-name > span {
   padding-right: 5px;
 }
-#view-group > header > section:first-of-type > .edit-group-name > img {
+#view-group > header > section:first-of-type > .change-group-name > img {
   height: 50px;
 }
 #view-group > header > section:nth-of-type(2) > .new-word, #view-group > header > section:nth-of-type(2) > .change-status, #view-group > header > section:nth-of-type(2) > .delete-group {
@@ -577,12 +611,35 @@ body {
 }
 #view-group > header > section:nth-of-type(2) > .new-word > img, #view-group > header > section:nth-of-type(2) > .change-status > img, #view-group > header > section:nth-of-type(2) > .delete-group > img {
   height: 50px;
+  position: relative;
 }
 #view-group > header > section:nth-of-type(2) > .new-word {
   background-color: lime;
 }
 #view-group > header > section:nth-of-type(2) > .change-status {
   background-color: #00CF41;
+}
+#view-group > header > section:nth-of-type(2) > .change-status > img.crossed-out {
+  display: block;
+}
+#view-group > header > section:nth-of-type(2) > .change-status > img.crossed-out::before, #view-group > header > section:nth-of-type(2) > .change-status > img.crossed-out::after {
+  content: "hello";
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 120;
+  width: 75px;
+  height: 10px;
+  background-color: red;
+  transform-origin: center center;
+  border-radius: 5px;
+}
+#view-group > header > section:nth-of-type(2) > .change-status > img.crossed-out::before {
+  transform: translate(-50%, -50%) rotateZ(45deg);
+}
+#view-group > header > section:nth-of-type(2) > .change-status > img.crossed-out::after {
+  transform: translate(-50%, -50%) rotateZ(-45deg);
 }
 #view-group > header > section:nth-of-type(2) > .delete-group {
   background-color: red;
@@ -592,7 +649,7 @@ body {
   display: flex;
   flex-direction: row;
   align-content: flex-start;
-  align-items: start;
+  align-items: flex-start;
   flex-wrap: wrap;
   padding: 5px;
 }
@@ -655,7 +712,7 @@ body {
   #view-group > header > section > .change-status > span {
     display: none;
   }
-  #view-group > header > section > .edit-group-name > span {
+  #view-group > header > section > .change-group-name > span {
     display: none;
   }
   #view-group > header > section > .group-name {

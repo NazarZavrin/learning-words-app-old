@@ -106,7 +106,7 @@ profileRouter.delete("/:passkey/delete", (req, res, next) => {
     // console.log(req.body);
     // ↓ password check
     let user = await findIfUnique(database.collection("users"), {passkey: req.params.passkey});
-    if (user === false) {
+    if (!req.passkey || user === false) {
         res.json({success: false});
         return;
     }

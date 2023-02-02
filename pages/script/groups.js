@@ -1,6 +1,8 @@
 "use strict";
 
-import { setWarning, createWarningAfterElement, showModalWindow, createElement, showPassword, } from "./useful.js";
+import Group from "./class_Group.js";
+import { setWarning, createWarningAfterElement, showModalWindow, createElement, } from "./useful.js";
+
 
 const content = document.querySelector(".content");
 const infoBtn = document.querySelector(".header__info-btn");
@@ -194,12 +196,17 @@ function getWordElement(wordObj) {
     wordElement.append(buttons);
     return wordElement;
 }
-function addHandlersToViewGroupBlock(groupName){
+function addHandlersToViewGroupBlock(){
     let viewGroupBlock = document.body.querySelector("#view-group");
     let header = viewGroupBlock.querySelector("#view-group > header");
-    header.addEventListener("click", event => {
+    let groupNameBlock = header.querySelector("section > .group-name");
+    header.addEventListener("click", async event => {
         if (event.target.closest(".back")) {
             viewGroupBlock.remove();
+            // ↓ if group name was changed or/and was added to / removed from "Favourite groups"
+            // ↓ or was deleted, it must be displayed
+            await updateGroups(true);
+            await updateGroups();
         }
         if (event.target.closest(".new-word")) {
             let wordLabel = createElement({name: "header", content: "Enter new word:"},);
@@ -208,10 +215,10 @@ function addHandlersToViewGroupBlock(groupName){
             let translationLabel = createElement({name: "header", content: "Enter the translation of new word:"},);
             let translationInput = createElement({name: "input"});
             translationInput.setAttribute("autocomplete", "off");
-            let createNewWordBtn = createElement({content: "OK", class: "create-new-word-btn"});
-            createNewWordBtn.addEventListener("click", async event => {
-                createWarningAfterElement(createNewWordBtn);
-                setWarning(createNewWordBtn.nextElementSibling, '');
+            let addNewWordBtn = createElement({content: "Add new word", class: "add-new-word-btn"});
+            addNewWordBtn.addEventListener("click", async event => {
+                createWarningAfterElement(addNewWordBtn);
+                setWarning(addNewWordBtn.nextElementSibling, '');
                 let everythingIsCorrect = true;
                 if (wordInput.value.length == 0) {
                     createWarningAfterElement(wordInput);
@@ -242,13 +249,14 @@ function addHandlersToViewGroupBlock(groupName){
                 let requestBody = {
                     word: wordInput.value,
                     translation: translationInput.value,
+                    groupName: groupNameBlock.textContent,
                 };
                 // return;
                 let response = await fetch(location.href + "/groups/add-word", {
                     method: "PUT",
                     body: JSON.stringify(requestBody),
                     headers: {
-                        "Group-Name": groupName,
+                        "Group-Name": groupNameBlock.textContent,
                         'Content-Type': 'application/json',
                     }
                 })
@@ -260,18 +268,31 @@ function addHandlersToViewGroupBlock(groupName){
                     if (result.success) {
                         event.target.closest(".modal-window").closeWindow();
                         let wordsSection = viewGroupBlock.querySelector(".words-section");
+                        if (!wordsSection.querySelector(".word-element")) {// if there arent any words in the section...
+                            wordsSection.innerHTML = "";// ...erase the message "Group doesn't contain any word."
+                        }
                         wordsSection.append(getWordElement(requestBody));
                         return;
                     }
                 }
                 result.message = String(result?.message || "Creation error. Please try again.");
-                createWarningAfterElement(createNewWordBtn);
-                setWarning(createNewWordBtn.nextElementSibling, result.message, "createNewWordBtn");
+                createWarningAfterElement(addNewWordBtn);
+                setWarning(addNewWordBtn.nextElementSibling, result.message, "addNewWordBtn");
                 console.log(result?.message);
             })
-            showModalWindow(document.body, [wordLabel, wordInput, translationLabel, translationInput, createNewWordBtn], 
+            showModalWindow(document.body, [wordLabel, wordInput, translationLabel, translationInput, addNewWordBtn], 
                 {className: "new-word-modal-window"});
         }
+        if (event.target.closest(".change-group-name") || event.target.closest(".group-name")) {
+            Group.changeGroupName(groupNameBlock);
+        }
+        if (event.target.closest(".change-status")) {
+            Group.changeGroupStatus(groupNameBlock.textContent, event.target.closest(".change-status"));
+        }
+        if (event.target.closest(".delete-group")) {
+            Group.deleteGroup(groupNameBlock);
+        }
+
     })
 
 }

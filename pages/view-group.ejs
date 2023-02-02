@@ -3,7 +3,7 @@
         <section>
             <div class="back"><img src="/img/round-arrow.png" alt="Back"></div>
             <div class="group-name"><%= name %></div>
-            <div class="edit-group-name">
+            <div class="change-group-name">
                 <img src="/img/edit.png" alt="Edit">
                 <span>Change name</span>
             </div>
@@ -11,9 +11,9 @@
         </section>
         <section>
             <div class="change-status">
-                <img src="/img/star.png" alt="Favourite">
+                <img src="/img/star.png" class="<%= isFavourite === false ? "crossed-out" : "" %>" alt="Favourite">
                 <span>
-                    <%= isFavourite === false ? "Add to favorites" : "Remove from favorites" %>
+                    <%= isFavourite === false ? "Add to favourites" : "Remove from favourites" %>
                 </span>
             </div>
             <div class="new-word">

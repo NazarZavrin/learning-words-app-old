@@ -242,7 +242,9 @@ body {
     background-color: red;
     margin-bottom: auto;// for centring elements in .profile-info
 }
-.change-password-modal-window, .check-password-modal-window, .new-group-modal-window, .new-word-modal-window {
+.change-password-modal-window, .check-password-modal-window, 
+.new-group-modal-window, .new-word-modal-window,
+.change-group-name-modal-window {
     header {
         text-align: center;
         margin-bottom: 5px;
@@ -273,7 +275,8 @@ body {
             }
         }
     }
-    & > .create-new-group-btn, & > .create-new-word-btn {
+    & > .create-new-group-btn, & > .add-new-word-btn,
+    & > .change-group-name-btn, & > .check-password-btn {
         background-color: dodgerblue;
         color: white;
         padding: 0 5px;
@@ -441,7 +444,7 @@ body {
                 color: black;
                 border-radius: 3px;
             }
-            & > .edit-group-name {
+            & > .change-group-name {
                 height: fit-content;
                 display: flex;
                 flex-direction: row;
@@ -474,6 +477,7 @@ body {
                 }
                 & > img {
                     height: 50px;
+                    position: relative;// for positioning the cross on .change-status > img.crossed-out
                 }
             }
             & > .new-word {
@@ -481,6 +485,27 @@ body {
             }
             & > .change-status {
                 background-color: #00CF41;
+                & > img.crossed-out {
+                    display: block;
+                    &::before, &::after {
+                        content: 'hello';
+                        display: block;
+                        position: absolute;
+                        top: 50%; left: 50%;
+                        z-index: 120;
+                        width: 75px;
+                        height: 10px;
+                        background-color: red;
+                        transform-origin: center center;
+                        border-radius: 5px;
+                    }
+                    &::before{
+                        transform: translate(-50%, -50%) rotateZ(45deg);
+                    }
+                    &::after{
+                        transform: translate(-50%, -50%) rotateZ(-45deg);
+                    }
+                }
             }
             & > .delete-group {
                 background-color: red;
@@ -498,7 +523,7 @@ body {
         display: flex;
         flex-direction: row;
         align-content: flex-start;
-        align-items: start;
+        align-items: flex-start;
         flex-wrap: wrap;
         &.loading {
             background: no-repeat center center / auto 25% url("/img/rounded-blocks.gif");
@@ -568,7 +593,7 @@ body {
         & > .change-status > span {
             display: none;
         }
-        & > .edit-group-name > span {
+        & > .change-group-name > span {
             display: none;
         }
         & > .group-name {

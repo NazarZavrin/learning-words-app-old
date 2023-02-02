@@ -3,7 +3,8 @@ console.log(HTMLElement.prototype);
 console.log("now:");
 // console.log("add posibitity to delete account");
 // console.log("delete groups of the user after deletion of the user");
-console.log("check if content part can display groups with scrolling (.group > padding: 100px)");
+console.log("group creation in class Group");
+console.log("copy (duplicate) selected word to another group");
 console.log('<section class="checkboxes"></section> to hide word/translation using height: 0');
 console.log("groups.js: fetch(location.href + '/groups/view/' + groupName) groupName might be in russian, send it in headers/body");
 console.log("during studying at college:");
@@ -56,9 +57,9 @@ deleteAccountBtn.addEventListener("click", async event => {
     let checkPasswordBtn = createElement({content: "OK", style: checkPasswordBtnStyles});
     checkPasswordBtn.addEventListener("click", async event => {
         let everythingIsCorrect = true;
-        if (passwordInput.value.length < 4) {
+        if (passwordInput.value.length === 0) {
             createWarningAfterElement(passwordInput);
-            setWarning(passwordInput.nextElementSibling, "Password must not be less than 4 characters.", "passwordInput");
+            setWarning(passwordInput.nextElementSibling, "Please, enter password.", "passwordInput");
             everythingIsCorrect = false;
         } else {
             setWarning(passwordInput.nextElementSibling, "");
