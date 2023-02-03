@@ -11,7 +11,7 @@
         </section>
         <section>
             <div class="change-status">
-                <img src="/img/star.png" class="<%= isFavourite === false ? "crossed-out" : "" %>" alt="Favourite">
+                <div class="star-icon <%= isFavourite === true ? "crossed-out" : "" %>"></div>
                 <span>
                     <%= isFavourite === false ? "Add to favourites" : "Remove from favourites" %>
                 </span>
@@ -28,7 +28,5 @@
         </section>
     </header>
     
-    <main class="words-section loading">
-        <!-- <img src="/img/rounded-blocks.gif" class="loading" alt="Loading"> -->
-    </main>
+    <main class="words-section loading"></main>
 </section>

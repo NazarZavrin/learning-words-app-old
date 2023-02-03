@@ -1,6 +1,7 @@
 "use strict";
 
 import Group from "./class_Group.js";
+import Word from "./class_Word.js";
 import { setWarning, createWarningAfterElement, showModalWindow, createElement, } from "./useful.js";
 
 
@@ -28,7 +29,7 @@ function createNewGroup(event) {
     let header = createElement({name: "header", content: "Enter the name of new group:"},);
     let groupNameInput = createElement({name: "input"});
     groupNameInput.setAttribute("autocomplete", "off");
-    let createNewGroupBtn = createElement({content: "OK", class: "create-new-group-btn"});
+    let createNewGroupBtn = createElement({content: "Create new group", class: "create-new-group-btn"});
     let addingFavouriteGroup = Boolean(event.target.closest(".favourite-groups"));
     createNewGroupBtn.addEventListener("click", async event => {
         let everythingIsCorrect = true;
@@ -120,7 +121,10 @@ function viewGroup(event){
         console.log("viewGroup() error: groupName is " + groupName);
     }
     // 
-    fetch(location.href + '/groups/view/' + groupName)
+    fetch(location.href + '/groups/view', {
+        method: 'SEARCH',
+        body: groupName,
+    })
     .then(response => {
         if (response.ok) {
             return response.text();
@@ -152,7 +156,8 @@ async function showWords(groupName) {
     let wordsSection = viewGroupBlock.querySelector(".words-section");
     // return;
     let response = await fetch(location.href + '/groups/get-words', {
-        headers: {"Group-Name": groupName,}
+        method: 'SEARCH',
+        body: groupName,
     })
     let result = {};
     if (response.ok) {
@@ -200,10 +205,11 @@ function addHandlersToViewGroupBlock(){
     let viewGroupBlock = document.body.querySelector("#view-group");
     let header = viewGroupBlock.querySelector("#view-group > header");
     let groupNameBlock = header.querySelector("section > .group-name");
+    let wordsSection = viewGroupBlock.querySelector(".words-section");
     header.addEventListener("click", async event => {
         if (event.target.closest(".back")) {
             viewGroupBlock.remove();
-            // ↓ if group name was changed or/and was added to / removed from "Favourite groups"
+            // ↓ if group info was changed or/and this group was added to / removed from "Favourite groups"
             // ↓ or was deleted, it must be displayed
             await updateGroups(true);
             await updateGroups();
@@ -247,16 +253,15 @@ function addHandlersToViewGroupBlock(){
                 }
                 console.log(wordInput.value);
                 let requestBody = {
+                    groupName: groupNameBlock.textContent,
                     word: wordInput.value,
                     translation: translationInput.value,
-                    groupName: groupNameBlock.textContent,
                 };
                 // return;
                 let response = await fetch(location.href + "/groups/add-word", {
                     method: "PUT",
                     body: JSON.stringify(requestBody),
                     headers: {
-                        "Group-Name": groupNameBlock.textContent,
                         'Content-Type': 'application/json',
                     }
                 })
@@ -287,12 +292,15 @@ function addHandlersToViewGroupBlock(){
             Group.changeGroupName(groupNameBlock);
         }
         if (event.target.closest(".change-status")) {
-            Group.changeGroupStatus(groupNameBlock.textContent, event.target.closest(".change-status"));
+            await Group.changeGroupStatus(groupNameBlock.textContent, event.target.closest(".change-status"));
         }
         if (event.target.closest(".delete-group")) {
             Group.deleteGroup(groupNameBlock);
         }
-
     })
-
+    wordsSection.addEventListener("click", event => {
+        if (event.target.closest(".delete-word-btn")) {
+            Word.deleteWord(groupNameBlock.textContent, event.target.closest(".word-element"));
+        }
+    })
 }

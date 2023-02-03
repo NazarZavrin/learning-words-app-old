@@ -1,9 +1,10 @@
 const express = require('express');
 const profileRouter = express.Router();
 
-const {groupsRouter} = require('./groups-router.js');
+const { groupsRouter } = require('./groups-router.js');
+const { wordsRouter } = require('./words-router.js');
 // const path = require('path');
-const {findIfUnique} = require('../useful-for-server.js');
+const { findIfUnique } = require('../useful-for-server.js');
 
 
 let database;
@@ -27,6 +28,10 @@ profileRouter.use("/:passkey/groups", (req, res, next) => {
     req.passkey = req.params.passkey;
     next();
 }, groupsRouter)
+profileRouter.use("/:passkey/words", (req, res, next) => {
+    req.passkey = req.params.passkey;
+    next();
+}, wordsRouter)
 
 profileRouter.get("/:passkey", async (req, res) => {
     let cursor = database.collection("users").find({passkey: req.params.passkey});

@@ -284,7 +284,7 @@ body {
         border-radius: 3px;
     }
     & .warning{
-        max-width: 200px;
+        max-width: 100%;
         font-style: normal;
         display: inline-block;
         font-size: 14px;
@@ -477,7 +477,6 @@ body {
                 }
                 & > img {
                     height: 50px;
-                    position: relative;// for positioning the cross on .change-status > img.crossed-out
                 }
             }
             & > .new-word {
@@ -485,25 +484,30 @@ body {
             }
             & > .change-status {
                 background-color: #00CF41;
-                & > img.crossed-out {
-                    display: block;
-                    &::before, &::after {
-                        content: 'hello';
-                        display: block;
-                        position: absolute;
-                        top: 50%; left: 50%;
-                        z-index: 120;
-                        width: 75px;
-                        height: 10px;
-                        background-color: red;
-                        transform-origin: center center;
-                        border-radius: 5px;
-                    }
-                    &::before{
-                        transform: translate(-50%, -50%) rotateZ(45deg);
-                    }
-                    &::after{
-                        transform: translate(-50%, -50%) rotateZ(-45deg);
+                & > div.star-icon{
+                    background: no-repeat center center / auto 100% url("/img/star.png");
+                    width: 50px;
+                    height: 50px;
+                    flex: 0 0 auto;
+                    position: relative;
+                    &.crossed-out {
+                        &::before, &::after {
+                            content: '';
+                            position: absolute;
+                            top: 50%; left: 50%;
+                            // z-index: 120;
+                            width: 95%;
+                            height: 12%;
+                            background-color: red;
+                            transform-origin: center center;
+                            // border-radius: 1px;
+                        }
+                        &::before{
+                            transform: translate(-50%, -50%) rotateZ(45deg);
+                        }
+                        &::after{
+                            transform: translate(-50%, -50%) rotateZ(-45deg);
+                        }
                     }
                 }
             }
@@ -531,7 +535,7 @@ body {
         padding: 5px;
         & > .word-element {
             display: inline-grid;
-            grid-template: none none / auto 3px auto;
+            grid-template: auto auto / auto 3px auto;
             border: 1px solid gray;
             border-radius: 3px;
             padding: 3px;
@@ -553,7 +557,6 @@ body {
                 grid-row-start: 1;
                 grid-row-end: 3;
                 border-left: 1px solid black;
-                margin-left: 3px;
                 & > .edit-word-btn, & > .delete-word-btn {
                     width: 25px;
                     height: 25px;

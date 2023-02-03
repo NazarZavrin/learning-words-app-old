@@ -27,7 +27,7 @@ groupsRouter.post(/\/(favourite-groups)?/, (req, res, next) => {
     // console.log(req.body);
     // let everythingIsOk = true;
     let user = await findIfUnique(database.collection("users"), {passkey: req.passkey});
-    if (user === false) {
+    if (!req.passkey || user === false) {
         res.json({success: false});
         return;
     }
@@ -61,7 +61,7 @@ groupsRouter.get(/^\/(favourite-groups)?$/, async (req, res) => {
     // console.log(req.method, req.url);
     let gettingFavouriteGroups = req.url.includes("favourite-groups");
     let user = await findIfUnique(database.collection("users"), {passkey: req.passkey});
-    if (user === false) {
+    if (!req.passkey || user === false) {
         res.json({success: false});
         return;
     }
@@ -72,16 +72,17 @@ groupsRouter.get(/^\/(favourite-groups)?$/, async (req, res) => {
     res.json({success: true, groups: result});
 })
 
-groupsRouter.get("/view/:groupName", async (req, res) => {
-    // console.log(req.params.groupName);
+groupsRouter.search("/view", (req, res, next) => {
+    express.text({limit: req.get('content-length')})(req, res, next);
+}, async (req, res) => {
     // console.log(req.passkey);
     let user = await findIfUnique(database.collection("users"), {passkey: req.passkey});
-    if (user === false) {
+    if (!req.passkey || user === false) {
         res.send("failure");
         return;
     }
-    let group = await findIfUnique(database.collection("groups"), {ownersObjectId: user._id, name: req.params.groupName});
-    if (group === false) {
+    let group = await findIfUnique(database.collection("groups"), {ownersObjectId: user._id, name: req.body});
+    if (!req.body || group === false) {
         res.send("failure");
         return;
     }
@@ -96,37 +97,50 @@ groupsRouter.put("/add-word", (req, res, next) => {
 }, async (req, res) => {
     // console.log(req.body);
     // console.log(req.passkey);
-    let groupName = req.get("Group-Name");
-    // console.log(groupName);
     let user = await findIfUnique(database.collection("users"), {passkey: req.passkey});
-    if (user === false) {
+    if (!req.passkey || user === false) {
+        res.json({success: false});
+        return;
+    }
+    let group = await findIfUnique(database.collection("groups"), {ownersObjectId: user._id, name: req.body.groupName});
+    if (!req.body.groupName || group === false) {
         res.json({success: false});
         return;
     }
     let wordObject = {
         word: req.body.word,
         translation: req.body.translation,
-        groupsName: groupName,
-        ownersObjectId: user._id,
-        creationTime: Date.now(),
     }
-    let updateResult = await database.collection("groups").updateOne({ownersObjectId: user._id, name: groupName}, {$push: {words: wordObject}});
+    let suchWordExists = false;
+    for (let i = 0; i < group.words?.length; i++) {
+        let currentWord = group.words[i];
+        if (currentWord.word === wordObject.word && currentWord.translation === wordObject.translation) {
+            suchWordExists = true;
+            break;
+        }
+    }
+    if (suchWordExists) {
+        res.json({success: false, message: "Such word with such translation already exists."});
+        return;
+    }
+    Object.assign(wordObject, { groupsName: req.body.groupName, ownersObjectId: user._id, creationTime: Date.now(), });
+    let updateResult = await database.collection("groups").updateOne({_id: group._id}, {$push: {words: wordObject}});
     if (!updateResult.acknowledged) {
         res.json({success: false});
         return;
     }
     res.json({success: true});
 })
-groupsRouter.get("/get-words", async (req, res) => {
-    let groupName = req.get("Group-Name");
-    // console.log(groupName);
+groupsRouter.search("/get-words", (req, res, next) => {
+    express.text({limit: req.get('content-length')})(req, res, next);
+}, async (req, res) => {
     let user = await findIfUnique(database.collection("users"), {passkey: req.passkey});
     if (!req.passkey || user === false) {
         res.json({success: false});
         return;
     }
-    let group = await findIfUnique(database.collection("groups"), {ownersObjectId: user._id, name: groupName});
-    if (!groupName || group === false) {
+    let group = await findIfUnique(database.collection("groups"), {ownersObjectId: user._id, name: req.body});
+    if (!req.body || group === false) {
         res.json({success: false});
         return;
     }
@@ -138,67 +152,72 @@ groupsRouter.get("/get-words", async (req, res) => {
     }
     res.json({success: true, words: JSON.stringify(words)});
 })
-
-groupsRouter.patch("/change/:infoPart", (req, res, next) => {
-    if (req.params.infoPart !== "status") {
-        console.log("parsing body, infoPart = " + req.params.infoPart);
-        express.json({limit: req.get("content-length")})(req, res, next);
-    } else {
-        next();
-    }
+groupsRouter.patch("/change/name", (req, res, next) => {
+    express.json({limit: req.get("content-length")})(req, res, next);
 }, async (req, res) => {
-    let updateAction, updatedData;
-    if (req.params.infoPart === "name") {
-        if (!req.body.newGroupName) {
-            res.json({success: false});
-            return;
-        }
-        updateAction = {$set: {name: req.body.newGroupName}};
-        updatedData = {newGroupName: req.body.newGroupName};
+    if (!req.body.newGroupName) {
+        res.json({success: false});
+        return;
     }
-    let groupName = req.get("Group-Name");
-    // console.log(groupName);
+    let user = await findIfUnique(database.collection("users"), {passkey: req.passkey});
+    if (!req.passkey || user === false) {
+        res.json({success: false});
+        return;
+    }
+    let group = await findIfUnique(database.collection("groups"), {ownersObjectId: user._id, name: req.body.oldGroupName});
+    if (!req.body.oldGroupName || group === false) {
+        res.json({success: false});
+        return;
+    }
+    if (req.body.password === user.password) {
+        let updateResult = await database.collection("groups").updateOne({_id: group._id}, {$set: {name: req.body.newGroupName}});
+        if (updateResult.acknowledged) {
+            res.json({success: true, newGroupName: req.body.newGroupName});
+        } else {
+            res.json({success: false});
+        }
+    } else {
+        res.json({success: false, message: "Password don't match."});
+    }
+})
+groupsRouter.patch("/change/status", (req, res, next) => {
+    express.text({limit: req.get("content-length")})(req, res, next);
+}, async (req, res) => {
     // console.log(req.body);
     let user = await findIfUnique(database.collection("users"), {passkey: req.passkey});
     if (!req.passkey || user === false) {
         res.json({success: false});
         return;
     }
-    let group = await findIfUnique(database.collection("groups"), {ownersObjectId: user._id, name: groupName});
-    if (!groupName || group === false) {
+    let group = await findIfUnique(database.collection("groups"), {ownersObjectId: user._id, name: req.body});
+    if (!req.body || group === false) {
         res.json({success: false});
         return;
     }
-    if (req.params.infoPart === "status") {
-        updateAction = {$set: {isFavourite: !group.isFavourite}};
-        updatedData = {groupIsFavoutite: !group.isFavourite};
-    }
-    let updateResult = await database.collection("groups").updateOne({_id: group._id}, updateAction);
+    let updateResult = await database.collection("groups").updateOne({_id: group._id}, {$set: {isFavourite: !group.isFavourite}});
     if (!updateResult.acknowledged) {
         res.json({success: false});
         return;
     }
-    res.json(Object.assign({success: true}, updatedData));
+    res.json({success: true, groupIsFavoutite: !group.isFavourite});
 })
 
 groupsRouter.delete("/delete", (req, res, next) => {
     express.json({limit: req.get("content-length")})(req, res, next);
 }, async (req, res) => {
-    let groupName = req.get("Group-Name");
-    // console.log(groupName);
     // console.log(req.body);
     let user = await findIfUnique(database.collection("users"), {passkey: req.passkey});
     if (!req.passkey || !req.body.password || user === false) {
         res.json({success: false});
         return;
     }
-    let group = await findIfUnique(database.collection("groups"), {ownersObjectId: user._id, name: groupName});
-    if (!groupName || group === false) {
+    let group = await findIfUnique(database.collection("groups"), {ownersObjectId: user._id, name: req.body.groupName});
+    if (!req.body.groupName || group === false) {
         res.json({success: false});
         return;
     }
     if (req.body.password === user.password) {
-        let deleteResult = await database.collection("groups").deleteOne({ownersObjectId: user._id, name: groupName});
+        let deleteResult = await database.collection("groups").deleteOne({_id: group._id});
         if (deleteResult.acknowledged) {
             res.json({success: true});
         } else {
@@ -209,4 +228,4 @@ groupsRouter.delete("/delete", (req, res, next) => {
     }
 })
 
-module.exports = {groupsRouter}
+module.exports = {groupsRouter};

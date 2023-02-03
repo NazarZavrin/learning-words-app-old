@@ -1,12 +1,10 @@
 "use strict";
 console.log(HTMLElement.prototype);
 console.log("now:");
-// console.log("add posibitity to delete account");
-// console.log("delete groups of the user after deletion of the user");
+console.log("send name of group in request body instead of headers");
 console.log("group creation in class Group");
 console.log("copy (duplicate) selected word to another group");
 console.log('<section class="checkboxes"></section> to hide word/translation using height: 0');
-console.log("groups.js: fetch(location.href + '/groups/view/' + groupName) groupName might be in russian, send it in headers/body");
 console.log("during studying at college:");
 console.log("как отправлять запросы (например пост) в node js? (study node-fetch)");
 console.log("make a route, which checks if password is correct and returns correct/incorrect. use it while changing profile's info and delete account");
@@ -54,7 +52,7 @@ deleteAccountBtn.addEventListener("click", async event => {
     background-color: dodgerblue; color: white;
     border-radius: 3px;
     padding: 1px 3px;`;
-    let checkPasswordBtn = createElement({content: "OK", style: checkPasswordBtnStyles});
+    let checkPasswordBtn = createElement({content: "Delete account", style: checkPasswordBtnStyles});
     checkPasswordBtn.addEventListener("click", async event => {
         let everythingIsCorrect = true;
         if (passwordInput.value.length === 0) {
