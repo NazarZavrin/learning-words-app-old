@@ -1,9 +1,31 @@
 "use strict";
 import { setWarning, createWarningAfterElement, showModalWindow, createElement, showPassword} from "./useful.js";
 
+
 export default class Word {
-    constructor(params) {
-        // create a new instance
+    constructor(wordObj) {
+        let wordElement = createElement({class: "word-element"});
+        let word = createElement({content: wordObj.word, class: "word-element__word"});
+        let translation = createElement({content: wordObj.translation, class: "word-element__translation"});
+        wordElement.append(word);
+        wordElement.append(translation);
+        let buttons1 = createElement({class: "word-element__btns"});// delete or edit word
+        let editWordBtn = createElement({class: "edit-word-btn"});
+        editWordBtn.innerHTML = "<img src='/img/edit.png'>";
+        let deleteWordBtn = createElement({class: "delete-word-btn"});
+        deleteWordBtn.innerHTML = "<img src='/img/trash-can.png'>";
+        buttons1.append(editWordBtn);
+        buttons1.append(deleteWordBtn);
+        wordElement.prepend(buttons1);
+        let buttons2 = createElement({class: "word-element__auxiliary"});
+        let select = createElement({class: "select-this-word"});
+        let wordsNumber = createElement({class: "words-number"});
+        wordsNumber.textContent = wordObj.number;
+        wordsNumber.setAttribute("contenteditable", "true");
+        buttons2.append(select);
+        buttons2.append(wordsNumber);
+        wordElement.append(buttons2);
+        return wordElement;
     }
     static changeWord(){
         

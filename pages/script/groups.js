@@ -177,29 +177,28 @@ async function showWords(groupName) {
     //     setTimeout(() => resolve(1), 1000);// to see how the loading icon works
     // })
     wordsSection.classList.remove("loading");
-    for (let i = 0; i < result.words.length; i++) {
-        wordsSection.append(getWordElement(result.words[i]));
-    }
+    
     if (result.words.length === 0) {
         wordsSection.textContent = "Group doesn't contain any word.";
+    } else {
+        // console.log(result.words);
+        result.words.sort((first, second) => { // mix elements in array
+            let num = Math.round(Math.random() * 7) - 4;
+            console.log(num);
+            return num;
+        })
+        let clonedArray = result.words.concat();
+        console.log(clonedArray);
+        result.words.sort((first, second) => {
+            return first.number - second.number;
+        })
+        console.log(result.words);
+
+        for (let i = 0; i < result.words.length; i++) {
+            wordsSection.append(new Word(result.words[i]));
+        }
     }
     addHandlersToViewGroupBlock(groupName);
-}
-function getWordElement(wordObj) {
-    let wordElement = createElement({class: "word-element"});
-    let word = createElement({content: wordObj.word, class: "word-element__word"});
-    let translation = createElement({content: wordObj.translation, class: "word-element__translation"});
-    wordElement.append(word);
-    wordElement.append(translation);
-    let buttons = createElement({class: "word-element__btns"});// delete or edit word
-    let editWordBtn = createElement({class: "edit-word-btn"});
-    editWordBtn.innerHTML = "<img src='/img/edit.png'>";
-    let deleteWordBtn = createElement({class: "delete-word-btn"});
-    deleteWordBtn.innerHTML = "<img src='/img/trash-can.png'>";
-    buttons.append(editWordBtn);
-    buttons.append(deleteWordBtn);
-    wordElement.append(buttons);
-    return wordElement;
 }
 function addHandlersToViewGroupBlock(){
     let viewGroupBlock = document.body.querySelector("#view-group");
@@ -276,7 +275,7 @@ function addHandlersToViewGroupBlock(){
                         if (!wordsSection.querySelector(".word-element")) {// if there arent any words in the section...
                             wordsSection.innerHTML = "";// ...erase the message "Group doesn't contain any word."
                         }
-                        wordsSection.append(getWordElement(requestBody));
+                        wordsSection.append(new Word({...requestBody, number: result.number}));
                         return;
                     }
                 }

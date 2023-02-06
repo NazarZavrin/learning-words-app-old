@@ -535,32 +535,31 @@ body {
         padding: 5px;
         & > .word-element {
             display: inline-grid;
-            grid-template: auto auto / auto 3px auto;
+            grid-template: auto auto / auto 3px auto 3px auto;
             border: 1px solid gray;
             border-radius: 3px;
             padding: 3px;
             margin: 3px;
-            & > div {
-                // border: 0.5px solid #000;
-            }
             & > .word-element__word {
                 grid-row-start: 1;
+                grid-column-start: 3;
                 border-bottom: 1px solid black;
                 text-align: center;
             }
             & > .word-element__translation {
                 grid-row-start: 2;
+                grid-column-start: 3;
                 text-align: center;
             }
             & > .word-element__btns {
-                grid-column-start: 3;
+                // grid-column-start: 3;
                 grid-row-start: 1;
                 grid-row-end: 3;
-                border-left: 1px solid black;
+                border-right: 1px solid black;
                 & > .edit-word-btn, & > .delete-word-btn {
                     width: 25px;
                     height: 25px;
-                    margin-left: 3px;
+                    margin-right: 3px;
                     & > img {
                         max-width: 100%;
                     }
@@ -573,7 +572,33 @@ body {
                     background-color: red;
                 }
             }
-            
+            & > .word-element__auxiliary {
+                grid-row-start: 1;
+                grid-row-end: 3;
+                grid-column-start: 5;
+                border-left: 1px solid black;
+                & > .words-number, & > .select-this-word {
+                    width: 25px;
+                    height: 25px;
+                    margin-left: 3px;
+                }
+                & > .words-number {
+                    width: auto;
+                    font-size: 18px;
+                    border: 2px solid dodgerblue;
+                    border-radius: 3px;
+                    // margin-bottom: 3px;
+                    padding: 0 3px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+                & > .select-this-word {
+                    border-radius: 50%;
+                    border: 3px solid black;
+                    margin-bottom: 3px;
+                }
+            }
         }
     }
 }

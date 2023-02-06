@@ -111,25 +111,31 @@ groupsRouter.put("/add-word", (req, res, next) => {
         word: req.body.word,
         translation: req.body.translation,
     }
-    let suchWordExists = false;
+    let suchWordExists = false, maxNumber = -1;
     for (let i = 0; i < group.words?.length; i++) {
         let currentWord = group.words[i];
         if (currentWord.word === wordObject.word && currentWord.translation === wordObject.translation) {
             suchWordExists = true;
             break;
         }
+        if (currentWord.number > maxNumber) {
+            maxNumber = currentWord.number;
+        }
     }
     if (suchWordExists) {
         res.json({success: false, message: "Such word with such translation already exists."});
         return;
     }
-    Object.assign(wordObject, { groupsName: req.body.groupName, ownersObjectId: user._id, creationTime: Date.now(), });
+    if (maxNumber < 0) {
+        maxNumber = 0;
+    }
+    Object.assign(wordObject, { groupsObjectId: group._id, ownersObjectId: user._id, number: maxNumber + 1, creationTime: Date.now(), });
     let updateResult = await database.collection("groups").updateOne({_id: group._id}, {$push: {words: wordObject}});
     if (!updateResult.acknowledged) {
         res.json({success: false});
         return;
     }
-    res.json({success: true});
+    res.json({success: true, number: maxNumber + 1});
 })
 groupsRouter.search("/get-words", (req, res, next) => {
     express.text({limit: req.get('content-length')})(req, res, next);
@@ -145,7 +151,7 @@ groupsRouter.search("/get-words", (req, res, next) => {
         return;
     }
     let words = group?.words?.map(wordObject => {
-        return {word: wordObject.word, translation: wordObject.translation,}
+        return {word: wordObject.word, translation: wordObject.translation, number: wordObject.number}
     })
     if (typeof words === "undefined") {
         words = [];
