@@ -33,7 +33,7 @@ export default class Group {
                 everythingIsCorrect = false;
             } else if (newGroupNameInput.value.length > 20) {
                 createWarningAfterElement(newGroupNameInput);
-                setWarning(newGroupNameInput.nextElementSibling, "Length of new name of group not exceed 20 characters.", "newNameInput");
+                setWarning(newGroupNameInput.nextElementSibling, "Length of new name must not exceed 20 characters.", "newNameInput");
                 everythingIsCorrect = false;
             } else if (newGroupNameInput.value === groupNameBlock.textContent) {
                 createWarningAfterElement(newGroupNameInput);

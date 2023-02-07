@@ -244,7 +244,7 @@ body {
 }
 .change-password-modal-window, .check-password-modal-window, 
 .new-group-modal-window, .new-word-modal-window,
-.change-group-name-modal-window {
+.change-group-name-modal-window, .change-word-modal-window {
     header {
         text-align: center;
         margin-bottom: 5px;
@@ -560,6 +560,7 @@ body {
                     width: 25px;
                     height: 25px;
                     margin-right: 3px;
+                    border-radius: 3px;
                     & > img {
                         max-width: 100%;
                     }

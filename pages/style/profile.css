@@ -347,18 +347,18 @@ body {
 
 .change-password-modal-window, .check-password-modal-window,
 .new-group-modal-window, .new-word-modal-window,
-.change-group-name-modal-window {
+.change-group-name-modal-window, .change-word-modal-window {
   padding: 10px;
 }
 .change-password-modal-window header, .check-password-modal-window header,
 .new-group-modal-window header, .new-word-modal-window header,
-.change-group-name-modal-window header {
+.change-group-name-modal-window header, .change-word-modal-window header {
   text-align: center;
   margin-bottom: 5px;
 }
 .change-password-modal-window input:not([type=checkbox]), .check-password-modal-window input:not([type=checkbox]),
 .new-group-modal-window input:not([type=checkbox]), .new-word-modal-window input:not([type=checkbox]),
-.change-group-name-modal-window input:not([type=checkbox]) {
+.change-group-name-modal-window input:not([type=checkbox]), .change-word-modal-window input:not([type=checkbox]) {
   font: inherit;
   display: inline-block;
   width: 150px;
@@ -372,7 +372,7 @@ body {
 .new-group-modal-window > .password-block, .new-word-modal-window > .old-password-block, .new-word-modal-window > .new-password-block, .new-word-modal-window > .password-block,
 .change-group-name-modal-window > .old-password-block,
 .change-group-name-modal-window > .new-password-block,
-.change-group-name-modal-window > .password-block {
+.change-group-name-modal-window > .password-block, .change-word-modal-window > .old-password-block, .change-word-modal-window > .new-password-block, .change-word-modal-window > .password-block {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -384,7 +384,7 @@ body {
 .new-group-modal-window > .password-block > div, .new-word-modal-window > .old-password-block > div, .new-word-modal-window > .new-password-block > div, .new-word-modal-window > .password-block > div,
 .change-group-name-modal-window > .old-password-block > div,
 .change-group-name-modal-window > .new-password-block > div,
-.change-group-name-modal-window > .password-block > div {
+.change-group-name-modal-window > .password-block > div, .change-word-modal-window > .old-password-block > div, .change-word-modal-window > .new-password-block > div, .change-word-modal-window > .password-block > div {
   display: flex;
   width: -webkit-max-content;
   width: -moz-max-content;
@@ -399,7 +399,7 @@ body {
 .new-group-modal-window > .password-block > div > input, .new-word-modal-window > .old-password-block > div > input, .new-word-modal-window > .new-password-block > div > input, .new-word-modal-window > .password-block > div > input,
 .change-group-name-modal-window > .old-password-block > div > input,
 .change-group-name-modal-window > .new-password-block > div > input,
-.change-group-name-modal-window > .password-block > div > input {
+.change-group-name-modal-window > .password-block > div > input, .change-word-modal-window > .old-password-block > div > input, .change-word-modal-window > .new-password-block > div > input, .change-word-modal-window > .password-block > div > input {
   margin-right: 5px;
 }
 .change-password-modal-window > .create-new-group-btn, .change-password-modal-window > .add-new-word-btn, .change-password-modal-window > .change-group-name-btn, .change-password-modal-window > .check-password-btn, .check-password-modal-window > .create-new-group-btn, .check-password-modal-window > .add-new-word-btn, .check-password-modal-window > .change-group-name-btn, .check-password-modal-window > .check-password-btn,
@@ -410,7 +410,7 @@ body {
 .change-group-name-modal-window > .create-new-group-btn,
 .change-group-name-modal-window > .add-new-word-btn,
 .change-group-name-modal-window > .change-group-name-btn,
-.change-group-name-modal-window > .check-password-btn {
+.change-group-name-modal-window > .check-password-btn, .change-word-modal-window > .create-new-group-btn, .change-word-modal-window > .add-new-word-btn, .change-word-modal-window > .change-group-name-btn, .change-word-modal-window > .check-password-btn {
   background-color: dodgerblue;
   color: white;
   padding: 0 5px;
@@ -419,7 +419,7 @@ body {
 }
 .change-password-modal-window .warning, .check-password-modal-window .warning,
 .new-group-modal-window .warning, .new-word-modal-window .warning,
-.change-group-name-modal-window .warning {
+.change-group-name-modal-window .warning, .change-word-modal-window .warning {
   max-width: 100%;
   font-style: normal;
   display: inline-block;
@@ -684,6 +684,7 @@ body {
   width: 25px;
   height: 25px;
   margin-right: 3px;
+  border-radius: 3px;
 }
 #view-group > main > .word-element > .word-element__btns > .edit-word-btn > img, #view-group > main > .word-element > .word-element__btns > .delete-word-btn > img {
   max-width: 100%;

@@ -4,11 +4,11 @@ import { setWarning, createWarningAfterElement, showModalWindow, createElement, 
 
 export default class Word {
     constructor(wordObj) {
-        let wordElement = createElement({class: "word-element"});
-        let word = createElement({content: wordObj.word, class: "word-element__word"});
-        let translation = createElement({content: wordObj.translation, class: "word-element__translation"});
-        wordElement.append(word);
-        wordElement.append(translation);
+        let wordContainer = createElement({class: "word-element"});
+        let wordElement = createElement({content: wordObj.word, class: "word-element__word"});
+        let translationElement = createElement({content: wordObj.translation, class: "word-element__translation"});
+        wordContainer.append(wordElement);
+        wordContainer.append(translationElement);
         let buttons1 = createElement({class: "word-element__btns"});// delete or edit word
         let editWordBtn = createElement({class: "edit-word-btn"});
         editWordBtn.innerHTML = "<img src='/img/edit.png'>";
@@ -16,7 +16,7 @@ export default class Word {
         deleteWordBtn.innerHTML = "<img src='/img/trash-can.png'>";
         buttons1.append(editWordBtn);
         buttons1.append(deleteWordBtn);
-        wordElement.prepend(buttons1);
+        wordContainer.prepend(buttons1);
         let buttons2 = createElement({class: "word-element__auxiliary"});
         let select = createElement({class: "select-this-word"});
         let wordsNumber = createElement({class: "words-number"});
@@ -24,15 +24,132 @@ export default class Word {
         wordsNumber.setAttribute("contenteditable", "true");
         buttons2.append(select);
         buttons2.append(wordsNumber);
-        wordElement.append(buttons2);
-        return wordElement;
+        wordContainer.append(buttons2);
+        return wordContainer;
     }
-    static changeWord(){
-        
+    static changeWord(groupName, wordContainer){
+        let wordObject = {}, wordElement, translationElement;
+        for (const element of wordContainer.children) {
+            if (element.className?.includes("__word")) {
+                wordObject.word = element.textContent;
+                wordElement = element;
+            }
+            if (element.className?.includes("__translation")) {
+                wordObject.translation = element.textContent;
+                translationElement = element;
+            }
+        }
+        let newWordLabel = createElement({name: "header", content: "Enter changed word:"},);
+        let newWordInput = createElement({name: "input"});
+        newWordInput.setAttribute("autocomplete", "off");
+        newWordInput.value = wordObject.word;
+        let newTranslationLabel = createElement({name: "header", content: "Enter changed translation:"},);
+        let newTranslationInput = createElement({name: "input"});
+        newTranslationInput.setAttribute("autocomplete", "off");
+        newTranslationInput.value = wordObject.translation;
+        let passwordLabel = createElement({name: "header", content: "To verify personality enter your password:"},);
+        let passwordInput = createElement({name: "input"});
+        passwordInput.setAttribute("type", "password");
+        passwordInput.setAttribute("autocomplete", "off");
+        let passwordBlock = createElement({name: "form", class: "password-block"});
+        passwordBlock.innerHTML = `<div class="show-password">
+        <input type="checkbox">Show password</div>`;
+        passwordBlock.prepend(passwordInput);
+        let changeWordBtn = createElement({content: "Change name of group", class: "change-group-name-btn"});
+        changeWordBtn.addEventListener("click", async event => {
+            createWarningAfterElement(changeWordBtn);
+            setWarning(changeWordBtn.nextElementSibling, '');
+            let everythingIsCorrect = true;
+            // ↓ checking new word 
+            if (newWordInput.value.length == 0) {
+                createWarningAfterElement(newWordInput);
+                setWarning(newWordInput.nextElementSibling, "Please, enter changed word.", "newWordInput");
+                everythingIsCorrect = false;
+            } else if (newWordInput.value.length > 20) {
+                createWarningAfterElement(newWordInput);
+                setWarning(newWordInput.nextElementSibling, "Length of changed word must not exceed 20 characters.", "newNameInput");
+                everythingIsCorrect = false;
+            } else {
+                setWarning(newWordInput.nextElementSibling, "");
+            }
+            // ↓ checking new translation 
+            if (newTranslationInput.value.length == 0) {
+                createWarningAfterElement(newTranslationInput);
+                setWarning(newTranslationInput.nextElementSibling, "Please, enter changed translation.", "newTranslationInput");
+                everythingIsCorrect = false;
+            } else if (newTranslationInput.value.length > 20) {
+                createWarningAfterElement(newTranslationInput);
+                setWarning(newTranslationInput.nextElementSibling, "Length of changed translation must not exceed 20 characters.", "newNameInput");
+                everythingIsCorrect = false;
+            } else {
+                setWarning(newTranslationInput.nextElementSibling, "");
+            }
+            if (passwordInput.value.length === 0) {
+                createWarningAfterElement(passwordInput);
+                setWarning(passwordInput.nextElementSibling, "Please, enter password.", "passwordInput");
+                everythingIsCorrect = false;
+            } else {
+                setWarning(passwordInput.nextElementSibling, "");
+            }
+            if (newWordInput.value === wordObject.word && newTranslationInput.value === wordObject.translation) {
+                createWarningAfterElement(changeWordBtn);
+                setWarning(changeWordBtn.nextElementSibling, "Old and new word and translation coincide.");
+                everythingIsCorrect = false;
+            }
+            if (everythingIsCorrect === false) {
+                return;
+            }
+            // console.log(newGroupNameInput.value);
+            let requestBody = {
+                oldWord: wordObject,
+                newWord: {
+                    word: newWordInput.value,
+                    translation: newTranslationInput.value
+                },
+                groupName,// groupName: groupName,
+                password: passwordInput.value,
+            };
+            // return;
+            let response = await fetch(location.href + "/words/change", {
+                method: "PATCH",
+                body: JSON.stringify(requestBody),
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            let result = {};
+            if (response.ok) {
+                result = await response.json();
+                console.log(result);
+                // console.log(Date.now());
+                if (result.success) {
+                    event.target.closest(".modal-window").closeWindow();
+                    wordElement.textContent = result.newWord;
+                    translationElement.textContent = result.newTranslation;
+                    return;
+                }
+            }
+            if (result?.message?.includes("Password don't match")) {
+                createWarningAfterElement(passwordInput);
+                setWarning(passwordInput.nextElementSibling, result.message, "passwordInput");
+                return;
+            }
+            result.message = String(result?.message || "Updating error. Please try again.");
+            createWarningAfterElement(changeWordBtn);
+            setWarning(changeWordBtn.nextElementSibling, result.message, "changeWordBtn");
+            console.log(result?.message);
+        })
+        function clickModalWindow(event) {
+            if (passwordInput) {
+                showPassword([".show-password"], passwordInput, event);
+            }
+        }
+        showModalWindow(document.body, [newWordLabel, newWordInput, newTranslationLabel, newTranslationInput, passwordLabel, passwordBlock, changeWordBtn], 
+            {className: "change-word-modal-window", handlers: [{eventName: "click", handler: clickModalWindow}]});
     }
-    static deleteWord(groupName, wordElement){
+    static deleteWord(groupName, wordContainer){
         let wordObject = {};
-        for (const element of wordElement.children) {
+        for (const element of wordContainer.children) {
             if (element.className?.includes("__word")) {
                 wordObject.word = element.textContent;
             }
@@ -90,8 +207,8 @@ export default class Word {
                 console.log(result);
                 if (result.success) {
                     event.target.closest(".modal-window").closeWindow();
-                    let wordsSection = wordElement.parentElement;
-                    wordElement.remove();
+                    let wordsSection = wordContainer.parentElement;
+                    wordContainer.remove();
                     if (!wordsSection.querySelector(".word-element")) {
                         wordsSection.textContent = "Group doesn't contain any word."
                     }

@@ -298,8 +298,12 @@ function addHandlersToViewGroupBlock(){
         }
     })
     wordsSection.addEventListener("click", event => {
+        if (event.target.closest(".edit-word-btn")) {
+            Word.changeWord(groupNameBlock.textContent, event.target.closest(".word-element"));
+        }
         if (event.target.closest(".delete-word-btn")) {
             Word.deleteWord(groupNameBlock.textContent, event.target.closest(".word-element"));
         }
+        
     })
 }
