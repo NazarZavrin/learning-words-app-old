@@ -49,7 +49,7 @@ groupsRouter.post(/\/(favourite-groups)?/, (req, res, next) => {
         return;
     }
     let updateResult = await database.collection("users").updateOne({_id: groupObject.ownersObjectId}, {$push: {groups: insertResult.insertedId}});
-    if (!updateResult.acknowledged) {
+    if (!updateResult.acknowledged || !insertResult.insertedId) {
         res.json({success: false});
         return;
     }
@@ -126,16 +126,35 @@ groupsRouter.put("/add-word", (req, res, next) => {
         res.json({success: false, message: "Such word with such translation already exists."});
         return;
     }
-    if (maxNumber < 0) {
-        maxNumber = 0;
+    let numberToSet = maxNumber > 0 ? maxNumber + 1 : 1;
+    if (numberToSet > 99999.999) {// number must have 5 digits before the decimal point and 3 after it
+        numberToSet = 99999.999;
+        // console.log("length", group.words?.length);
+        for (let i = 0, j = 0; i < group.words?.length && j < 10**3; i++) {
+            // console.log("#", i, j);
+            // console.log(group.words[i].word, group.words[i].number);
+            if (group.words[i].number === numberToSet) {
+                numberToSet -= 0.001;
+                numberToSet = +numberToSet.toFixed(3);
+                if (j < 10**3) {// to avoid infinite cycle
+                    // console.log("j", j);
+                    i = -1;// increment in the end adds one and i will be 0
+                    j++;
+                    continue;
+                } else {
+                    res.json({success: false});
+                    return;
+                }
+            }
+        }
     }
-    Object.assign(wordObject, { groupsObjectId: group._id, ownersObjectId: user._id, number: maxNumber + 1, creationTime: Date.now(), });
+    Object.assign(wordObject, { groupsObjectId: group._id, ownersObjectId: user._id, number: numberToSet, creationTime: Date.now(), });
     let updateResult = await database.collection("groups").updateOne({_id: group._id}, {$push: {words: wordObject}});
     if (!updateResult.acknowledged) {
         res.json({success: false});
         return;
     }
-    res.json({success: true, number: maxNumber + 1});
+    res.json({success: true, number: numberToSet});
 })
 groupsRouter.search("/get-words", (req, res, next) => {
     express.text({limit: req.get('content-length')})(req, res, next);
@@ -225,6 +244,16 @@ groupsRouter.delete("/delete", (req, res, next) => {
     if (req.body.password === user.password) {
         let deleteResult = await database.collection("groups").deleteOne({_id: group._id});
         if (deleteResult.acknowledged) {
+            let updateResult = await database.collection("users").updateOne({_id: user._id}, {$pull: {groups: group._id}});
+            if (!updateResult.acknowledged) {
+                let error = {
+                    message: "Could not delete group's ObjectId from user.groups array after deletion of group.",
+                    userObjectId: user._id,
+                    groupsObjectId: group._id,
+                    DateUTC: new Date().toUTCString(),
+                };
+                await database.collection("errors").insertOne(error);
+            }
             res.json({success: true});
         } else {
             res.json({success: false});

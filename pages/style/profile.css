@@ -656,7 +656,7 @@ body {
 #view-group > main.loading {
   background: no-repeat center center/auto 25% url("/img/rounded-blocks.gif");
 }
-#view-group > main > .word-element {
+#view-group > main > .word-container {
   display: inline-grid;
   grid-template: auto auto/auto 3px auto 3px auto;
   border: 1px solid gray;
@@ -664,50 +664,50 @@ body {
   padding: 3px;
   margin: 3px;
 }
-#view-group > main > .word-element > .word-element__word {
+#view-group > main > .word-container > .word-container__word {
   grid-row-start: 1;
   grid-column-start: 3;
   border-bottom: 1px solid black;
   text-align: center;
 }
-#view-group > main > .word-element > .word-element__translation {
+#view-group > main > .word-container > .word-container__translation {
   grid-row-start: 2;
   grid-column-start: 3;
   text-align: center;
 }
-#view-group > main > .word-element > .word-element__btns {
+#view-group > main > .word-container > .word-container__btns {
   grid-row-start: 1;
   grid-row-end: 3;
   border-right: 1px solid black;
 }
-#view-group > main > .word-element > .word-element__btns > .edit-word-btn, #view-group > main > .word-element > .word-element__btns > .delete-word-btn {
+#view-group > main > .word-container > .word-container__btns > .edit-word-btn, #view-group > main > .word-container > .word-container__btns > .delete-word-btn {
   width: 25px;
   height: 25px;
   margin-right: 3px;
   border-radius: 3px;
 }
-#view-group > main > .word-element > .word-element__btns > .edit-word-btn > img, #view-group > main > .word-element > .word-element__btns > .delete-word-btn > img {
+#view-group > main > .word-container > .word-container__btns > .edit-word-btn > img, #view-group > main > .word-container > .word-container__btns > .delete-word-btn > img {
   max-width: 100%;
 }
-#view-group > main > .word-element > .word-element__btns > .edit-word-btn {
+#view-group > main > .word-container > .word-container__btns > .edit-word-btn {
   background-color: dodgerblue;
   margin-bottom: 3px;
 }
-#view-group > main > .word-element > .word-element__btns > .delete-word-btn {
+#view-group > main > .word-container > .word-container__btns > .delete-word-btn {
   background-color: red;
 }
-#view-group > main > .word-element > .word-element__auxiliary {
+#view-group > main > .word-container > .word-container__auxiliary {
   grid-row-start: 1;
   grid-row-end: 3;
   grid-column-start: 5;
   border-left: 1px solid black;
 }
-#view-group > main > .word-element > .word-element__auxiliary > .words-number, #view-group > main > .word-element > .word-element__auxiliary > .select-this-word {
+#view-group > main > .word-container > .word-container__auxiliary > .words-number, #view-group > main > .word-container > .word-container__auxiliary > .select-this-word {
   width: 25px;
   height: 25px;
   margin-left: 3px;
 }
-#view-group > main > .word-element > .word-element__auxiliary > .words-number {
+#view-group > main > .word-container > .word-container__auxiliary > .words-number {
   width: auto;
   font-size: 18px;
   border: 2px solid dodgerblue;
@@ -717,7 +717,7 @@ body {
   justify-content: center;
   align-items: center;
 }
-#view-group > main > .word-element > .word-element__auxiliary > .select-this-word {
+#view-group > main > .word-container > .word-container__auxiliary > .select-this-word {
   border-radius: 50%;
   border: 3px solid black;
   margin-bottom: 3px;

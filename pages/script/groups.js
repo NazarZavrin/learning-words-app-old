@@ -89,8 +89,7 @@ async function updateGroups(updateFavouriteGroups = false) {
     let groupsElement = updateFavouriteGroups ? favouriteGroupsContent : groupsContent;
     if (response.ok) {
         result = await response.json();
-        console.log(result);
-        // console.log(Date.now());
+        // console.log(result);
         if (result.success && result.groups) {
             // await new Promise((resolve, reject) => {
             //     setTimeout(() => resolve(1), 1000);// to see how the loading icon works
@@ -162,10 +161,10 @@ async function showWords(groupName) {
     let result = {};
     if (response.ok) {
         result = await response.json();
-        console.log(result);
+        // console.log(result);
         if (typeof result.words === "string") {
             result.words = JSON.parse(result.words);
-            console.log(result.words);
+            // console.log(result.words);
         }
     }
     if (!result.success) {
@@ -181,19 +180,9 @@ async function showWords(groupName) {
     if (result.words.length === 0) {
         wordsSection.textContent = "Group doesn't contain any word.";
     } else {
-        // console.log(result.words);
-        result.words.sort((first, second) => { // mix elements in array
-            let num = Math.round(Math.random() * 7) - 4;
-            console.log(num);
-            return num;
-        })
-        let clonedArray = result.words.concat();
-        console.log(clonedArray);
         result.words.sort((first, second) => {
             return first.number - second.number;
         })
-        console.log(result.words);
-
         for (let i = 0; i < result.words.length; i++) {
             wordsSection.append(new Word(result.words[i]));
         }
@@ -207,85 +196,15 @@ function addHandlersToViewGroupBlock(){
     let wordsSection = viewGroupBlock.querySelector(".words-section");
     header.addEventListener("click", async event => {
         if (event.target.closest(".back")) {
-            viewGroupBlock.remove();
+            
             // ↓ if group info was changed or/and this group was added to / removed from "Favourite groups"
             // ↓ or was deleted, it must be displayed
             await updateGroups(true);
             await updateGroups();
+            viewGroupBlock.remove();
         }
         if (event.target.closest(".new-word")) {
-            let wordLabel = createElement({name: "header", content: "Enter new word:"},);
-            let wordInput = createElement({name: "input"});
-            wordInput.setAttribute("autocomplete", "off");
-            let translationLabel = createElement({name: "header", content: "Enter the translation of new word:"},);
-            let translationInput = createElement({name: "input"});
-            translationInput.setAttribute("autocomplete", "off");
-            let addNewWordBtn = createElement({content: "Add new word", class: "add-new-word-btn"});
-            addNewWordBtn.addEventListener("click", async event => {
-                createWarningAfterElement(addNewWordBtn);
-                setWarning(addNewWordBtn.nextElementSibling, '');
-                let everythingIsCorrect = true;
-                if (wordInput.value.length == 0) {
-                    createWarningAfterElement(wordInput);
-                    setWarning(wordInput.nextElementSibling, "Please, enter new word.", "wordInput");
-                    everythingIsCorrect = false;
-                } else if (wordInput.value.length > 20) {
-                    createWarningAfterElement(wordInput);
-                    setWarning(wordInput.nextElementSibling, "Length of new word must not exceed 20 characters.", "wordInput");
-                    everythingIsCorrect = false;
-                } else {
-                    setWarning(wordInput.nextElementSibling, "");
-                }
-                if (translationInput.value.length == 0) {
-                    createWarningAfterElement(translationInput);
-                    setWarning(translationInput.nextElementSibling, "Please, enter the translation of new word.", "translationInput");
-                    everythingIsCorrect = false;
-                } else if (translationInput.value.length > 20) {
-                    createWarningAfterElement(translationInput);
-                    setWarning(translationInput.nextElementSibling, "Length of translation must not exceed 20 characters.", "translationInput");
-                    everythingIsCorrect = false;
-                } else {
-                    setWarning(translationInput.nextElementSibling, "");
-                }
-                if (everythingIsCorrect === false) {
-                    return;
-                }
-                console.log(wordInput.value);
-                let requestBody = {
-                    groupName: groupNameBlock.textContent,
-                    word: wordInput.value,
-                    translation: translationInput.value,
-                };
-                // return;
-                let response = await fetch(location.href + "/groups/add-word", {
-                    method: "PUT",
-                    body: JSON.stringify(requestBody),
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                })
-                let result = {};
-                if (response.ok) {
-                    result = await response.json();
-                    console.log(result);
-                    // console.log(Date.now());
-                    if (result.success) {
-                        event.target.closest(".modal-window").closeWindow();
-                        let wordsSection = viewGroupBlock.querySelector(".words-section");
-                        if (!wordsSection.querySelector(".word-element")) {// if there arent any words in the section...
-                            wordsSection.innerHTML = "";// ...erase the message "Group doesn't contain any word."
-                        }
-                        wordsSection.append(new Word({...requestBody, number: result.number}));
-                        return;
-                    }
-                }
-                result.message = String(result?.message || "Creation error. Please try again.");
-                createWarningAfterElement(addNewWordBtn);
-                setWarning(addNewWordBtn.nextElementSibling, result.message, "addNewWordBtn");
-                console.log(result?.message);
-            })
-            showModalWindow(document.body, [wordLabel, wordInput, translationLabel, translationInput, addNewWordBtn], 
-                {className: "new-word-modal-window"});
+            Group.addWord(groupNameBlock.textContent, wordsSection);
         }
         if (event.target.closest(".change-group-name") || event.target.closest(".group-name")) {
             Group.changeGroupName(groupNameBlock);
@@ -299,11 +218,32 @@ function addHandlersToViewGroupBlock(){
     })
     wordsSection.addEventListener("click", event => {
         if (event.target.closest(".edit-word-btn")) {
-            Word.changeWord(groupNameBlock.textContent, event.target.closest(".word-element"));
+            Word.changeWord(groupNameBlock.textContent, event.target.closest(".word-container"));
         }
         if (event.target.closest(".delete-word-btn")) {
-            Word.deleteWord(groupNameBlock.textContent, event.target.closest(".word-element"));
+            Word.deleteWord(groupNameBlock.textContent, event.target.closest(".word-container"));
         }
         
+    })
+    wordsSection.addEventListener("focusin", event => {
+        if (event.target.closest(".words-number")) {
+            let oldNumber = event.target.textContent;
+            // console.log(oldNumber);
+            event.target.addEventListener("focusout", async event => {
+                let message = await Word.changeNumber(groupNameBlock.textContent, event.target, oldNumber);
+                if (message?.includes("number was changed")) {
+                    let wordContainers = [...wordsSection.querySelectorAll(".word-container")];
+                    wordContainers.sort((first, second) => {
+                        first = first.querySelector(".words-number").textContent;
+                        second = second.querySelector(".words-number").textContent;
+                        return first - second;
+                    })
+                    wordsSection.innerHTML = "";
+                    for (let i = 0; i < wordContainers.length; i++) {
+                        wordsSection.append(wordContainers[i]);
+                    }
+                }
+            }, {once: true});
+        }
     })
 }

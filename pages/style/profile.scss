@@ -533,25 +533,25 @@ body {
             background: no-repeat center center / auto 25% url("/img/rounded-blocks.gif");
         }
         padding: 5px;
-        & > .word-element {
+        & > .word-container {
             display: inline-grid;
             grid-template: auto auto / auto 3px auto 3px auto;
             border: 1px solid gray;
             border-radius: 3px;
             padding: 3px;
             margin: 3px;
-            & > .word-element__word {
+            & > .word-container__word {
                 grid-row-start: 1;
                 grid-column-start: 3;
                 border-bottom: 1px solid black;
                 text-align: center;
             }
-            & > .word-element__translation {
+            & > .word-container__translation {
                 grid-row-start: 2;
                 grid-column-start: 3;
                 text-align: center;
             }
-            & > .word-element__btns {
+            & > .word-container__btns {
                 // grid-column-start: 3;
                 grid-row-start: 1;
                 grid-row-end: 3;
@@ -573,7 +573,7 @@ body {
                     background-color: red;
                 }
             }
-            & > .word-element__auxiliary {
+            & > .word-container__auxiliary {
                 grid-row-start: 1;
                 grid-row-end: 3;
                 grid-column-start: 5;

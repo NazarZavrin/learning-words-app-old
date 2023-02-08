@@ -123,7 +123,7 @@ profileRouter.delete("/:passkey/delete", (req, res, next) => {
                 let error = {
                     message: "Could not delete groups after deletion of account.",
                     userObjectId: user._id,
-                    time: Date.now(),
+                    DateUTC: new Date().toUTCString(),
                 };
                 await database.collection("errors").insertOne(error);
             }

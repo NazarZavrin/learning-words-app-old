@@ -4,12 +4,12 @@ import { setWarning, createWarningAfterElement, showModalWindow, createElement, 
 
 export default class Word {
     constructor(wordObj) {
-        let wordContainer = createElement({class: "word-element"});
-        let wordElement = createElement({content: wordObj.word, class: "word-element__word"});
-        let translationElement = createElement({content: wordObj.translation, class: "word-element__translation"});
+        let wordContainer = createElement({class: "word-container"});
+        let wordElement = createElement({content: wordObj.word, class: "word-container__word"});
+        let translationElement = createElement({content: wordObj.translation, class: "word-container__translation"});
         wordContainer.append(wordElement);
         wordContainer.append(translationElement);
-        let buttons1 = createElement({class: "word-element__btns"});// delete or edit word
+        let buttons1 = createElement({class: "word-container__btns"});// delete or edit word
         let editWordBtn = createElement({class: "edit-word-btn"});
         editWordBtn.innerHTML = "<img src='/img/edit.png'>";
         let deleteWordBtn = createElement({class: "delete-word-btn"});
@@ -17,7 +17,7 @@ export default class Word {
         buttons1.append(editWordBtn);
         buttons1.append(deleteWordBtn);
         wordContainer.prepend(buttons1);
-        let buttons2 = createElement({class: "word-element__auxiliary"});
+        let buttons2 = createElement({class: "word-container__auxiliary"});
         let select = createElement({class: "select-this-word"});
         let wordsNumber = createElement({class: "words-number"});
         wordsNumber.textContent = wordObj.number;
@@ -27,7 +27,7 @@ export default class Word {
         wordContainer.append(buttons2);
         return wordContainer;
     }
-    static changeWord(groupName, wordContainer){
+    static changeWord(groupName, wordContainer) {
         let wordObject = {}, wordElement, translationElement;
         for (const element of wordContainer.children) {
             if (element.className?.includes("__word")) {
@@ -121,7 +121,6 @@ export default class Word {
             if (response.ok) {
                 result = await response.json();
                 console.log(result);
-                // console.log(Date.now());
                 if (result.success) {
                     event.target.closest(".modal-window").closeWindow();
                     wordElement.textContent = result.newWord;
@@ -146,6 +145,48 @@ export default class Word {
         }
         showModalWindow(document.body, [newWordLabel, newWordInput, newTranslationLabel, newTranslationInput, passwordLabel, passwordBlock, changeWordBtn], 
             {className: "change-word-modal-window", handlers: [{eventName: "click", handler: clickModalWindow}]});
+    }
+    static async changeNumber(groupName, numberInput, oldNumber) {
+        let newNumber = getNormalNumber(numberInput.textContent);
+        if (Number.isNaN(newNumber)) {
+            numberInput.textContent = oldNumber;
+            return;
+        }
+        numberInput.textContent = newNumber;
+        let wordObject = {}, wordContainer = numberInput.closest(".word-container");
+        for (const element of wordContainer.children) {
+            if (element.className?.includes("__word")) {
+                wordObject.word = element.textContent;
+            }
+            if (element.className?.includes("__translation")) {
+                wordObject.translation = element.textContent;
+            }
+        }
+        let requestBody = {
+            ...wordObject,// add here entries of wordObject
+            groupName,// groupName: groupName,
+        };
+        // return;
+        let response = await fetch(location.href + "/words/change-number", {
+            method: "PATCH",
+            body: JSON.stringify(requestBody),
+            headers: {
+                "New-Number": numberInput.textContent,
+                'Content-Type': 'application/json',
+            }
+        })
+        let result = {};
+        if (response.ok) {
+            result = await response.json();
+            console.log(result);
+            // console.log(Date.now());
+            if (result.success && result.newNumber) {
+                numberInput.textContent = result.newNumber;
+                return "number was changed";
+            } else {
+                numberInput.textContent = oldNumber;
+            }
+        }
     }
     static deleteWord(groupName, wordContainer){
         let wordObject = {};
@@ -209,7 +250,7 @@ export default class Word {
                     event.target.closest(".modal-window").closeWindow();
                     let wordsSection = wordContainer.parentElement;
                     wordContainer.remove();
-                    if (!wordsSection.querySelector(".word-element")) {
+                    if (!wordsSection.querySelector(".word-container")) {
                         wordsSection.textContent = "Group doesn't contain any word."
                     }
                     return;
@@ -234,4 +275,24 @@ export default class Word {
         {className: "check-password-modal-window", handlers: [{eventName: "click", handler: clickModalWindow}]});
     }
 
+}
+
+function getNormalNumber(numberInString){
+    let numParts = numberInString?.split(",");
+    let newNumber = Number(numParts?.join("."));
+    if (Number.isNaN(newNumber) || newNumber <= 0) {
+        return Number.NaN;
+    } else {
+        numParts = String(newNumber).split(".");
+        // number must have 5 digits before the decimal point and 3 after it
+        if (numParts[0].length > 5) {
+            return Number.NaN;
+        } else if (numParts[1]?.length > 3){
+            numParts[1] = numParts[1].slice(0, 3);
+            console.log(numParts[1]);
+            return numParts.join(".");
+        } else {
+            return newNumber;
+        }
+    }
 }

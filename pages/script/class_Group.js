@@ -1,12 +1,81 @@
 "use strict";
+import Word from "./class_Word.js";
 import { setWarning, createWarningAfterElement, showModalWindow, createElement, showPassword} from "./useful.js";
-
 export default class Group {
     constructor(params) {
         // group creation
     }
-    static addWord(word, translation) {
-        // new Word();
+    static addWord(groupName, wordsSection) {
+        let wordLabel = createElement({name: "header", content: "Enter new word:"},);
+        let wordInput = createElement({name: "input"});
+        wordInput.setAttribute("autocomplete", "off");
+        let translationLabel = createElement({name: "header", content: "Enter the translation of new word:"},);
+        let translationInput = createElement({name: "input"});
+        translationInput.setAttribute("autocomplete", "off");
+        let addNewWordBtn = createElement({content: "Add new word", class: "add-new-word-btn"});
+        addNewWordBtn.addEventListener("click", async event => {
+            createWarningAfterElement(addNewWordBtn);
+            setWarning(addNewWordBtn.nextElementSibling, '');
+            let everythingIsCorrect = true;
+            if (wordInput.value.length == 0) {
+                createWarningAfterElement(wordInput);
+                setWarning(wordInput.nextElementSibling, "Please, enter new word.", "wordInput");
+                everythingIsCorrect = false;
+            } else if (wordInput.value.length > 20) {
+                createWarningAfterElement(wordInput);
+                setWarning(wordInput.nextElementSibling, "Length of new word must not exceed 20 characters.", "wordInput");
+                everythingIsCorrect = false;
+            } else {
+                setWarning(wordInput.nextElementSibling, "");
+            }
+            if (translationInput.value.length == 0) {
+                createWarningAfterElement(translationInput);
+                setWarning(translationInput.nextElementSibling, "Please, enter the translation of new word.", "translationInput");
+                everythingIsCorrect = false;
+            } else if (translationInput.value.length > 20) {
+                createWarningAfterElement(translationInput);
+                setWarning(translationInput.nextElementSibling, "Length of translation must not exceed 20 characters.", "translationInput");
+                everythingIsCorrect = false;
+            } else {
+                setWarning(translationInput.nextElementSibling, "");
+            }
+            if (everythingIsCorrect === false) {
+                return;
+            }
+            console.log(wordInput.value);
+            let requestBody = {
+                groupName,// groupName: groupName,
+                word: wordInput.value,
+                translation: translationInput.value,
+            };
+            // return;
+            let response = await fetch(location.href + "/groups/add-word", {
+                method: "PUT",
+                body: JSON.stringify(requestBody),
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            let result = {};
+            if (response.ok) {
+                result = await response.json();
+                console.log(result);
+                if (result.success) {
+                    event.target.closest(".modal-window").closeWindow();
+                    if (!wordsSection.querySelector(".word-container")) {// if there arent any words in the section...
+                        wordsSection.innerHTML = "";// ...erase the message "Group doesn't contain any word."
+                    }
+                    wordsSection.append(new Word({...requestBody, number: result.number}));
+                    return;
+                }
+            }
+            result.message = String(result?.message || "Creation error. Please try again.");
+            createWarningAfterElement(addNewWordBtn);
+            setWarning(addNewWordBtn.nextElementSibling, result.message, "addNewWordBtn");
+            console.log(result?.message);
+        })
+        showModalWindow(document.body, [wordLabel, wordInput, translationLabel, translationInput, addNewWordBtn], 
+            {className: "new-word-modal-window"});
     }
     static changeGroupName(groupNameBlock){
         // console.log("changeGroupName");
