@@ -1,6 +1,6 @@
 const express = require('express');
 const groupsRouter = express.Router();
-const {findIfUnique} = require('../useful-for-server.js');
+const {findIfUnique, getMaxFreeNumber, getMinFreeNumber} = require('../useful-for-server.js');
 
 let database;
 let {connectToDb} = require("../connect-to-db.js");
@@ -127,33 +127,29 @@ groupsRouter.put("/add-word", (req, res, next) => {
         return;
     }
     let numberToSet = maxNumber > 0 ? maxNumber + 1 : 1;
+    // console.log(numberToSet);
     if (numberToSet > 99999.999) {// number must have 5 digits before the decimal point and 3 after it
-        numberToSet = 99999.999;
-        // console.log("length", group.words?.length);
-        for (let i = 0, j = 0; i < group.words?.length && j < 10**3; i++) {
-            // console.log("#", i, j);
-            // console.log(group.words[i].word, group.words[i].number);
-            if (group.words[i].number === numberToSet) {
-                numberToSet -= 0.001;
-                numberToSet = +numberToSet.toFixed(3);
-                if (j < 10**3) {// to avoid infinite cycle
-                    // console.log("j", j);
-                    i = -1;// increment in the end adds one and i will be 0
-                    j++;
-                    continue;
-                } else {
-                    res.json({success: false});
-                    return;
-                }
-            }
-        }
+        // console.log("getMaxFreeNumber");
+        numberToSet = getMaxFreeNumber(group.words);
     }
+    // console.log(numberToSet);
+    if (numberToSet < 0) {
+        // console.log("getMinFreeNumber");
+        numberToSet = getMinFreeNumber(group.words);
+        // console.log(numberToSet);
+    }
+    if (numberToSet < 0 || numberToSet > 99999.999) {
+        res.json({success: false});
+        return;
+    }
+    // console.log(numberToSet);
     Object.assign(wordObject, { groupsObjectId: group._id, ownersObjectId: user._id, number: numberToSet, creationTime: Date.now(), });
     let updateResult = await database.collection("groups").updateOne({_id: group._id}, {$push: {words: wordObject}});
     if (!updateResult.acknowledged) {
         res.json({success: false});
         return;
     }
+    console.log(numberToSet);
     res.json({success: true, number: numberToSet});
 })
 groupsRouter.search("/get-words", (req, res, next) => {

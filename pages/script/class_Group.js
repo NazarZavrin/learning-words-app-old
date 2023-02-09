@@ -1,6 +1,6 @@
 "use strict";
 import Word from "./class_Word.js";
-import { setWarning, createWarningAfterElement, showModalWindow, createElement, showPassword} from "./useful.js";
+import { setWarning, createWarningAfterElement, showModalWindow, createElement, showPassword, renderSortedWords} from "./useful.js";
 export default class Group {
     constructor(params) {
         // group creation
@@ -65,7 +65,10 @@ export default class Group {
                     if (!wordsSection.querySelector(".word-container")) {// if there arent any words in the section...
                         wordsSection.innerHTML = "";// ...erase the message "Group doesn't contain any word."
                     }
-                    wordsSection.append(new Word({...requestBody, number: result.number}));
+                    let wordContainers = [...wordsSection.getElementsByClassName("word-container")];
+                    wordContainers.push(new Word({...requestBody, number: result.number}));
+                    // console.log(wordContainers.slice(-3));
+                    renderSortedWords(wordsSection, wordContainers);
                     return;
                 }
             }

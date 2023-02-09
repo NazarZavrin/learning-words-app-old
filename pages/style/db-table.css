@@ -73,11 +73,9 @@ h1, h2, h3, h4, h5, h6 {
 html, body {
   display: flex;
   flex-direction: column;
-  width: -webkit-fit-content;
   width: -moz-fit-content;
   width: fit-content;
   min-width: 100vw;
-  height: -webkit-fit-content;
   height: -moz-fit-content;
   height: fit-content;
   min-height: 100vh;
@@ -87,7 +85,6 @@ html, body {
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: -webkit-fit-content;
   height: -moz-fit-content;
   height: fit-content;
   min-height: 100%;
@@ -103,7 +100,6 @@ html, body {
 
 .data-table {
   width: 100%;
-  min-width: -webkit-fit-content;
   min-width: -moz-fit-content;
   min-width: fit-content;
   display: grid;

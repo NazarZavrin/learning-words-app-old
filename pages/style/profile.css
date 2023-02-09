@@ -125,7 +125,6 @@ html, body {
   display: flex;
   flex-direction: column;
   width: 100vw;
-  height: -webkit-fit-content;
   height: -moz-fit-content;
   height: fit-content;
   min-height: 100vh;
@@ -143,7 +142,6 @@ body {
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: -webkit-fit-content;
   height: -moz-fit-content;
   height: fit-content;
   min-height: 100vh;
@@ -386,7 +384,6 @@ body {
 .change-group-name-modal-window > .new-password-block > div,
 .change-group-name-modal-window > .password-block > div, .change-word-modal-window > .old-password-block > div, .change-word-modal-window > .new-password-block > div, .change-word-modal-window > .password-block > div {
   display: flex;
-  width: -webkit-max-content;
   width: -moz-max-content;
   width: max-content;
   flex-direction: row;
@@ -439,7 +436,6 @@ body {
   flex-direction: row;
   align-items: center;
   position: relative;
-  min-height: -webkit-fit-content;
   min-height: -moz-fit-content;
   min-height: fit-content;
   background-color: #00CF41;
@@ -467,7 +463,6 @@ body {
 }
 .favourite-groups > *[class*=header] > .new-group-btn, .groups > *[class*=header] > .new-group-btn {
   height: 45px;
-  width: -webkit-max-content;
   width: -moz-max-content;
   width: max-content;
   background-color: lime;
@@ -529,7 +524,6 @@ body {
   height: 100vh;
 }
 #view-group > header {
-  height: -webkit-fit-content;
   height: -moz-fit-content;
   height: fit-content;
   display: flex;
@@ -540,7 +534,6 @@ body {
 }
 #view-group > header > section {
   width: 100%;
-  height: -webkit-fit-content;
   height: -moz-fit-content;
   height: fit-content;
   display: flex;
@@ -580,7 +573,6 @@ body {
   border-radius: 3px;
 }
 #view-group > header > section:first-of-type > .change-group-name {
-  height: -webkit-fit-content;
   height: -moz-fit-content;
   height: fit-content;
   display: flex;
@@ -646,6 +638,7 @@ body {
 }
 #view-group > main {
   flex-grow: 1;
+  overflow: auto;
   display: flex;
   flex-direction: row;
   align-content: flex-start;

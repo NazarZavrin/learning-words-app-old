@@ -2,7 +2,7 @@
 
 import Group from "./class_Group.js";
 import Word from "./class_Word.js";
-import { setWarning, createWarningAfterElement, showModalWindow, createElement, } from "./useful.js";
+import { setWarning, createWarningAfterElement, showModalWindow, createElement, renderSortedWords, } from "./useful.js";
 
 
 const content = document.querySelector(".content");
@@ -136,6 +136,7 @@ function viewGroup(event){
         if (result.includes("view-group")) {
             document.body.insertAdjacentHTML("afterbegin", result);
             showWords(groupName);
+            addHandlersToViewGroupBlock(groupName);
         } else if (result === "failure") {
             return new Error("Couldn't get group " + groupName);
         }
@@ -180,14 +181,11 @@ async function showWords(groupName) {
     if (result.words.length === 0) {
         wordsSection.textContent = "Group doesn't contain any word.";
     } else {
-        result.words.sort((first, second) => {
-            return first.number - second.number;
+        result.words = result.words.map(wordObject => {
+            return new Word(wordObject);
         })
-        for (let i = 0; i < result.words.length; i++) {
-            wordsSection.append(new Word(result.words[i]));
-        }
+        renderSortedWords(wordsSection, result.words);
     }
-    addHandlersToViewGroupBlock(groupName);
 }
 function addHandlersToViewGroupBlock(){
     let viewGroupBlock = document.body.querySelector("#view-group");
@@ -232,16 +230,8 @@ function addHandlersToViewGroupBlock(){
             event.target.addEventListener("focusout", async event => {
                 let message = await Word.changeNumber(groupNameBlock.textContent, event.target, oldNumber);
                 if (message?.includes("number was changed")) {
-                    let wordContainers = [...wordsSection.querySelectorAll(".word-container")];
-                    wordContainers.sort((first, second) => {
-                        first = first.querySelector(".words-number").textContent;
-                        second = second.querySelector(".words-number").textContent;
-                        return first - second;
-                    })
-                    wordsSection.innerHTML = "";
-                    for (let i = 0; i < wordContainers.length; i++) {
-                        wordsSection.append(wordContainers[i]);
-                    }
+                    await showWords(groupNameBlock.textContent);
+                    // console.log("showed");
                 }
             }, {once: true});
         }

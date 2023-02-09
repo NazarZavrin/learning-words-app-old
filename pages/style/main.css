@@ -74,7 +74,6 @@ html, body {
   display: flex;
   flex-direction: column;
   width: 100vw;
-  height: -webkit-fit-content;
   height: -moz-fit-content;
   height: fit-content;
   min-height: 100vh;
@@ -85,7 +84,6 @@ html, body {
 .wrapper {
   display: flex;
   width: 100%;
-  height: -webkit-fit-content;
   height: -moz-fit-content;
   height: fit-content;
   min-height: 100vh;
@@ -144,7 +142,6 @@ html, body {
   text-align: left;
 }
 .log-in-section > #log-in-btn {
-  width: -webkit-max-content;
   width: -moz-max-content;
   width: max-content;
   align-self: center;
