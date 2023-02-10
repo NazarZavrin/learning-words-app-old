@@ -58,10 +58,11 @@ wordsRouter.patch("/change-number", (req, res, next) => {
         return;
     }
     let newNumber = getNormalNumber(req.get("New-Number"));
-    if (Number.isNaN(newNumber)) {
-        res.json({success: false});
+    if (newNumber.endsWith("!")) {
+        res.json({success: false, message: newNumber});
         return;
     }
+    newNumber = +newNumber;
     // console.log("-----");
     // group.words.forEach(wordObj => {
     //     console.log(wordObj.word, wordObj.number);
@@ -173,19 +174,22 @@ module.exports = {wordsRouter};
 function getNormalNumber(numberInString){
     let numParts = numberInString?.split(",");
     let newNumber = Number(numParts?.join("."));
-    if (Number.isNaN(newNumber) || newNumber <= 0) {
-        return Number.NaN;
+    if (Number.isNaN(newNumber)) {
+        return "Incorrect number!";
+    }
+    else if(newNumber <= 0) {
+        return "Number mustn't be less than 1!";
     } else {
         numParts = String(newNumber).split(".");
         // number must have 5 digits before the decimal point and 3 after it
         if (numParts[0].length > 5) {
-            return Number.NaN;
+            return "Number's integer part mustn't be more than 99999!";
         } else if (numParts[1]?.length > 3){
             numParts[1] = numParts[1].slice(0, 3);
             console.log(numParts[1]);
             return numParts.join(".");
         } else {
-            return newNumber;
+            return String(newNumber);
         }
     }
 }

@@ -399,20 +399,23 @@ body {
 .change-group-name-modal-window > .password-block > div > input, .change-word-modal-window > .old-password-block > div > input, .change-word-modal-window > .new-password-block > div > input, .change-word-modal-window > .password-block > div > input {
   margin-right: 5px;
 }
-.change-password-modal-window > .create-new-group-btn, .change-password-modal-window > .add-new-word-btn, .change-password-modal-window > .change-group-name-btn, .change-password-modal-window > .check-password-btn, .check-password-modal-window > .create-new-group-btn, .check-password-modal-window > .add-new-word-btn, .check-password-modal-window > .change-group-name-btn, .check-password-modal-window > .check-password-btn,
+.change-password-modal-window > .create-new-group-btn, .change-password-modal-window > .add-new-word-btn, .change-password-modal-window > .change-group-name-btn, .change-password-modal-window > .check-password-btn, .change-password-modal-window > .change-word-btn, .check-password-modal-window > .create-new-group-btn, .check-password-modal-window > .add-new-word-btn, .check-password-modal-window > .change-group-name-btn, .check-password-modal-window > .check-password-btn, .check-password-modal-window > .change-word-btn,
 .new-group-modal-window > .create-new-group-btn,
 .new-group-modal-window > .add-new-word-btn,
 .new-group-modal-window > .change-group-name-btn,
-.new-group-modal-window > .check-password-btn, .new-word-modal-window > .create-new-group-btn, .new-word-modal-window > .add-new-word-btn, .new-word-modal-window > .change-group-name-btn, .new-word-modal-window > .check-password-btn,
+.new-group-modal-window > .check-password-btn,
+.new-group-modal-window > .change-word-btn, .new-word-modal-window > .create-new-group-btn, .new-word-modal-window > .add-new-word-btn, .new-word-modal-window > .change-group-name-btn, .new-word-modal-window > .check-password-btn, .new-word-modal-window > .change-word-btn,
 .change-group-name-modal-window > .create-new-group-btn,
 .change-group-name-modal-window > .add-new-word-btn,
 .change-group-name-modal-window > .change-group-name-btn,
-.change-group-name-modal-window > .check-password-btn, .change-word-modal-window > .create-new-group-btn, .change-word-modal-window > .add-new-word-btn, .change-word-modal-window > .change-group-name-btn, .change-word-modal-window > .check-password-btn {
+.change-group-name-modal-window > .check-password-btn,
+.change-group-name-modal-window > .change-word-btn, .change-word-modal-window > .create-new-group-btn, .change-word-modal-window > .add-new-word-btn, .change-word-modal-window > .change-group-name-btn, .change-word-modal-window > .check-password-btn, .change-word-modal-window > .change-word-btn {
   background-color: dodgerblue;
   color: white;
   padding: 0 5px;
   margin-top: 5px;
   border-radius: 3px;
+  text-align: center;
 }
 .change-password-modal-window .warning, .check-password-modal-window .warning,
 .new-group-modal-window .warning, .new-word-modal-window .warning,
@@ -509,213 +512,6 @@ body {
   max-height: 100%;
 }
 
-#view-group {
-  display: flex;
-  flex-direction: column;
-  z-index: 10;
-  background-color: white;
-  font: 20px "Calibri", sans-serif;
-  position: absolute;
-  top: 0;
-  left: 0;
-  min-width: 100%;
-  width: 100vw;
-  min-height: 100%;
-  height: 100vh;
-}
-#view-group > header {
-  height: -moz-fit-content;
-  height: fit-content;
-  display: flex;
-  flex-direction: column;
-  border: 5px solid gray;
-  background-color: gray;
-  color: white;
-}
-#view-group > header > section {
-  width: 100%;
-  height: -moz-fit-content;
-  height: fit-content;
-  display: flex;
-  flex-direction: row;
-}
-#view-group > header > section:first-of-type {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  margin-bottom: 5px;
-}
-#view-group > header > section:first-of-type > .back {
-  width: 50px;
-  height: 50px;
-  flex-shrink: 0;
-  transform: rotate(180deg);
-  background-color: dodgerblue;
-  display: flex;
-  margin-right: 5px;
-  border-radius: 3px;
-}
-#view-group > header > section:first-of-type > .back > img {
-  max-height: 75%;
-  margin: auto;
-}
-#view-group > header > section:first-of-type > .group-name {
-  flex-grow: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding: 0 5px;
-  margin-right: 5px;
-  border: 3px solid black;
-  background-color: white;
-  color: black;
-  border-radius: 3px;
-}
-#view-group > header > section:first-of-type > .change-group-name {
-  height: -moz-fit-content;
-  height: fit-content;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  background-color: dodgerblue;
-  border-radius: 5px;
-}
-#view-group > header > section:first-of-type > .change-group-name > span {
-  padding-right: 5px;
-}
-#view-group > header > section:first-of-type > .change-group-name > img {
-  height: 50px;
-}
-#view-group > header > section:nth-of-type(2) > .new-word, #view-group > header > section:nth-of-type(2) > .change-status, #view-group > header > section:nth-of-type(2) > .delete-group {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  border-radius: 5px;
-  margin-right: 5px;
-}
-#view-group > header > section:nth-of-type(2) > .new-word > span, #view-group > header > section:nth-of-type(2) > .change-status > span, #view-group > header > section:nth-of-type(2) > .delete-group > span {
-  padding-right: 5px;
-}
-#view-group > header > section:nth-of-type(2) > .new-word:last-of-type, #view-group > header > section:nth-of-type(2) > .change-status:last-of-type, #view-group > header > section:nth-of-type(2) > .delete-group:last-of-type {
-  margin-right: 0;
-}
-#view-group > header > section:nth-of-type(2) > .new-word > img, #view-group > header > section:nth-of-type(2) > .change-status > img, #view-group > header > section:nth-of-type(2) > .delete-group > img {
-  height: 50px;
-}
-#view-group > header > section:nth-of-type(2) > .new-word {
-  background-color: lime;
-}
-#view-group > header > section:nth-of-type(2) > .change-status {
-  background-color: #00CF41;
-}
-#view-group > header > section:nth-of-type(2) > .change-status > div.star-icon {
-  background: no-repeat center center/auto 100% url("/img/star.png");
-  width: 50px;
-  height: 50px;
-  flex: 0 0 auto;
-  position: relative;
-}
-#view-group > header > section:nth-of-type(2) > .change-status > div.star-icon.crossed-out::before, #view-group > header > section:nth-of-type(2) > .change-status > div.star-icon.crossed-out::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 95%;
-  height: 12%;
-  background-color: red;
-  transform-origin: center center;
-}
-#view-group > header > section:nth-of-type(2) > .change-status > div.star-icon.crossed-out::before {
-  transform: translate(-50%, -50%) rotateZ(45deg);
-}
-#view-group > header > section:nth-of-type(2) > .change-status > div.star-icon.crossed-out::after {
-  transform: translate(-50%, -50%) rotateZ(-45deg);
-}
-#view-group > header > section:nth-of-type(2) > .delete-group {
-  background-color: red;
-}
-#view-group > main {
-  flex-grow: 1;
-  overflow: auto;
-  display: flex;
-  flex-direction: row;
-  align-content: flex-start;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  padding: 5px;
-}
-#view-group > main.loading {
-  background: no-repeat center center/auto 25% url("/img/rounded-blocks.gif");
-}
-#view-group > main > .word-container {
-  display: inline-grid;
-  grid-template: auto auto/auto 3px auto 3px auto;
-  border: 1px solid gray;
-  border-radius: 3px;
-  padding: 3px;
-  margin: 3px;
-}
-#view-group > main > .word-container > .word-container__word {
-  grid-row-start: 1;
-  grid-column-start: 3;
-  border-bottom: 1px solid black;
-  text-align: center;
-}
-#view-group > main > .word-container > .word-container__translation {
-  grid-row-start: 2;
-  grid-column-start: 3;
-  text-align: center;
-}
-#view-group > main > .word-container > .word-container__btns {
-  grid-row-start: 1;
-  grid-row-end: 3;
-  border-right: 1px solid black;
-}
-#view-group > main > .word-container > .word-container__btns > .edit-word-btn, #view-group > main > .word-container > .word-container__btns > .delete-word-btn {
-  width: 25px;
-  height: 25px;
-  margin-right: 3px;
-  border-radius: 3px;
-}
-#view-group > main > .word-container > .word-container__btns > .edit-word-btn > img, #view-group > main > .word-container > .word-container__btns > .delete-word-btn > img {
-  max-width: 100%;
-}
-#view-group > main > .word-container > .word-container__btns > .edit-word-btn {
-  background-color: dodgerblue;
-  margin-bottom: 3px;
-}
-#view-group > main > .word-container > .word-container__btns > .delete-word-btn {
-  background-color: red;
-}
-#view-group > main > .word-container > .word-container__auxiliary {
-  grid-row-start: 1;
-  grid-row-end: 3;
-  grid-column-start: 5;
-  border-left: 1px solid black;
-}
-#view-group > main > .word-container > .word-container__auxiliary > .words-number, #view-group > main > .word-container > .word-container__auxiliary > .select-this-word {
-  width: 25px;
-  height: 25px;
-  margin-left: 3px;
-}
-#view-group > main > .word-container > .word-container__auxiliary > .words-number {
-  width: auto;
-  font-size: 18px;
-  border: 2px solid dodgerblue;
-  border-radius: 3px;
-  padding: 0 3px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-#view-group > main > .word-container > .word-container__auxiliary > .select-this-word {
-  border-radius: 50%;
-  border: 3px solid black;
-  margin-bottom: 3px;
-}
-
 @media (max-width: 1200px) {
   /* Стили CSS для ширины от 992px до 1200px */
   /* Устройства со средним экраном (ноутбуки и компьютеры)*/
@@ -727,17 +523,6 @@ body {
 @media (max-width: 767px) {
   /* Стили CSS для ширины до 768px */
   /* Устройства с очень маленьким экраном (смартфоны) */
-}
-@media (max-width: 400px) {
-  #view-group > header > section > .change-status > span {
-    display: none;
-  }
-  #view-group > header > section > .change-group-name > span {
-    display: none;
-  }
-  #view-group > header > section > .group-name {
-    word-break: break-all;
-  }
 }
 .hide {
   display: none !important;

@@ -2,7 +2,7 @@
 
 import Group from "./class_Group.js";
 import Word from "./class_Word.js";
-import { setWarning, createWarningAfterElement, showModalWindow, createElement, renderSortedWords, } from "./useful.js";
+import { setWarning, createWarningAfterElement, showModalWindow, createElement, } from "./useful.js";
 
 
 const content = document.querySelector(".content");
@@ -22,7 +22,8 @@ content.addEventListener("click", event => {
         createNewGroup(event);
     }
     if (event.target.closest(".group")) {
-        viewGroup(event);
+        let groupName = event.target.closest(".group")?.textContent;
+        Group.viewGroup(groupName, addHandlersToViewGroupBlock);
     }
 })
 function createNewGroup(event) {
@@ -75,7 +76,6 @@ function createNewGroup(event) {
         {className: "new-group-modal-window"});
 }
 
-
 window.addEventListener("load", async event => {
     await updateGroups(true);
     await updateGroups();
@@ -113,84 +113,11 @@ async function updateGroups(updateFavouriteGroups = false) {
     console.log(result?.message);
 }
 
-function viewGroup(event){
-    // console.log("viewGroup");
-    let groupName = event.target.closest(".group")?.textContent;
-    if (!groupName) {
-        console.log("viewGroup() error: groupName is " + groupName);
-    }
-    // 
-    fetch(location.href + '/groups/view', {
-        method: 'SEARCH',
-        body: groupName,
-    })
-    .then(response => {
-        if (response.ok) {
-            return response.text();
-        } else {
-            return new Error("Couldn't get group " + groupName);
-        }
-    })
-    .then(result => {
-        // console.log(result.slice(0, 50));
-        if (result.includes("view-group")) {
-            document.body.insertAdjacentHTML("afterbegin", result);
-            showWords(groupName);
-            addHandlersToViewGroupBlock(groupName);
-        } else if (result === "failure") {
-            return new Error("Couldn't get group " + groupName);
-        }
-        else {
-            return new Error(result);
-        }
-    })
-    .catch(error => {
-        alert(error);
-        // if (error.message.includes("Couldn't get group")){
-        //     alert(error.message);
-        // }
-    })
-}
-async function showWords(groupName) {
-    let viewGroupBlock = document.body.querySelector("#view-group");
-    let wordsSection = viewGroupBlock.querySelector(".words-section");
-    // return;
-    let response = await fetch(location.href + '/groups/get-words', {
-        method: 'SEARCH',
-        body: groupName,
-    })
-    let result = {};
-    if (response.ok) {
-        result = await response.json();
-        // console.log(result);
-        if (typeof result.words === "string") {
-            result.words = JSON.parse(result.words);
-            // console.log(result.words);
-        }
-    }
-    if (!result.success) {
-        result.message = String(result?.message || "Can not get words of group " + groupName);
-        wordsSection.textContent = result.message;
-        return;
-    }
-    // await new Promise((resolve, reject) => {
-    //     setTimeout(() => resolve(1), 1000);// to see how the loading icon works
-    // })
-    wordsSection.classList.remove("loading");
-    
-    if (result.words.length === 0) {
-        wordsSection.textContent = "Group doesn't contain any word.";
-    } else {
-        result.words = result.words.map(wordObject => {
-            return new Word(wordObject);
-        })
-        renderSortedWords(wordsSection, result.words);
-    }
-}
 function addHandlersToViewGroupBlock(){
     let viewGroupBlock = document.body.querySelector("#view-group");
     let header = viewGroupBlock.querySelector("#view-group > header");
     let groupNameBlock = header.querySelector("section > .group-name");
+    let additionalSection = viewGroupBlock.querySelector(".additional-section");
     let wordsSection = viewGroupBlock.querySelector(".words-section");
     header.addEventListener("click", async event => {
         if (event.target.closest(".back")) {
@@ -217,11 +144,31 @@ function addHandlersToViewGroupBlock(){
     wordsSection.addEventListener("click", event => {
         if (event.target.closest(".edit-word-btn")) {
             Word.changeWord(groupNameBlock.textContent, event.target.closest(".word-container"));
-        }
-        if (event.target.closest(".delete-word-btn")) {
+        } else if (event.target.closest(".delete-word-btn")) {
             Word.deleteWord(groupNameBlock.textContent, event.target.closest(".word-container"));
+        } else if (event.target.closest(".select-this-word")) {
+            event.target.closest(".word-container").classList.toggle("selected-word");
+            if (wordsSection.getElementsByClassName("selected-word").length > 0) {
+                additionalSection.classList.add("active");
+            } else {
+                additionalSection.classList.remove("active");
+            }
         }
-        
+    })
+    wordsSection.addEventListener("mousedown", event => {
+        // let time = Date.now();
+        if (event.target.closest(".word-container")) {
+            let timeoutID = setTimeout(() => {
+                event.target.closest(".word-container").getElementsByClassName("select-this-word")?.[0]?.click();
+            }, 750);
+            event.target.closest(".word-container").onmouseup = event.target.closest(".word-container").onmouseleave = function (event) {
+                // console.log(this.onmouseup && typeof this.onmouseup, this.onmouseleave && typeof this.onmouseleave);
+                clearTimeout(timeoutID);
+                this.onmouseup = null;
+                this.onmouseleave = null;
+                // console.log(this.onmouseup && typeof this.onmouseup, this.onmouseleave && typeof this.onmouseleave);
+            }
+        }
     })
     wordsSection.addEventListener("focusin", event => {
         if (event.target.closest(".words-number")) {
@@ -229,8 +176,8 @@ function addHandlersToViewGroupBlock(){
             // console.log(oldNumber);
             event.target.addEventListener("focusout", async event => {
                 let message = await Word.changeNumber(groupNameBlock.textContent, event.target, oldNumber);
-                if (message?.includes("number was changed")) {
-                    await showWords(groupNameBlock.textContent);
+                if (message?.includes("Number was changed")) {
+                    await Group.showWords(groupNameBlock.textContent);
                     // console.log("showed");
                 }
             }, {once: true});

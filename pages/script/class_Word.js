@@ -55,7 +55,7 @@ export default class Word {
         passwordBlock.innerHTML = `<div class="show-password">
         <input type="checkbox">Show password</div>`;
         passwordBlock.prepend(passwordInput);
-        let changeWordBtn = createElement({content: "Change name of group", class: "change-group-name-btn"});
+        let changeWordBtn = createElement({content: "Change word", class: "change-word-btn"});
         changeWordBtn.addEventListener("click", async event => {
             createWarningAfterElement(changeWordBtn);
             setWarning(changeWordBtn.nextElementSibling, '');
@@ -148,8 +148,9 @@ export default class Word {
     }
     static async changeNumber(groupName, numberInput, oldNumber) {
         let newNumber = getNormalNumber(numberInput.textContent);
-        if (Number.isNaN(newNumber)) {
+        if (newNumber.endsWith("!")) {
             numberInput.textContent = oldNumber;
+            alert(newNumber);
             return;
         }
         numberInput.textContent = newNumber;
@@ -182,9 +183,10 @@ export default class Word {
             // console.log(Date.now());
             if (result.success && result.newNumber) {
                 numberInput.textContent = result.newNumber;
-                return "number was changed";
+                return "Number was changed.";
             } else {
                 numberInput.textContent = oldNumber;
+                result.message ? alert(result.message) : null;
             }
         }
     }
@@ -280,19 +282,22 @@ export default class Word {
 function getNormalNumber(numberInString){
     let numParts = numberInString?.split(",");
     let newNumber = Number(numParts?.join("."));
-    if (Number.isNaN(newNumber) || newNumber <= 0) {
-        return Number.NaN;
+    if (Number.isNaN(newNumber)) {
+        return "Incorrect number!";
+    }
+    else if(newNumber <= 0) {
+        return "Number mustn't be less than 1!";
     } else {
         numParts = String(newNumber).split(".");
         // number must have 5 digits before the decimal point and 3 after it
         if (numParts[0].length > 5) {
-            return Number.NaN;
+            return "Number's integer part mustn't be more than 99999!";
         } else if (numParts[1]?.length > 3){
             numParts[1] = numParts[1].slice(0, 3);
             console.log(numParts[1]);
             return numParts.join(".");
         } else {
-            return newNumber;
+            return String(newNumber);
         }
     }
 }

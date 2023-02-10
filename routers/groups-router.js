@@ -72,7 +72,7 @@ groupsRouter.get(/^\/(favourite-groups)?$/, async (req, res) => {
     res.json({success: true, groups: result});
 })
 
-groupsRouter.search("/view", (req, res, next) => {
+groupsRouter.propfind("/view", (req, res, next) => {
     express.text({limit: req.get('content-length')})(req, res, next);
 }, async (req, res) => {
     // console.log(req.passkey);
@@ -152,7 +152,7 @@ groupsRouter.put("/add-word", (req, res, next) => {
     console.log(numberToSet);
     res.json({success: true, number: numberToSet});
 })
-groupsRouter.search("/get-words", (req, res, next) => {
+groupsRouter.propfind("/get-words", (req, res, next) => {
     express.text({limit: req.get('content-length')})(req, res, next);
 }, async (req, res) => {
     let user = await findIfUnique(database.collection("users"), {passkey: req.passkey});

@@ -5,6 +5,87 @@ export default class Group {
     constructor(params) {
         // group creation
     }
+    static viewGroup(groupName, ...synchronousCallbacks){
+        if (!groupName) {
+            console.log("viewGroup() error: groupName is " + groupName);
+        }
+        fetch(location.href + '/groups/view', {
+            method: 'PROPFIND',
+            body: groupName,
+        })
+        .then(response => {
+            console.log(response);
+            console.log(response.status);
+            console.log(response.ok);
+            if (response.ok) {
+                return response.text();
+            } else {
+                throw new Error("Couldn't get group " + groupName);
+            }
+        })
+        .then(result => {
+            console.log(result);
+            console.log(typeof result);
+            console.log(result.constructor.name);
+            // console.log(result.slice(0, 50));
+            if (result.includes("view-group")) {
+                document.body.insertAdjacentHTML("afterbegin", result);
+                return Group.showWords(groupName)
+                // addHandlersToViewGroupBlock(groupName);
+            } else if (result === "failure") {
+                throw new Error("Couldn't get group " + groupName);
+            }
+            else {
+                throw new Error(result);
+            }
+        })
+        .then(result => {
+            for (const callback of synchronousCallbacks) {
+                callback(groupName);
+            }
+        })
+        .catch(error => {
+            alert(error);
+        })
+    }
+    static async showWords(groupName) {
+        let viewGroupBlock = document.body.querySelector("#view-group");
+        let wordsSection = viewGroupBlock.querySelector(".words-section");
+        wordsSection.classList.add("loading");
+        // return;
+        let response = await fetch(location.href + '/groups/get-words', {
+            method: 'PROPFIND',
+            body: groupName,
+        })
+        let result = {};
+        if (response.ok) {
+            result = await response.json();
+            // console.log(result);
+            if (typeof result.words === "string") {
+                result.words = JSON.parse(result.words);
+                // console.log(result.words);
+            }
+        }
+        wordsSection.classList.remove("loading");
+        if (!result.success) {
+            result.message = String(result?.message || "Can not get words of group " + groupName);
+            wordsSection.textContent = result.message;
+            return;
+        }
+        // await new Promise((resolve, reject) => {
+        //     setTimeout(() => resolve(1), 1000);// to see how the loading icon works
+        // })
+        
+        
+        if (result.words.length === 0) {
+            wordsSection.textContent = "Group doesn't contain any word.";
+        } else {
+            result.words = result.words.map(wordObject => {
+                return new Word(wordObject);
+            })
+            renderSortedWords(wordsSection, result.words);
+        }
+    }
     static addWord(groupName, wordsSection) {
         let wordLabel = createElement({name: "header", content: "Enter new word:"},);
         let wordInput = createElement({name: "input"});
