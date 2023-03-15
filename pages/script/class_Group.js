@@ -14,9 +14,6 @@ export default class Group {
             body: groupName,
         })
         .then(response => {
-            console.log(response);
-            console.log(response.status);
-            console.log(response.ok);
             if (response.ok) {
                 return response.text();
             } else {
@@ -24,13 +21,10 @@ export default class Group {
             }
         })
         .then(result => {
-            console.log(result);
-            console.log(typeof result);
-            console.log(result.constructor.name);
             // console.log(result.slice(0, 50));
             if (result.includes("view-group")) {
                 document.body.insertAdjacentHTML("afterbegin", result);
-                return Group.showWords(groupName)
+                return Group.showWords(groupName);
                 // addHandlersToViewGroupBlock(groupName);
             } else if (result === "failure") {
                 throw new Error("Couldn't get group " + groupName);
@@ -66,6 +60,7 @@ export default class Group {
                 // console.log(result.words);
             }
         }
+        viewGroupBlock.classList.remove("hide");
         wordsSection.classList.remove("loading");
         if (!result.success) {
             result.message = String(result?.message || "Can not get words of group " + groupName);

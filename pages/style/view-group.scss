@@ -1,6 +1,9 @@
 @import "./null-style.scss";
 @import "./modal-window.scss";
 
+#view-group.hide {
+    display: none;
+}
 #view-group {
     display: flex;
     flex-direction: column;

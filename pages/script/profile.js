@@ -1,9 +1,7 @@
 "use strict";
 console.log(HTMLElement.prototype);
 console.log("now:");
-console.log("replace return new Error() (.then() catches this) with throw new Error()");
-console.log("request with 'search' reg method responses with 502 bad gateway");
-console.log("send name of group in request body instead of headers");
+// console.log("send name of group in request body instead of headers");
 console.log("group creation in class Group");
 console.log("copy (duplicate) selected word to another group");
 console.log('<section class="checkboxes"></section> to hide word/translation using height: 0');
