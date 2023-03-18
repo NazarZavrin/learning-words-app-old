@@ -6,27 +6,24 @@ const crypto = require('crypto');
 const { createAccountRouter } = require('./routers/create-account-router.js');
 const { profileRouter } = require('./routers/profile-router.js');
 
-// ↓ connecting to the database
-const { MongoClient, ServerApiVersion } = require('mongodb');
 let database;
-async function connectToDb(req, res, next) {
-    // console.log("Connect to db if needed. URL: " + req.originalUrl);
-    if (database === undefined) {
-        let uri = "mongodb+srv://nazar:learnwords@main-cluster.dlb856s.mongodb.net/?retryWrites=true&w=majority";
-        let client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-        try {
-            await client.connect();
-            database = client.db("userData");
-            // console.log("Connected to the db.");
-        } catch (error) {
-            console.log(error);
-            await client.close();
-            res.send("Database connection error.");
-        }
+let {connectToDb} = require("./connect-to-db.js");
+
+app.use(async (req, res, next) => {
+    // console.log(typeof connectToDb);
+    // console.log(typeof database);
+    let connectionResult = await connectToDb(req, res);
+    if (typeof connectionResult === 'string') {
+        res.send(connectionResult);
+        return;
+    } else {
+        database = connectionResult;
+        // console.log(typeof database);
+        next();
     }
-    next();
-}
-app.use(connectToDb, express.static(path.join(path.resolve(), 'pages'), {index: "main.html"}));
+});
+
+app.use(express.static(path.join(path.resolve(), 'pages'), {index: "main.html"}));
 
 const PORT = process.env.PORT || 3000;
 app.set('view engine', 'ejs');

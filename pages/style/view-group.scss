@@ -31,9 +31,6 @@
             
         }
         & > section:first-of-type{
-            width: 100%;
-            display: flex;
-            flex-direction: row;
             margin-bottom: 5px;
             & > .back {
                 width: 50px;
@@ -78,7 +75,8 @@
             }
         }
         & > section:nth-of-type(2){
-            & > .new-word, & > .change-status, & > .delete-group {
+            margin-bottom: 5px;
+            & > .new-word, & > .delete-group {
                 // width: 32%;
                 flex-grow: 1;
                 // height: 100%;
@@ -94,18 +92,49 @@
                     margin-right: 0;
                 }
                 & > img {
-                    height: 50px;
+                    height: 40px;
                 }
             }
             & > .new-word {
                 background-color: lime;
             }
+            & > .delete-group {
+                background-color: red;
+                // & > img {
+                //     height: 40px;
+                // }
+            }
+            // & > *:first-of-type {
+            //     margin-left: auto;
+            // }
+            // & > *:last-of-type {
+            //     margin-right: auto;
+            // }
+        }
+        & > section:nth-of-type(3){
+           & > .change-status, & > .change-sort-order {
+                flex-grow: 1;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                border-radius: 5px;
+                margin-right: 5px;
+                & > span {
+                    padding-right: 5px;
+                }
+                &:last-of-type {
+                    margin-right: 0;
+                }
+                & > img {
+                    height: 40px;
+                }
+            }
             & > .change-status {
                 background-color: #00CF41;
                 & > div.star-icon{
                     background: no-repeat center center / auto 100% url("/img/star.png");
-                    width: 50px;
-                    height: 50px;
+                    width: 40px;
+                    height: 40px;
                     flex: 0 0 auto;
                     position: relative;
                     &.crossed-out {
@@ -129,26 +158,26 @@
                     }
                 }
             }
-            & > .delete-group {
-                background-color: red;
+            & > .change-sort-order {
+                background-color: cadetblue;
                 // & > img {
                 //     height: 40px;
+                //     margin: auto 5px;
                 // }
             }
-            // & > *:first-of-type {
-            //     margin-left: auto;
-            // }
-            // & > *:last-of-type {
-            //     margin-right: auto;
-            // }
         }
     }
     & > section.additional-section {
         height: fit-content;
         display: none;
-        border: 5px solid gray;
-        background-color: gray;
+        //border: 5px solid dimgray;
+        padding: 5px 0 0 5px;
+        // ↑ margin-bottom-s of the lowest elements will create padding-bottom
+        // ↑ margin-right-s of the lowest elements will create padding-right
+        background-color: dimgray;
         color: white;
+        & > .selection, & > .copy-words-to-another-group, 
+        & > .hide-word-or-translation, & > .training, 
         & > .delete-words {
             flex-grow: 1;
             // height: 100%;
@@ -157,27 +186,43 @@
             align-items: center;
             border-radius: 5px;
             margin-right: 5px;
+            margin-bottom: 5px;
             & > span {
                 padding-right: 5px;
             }
-            &:last-of-type {
-                margin-right: 0;
-            }
             & > img {
-                height: 50px;
+                height: 40px;
             }
+        }
+        & > .selection {
+            background-color: royalblue;
+            //min-width: 40px;
+            & > img {
+                height: 30px;
+                margin: auto 3px;
+            }
+        }
+        & > .copy-words-to-another-group {
+            background-color: dodgerblue;
+        }
+        & > .hide-word-or-translation {
+            background-color: cadetblue;
+        }
+        & > .training {
+            background-color: limegreen;
         }
         & > .delete-words {
             background-color: red;
-            & > img {
-                // margin: 5px;
-                height: 50px;
-            }
+            // & > img {
+            //     // margin: 5px;
+            //     height: 50px;
+            // }
         }
     }
     & > section.additional-section.active {
         display: flex;
         flex-direction: row;
+        flex-wrap: wrap;
     }
     & > main {
         flex-grow: 1;
@@ -296,14 +341,30 @@
         }
     }
 }
+@media (max-width: 570px) {
+    #view-group > section.additional-section.active {
+        & > .copy-words-to-another-group {
+            flex-grow: 0;
+            & > span {
+                display: none;
+            }
+        }
+    }
+        /*
+        & > .selection, & > .copy-words-to-another-group, 
+        & > .hide-word-or-translation, & > .training, 
+        & > .delete-words
+        */
+}
 @media (max-width: 400px) {
     #view-group > header > section {
-        & > .change-status > span {
+        &:nth-of-type(3) > .change-status {
+            flex-grow: 0;
+        }
+        & > .change-status > span, & > .change-group-name > span {
             display: none;
         }
-        & > .change-group-name > span {
-            display: none;
-        }
+        
         & > .group-name {
             word-break: break-all;
             // font-size: calc(14px + (20 - 14) * ((100vw - 200px) / (400 - 200)));
@@ -311,5 +372,28 @@
             // ↑ На экране шириной 320 пикселей шрифт имеет размер 16 пикселей, 
             // а на экране шириной 1200 пикселей – размер 24 пикселя. */
         }
-    } 
+    }
+    #view-group > section.additional-section.active {
+        & > .selection {
+            flex-grow: 0;
+            & > span {
+                display: none;
+            }
+        }
+        & > .selection > img {
+            margin: auto 5px;
+        }
+    }
+}
+@media (max-width: 320px) {
+    #view-group > section.additional-section.active > div[class] {
+        
+        //flex-grow: 0;
+        & > span {
+            display: none;
+        }
+        &:not(.selection) > img {
+            margin: auto;
+        }
+    }
 }

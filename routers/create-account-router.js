@@ -3,26 +3,22 @@ const createAccountRouter = express.Router();
 const path = require('path');
 
 // ↓ connecting to the database
-const { MongoClient, ServerApiVersion } = require('mongodb');
 let database;
-async function connectToDb(req, res, next) {
-    // console.log("Connect to db if needed. URL: " + req.originalUrl);
-    if (database === undefined) {
-        let uri = "mongodb+srv://nazar:learnwords@main-cluster.dlb856s.mongodb.net/?retryWrites=true&w=majority";
-        let client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-        try {
-            await client.connect();
-            database = client.db("userData");
-            // console.log("Connected to the db.");
-        } catch (error) {
-            console.log(error);
-            await client.close();
-            res.send("Database connection error.");
-        }
+let {connectToDb} = require("../connect-to-db.js");
+
+createAccountRouter.use(async (req, res, next) => {
+    // console.log(typeof connectToDb);
+    // console.log(typeof database);
+    let connectionResult = await connectToDb(req, res);
+    if (typeof connectionResult === 'string') {
+        res.send(connectionResult);
+        return;
+    } else {
+        database = connectionResult;
+        // console.log(typeof database);
+        next();
     }
-    next();
-}
-createAccountRouter.use(connectToDb);
+});
 
 createAccountRouter.get("/", (req, res) => {
     // console.log("/create-account");

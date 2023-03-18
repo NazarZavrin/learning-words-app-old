@@ -10,12 +10,6 @@
             </div>
         </section>
         <section>
-            <div class="change-status">
-                <div class="star-icon <%= isFavourite === true ? "crossed-out" : "" %>"></div>
-                <span>
-                    <%= isFavourite === false ? "Add to favourites" : "Remove from favourites" %>
-                </span>
-            </div>
             <div class="new-word">
                 <img src="/img/plus.png" alt="New word">
                 <span>Add new word</span>
@@ -25,8 +19,36 @@
                 <span>Delete group</span>
             </div>
         </section>
+        <section>
+            <div class="change-status">
+                <div class="star-icon <%= isFavourite === true ? "crossed-out" : "" %>"></div>
+                <span>
+                    <%= isFavourite === false ? "Add to favourites" : "Remove from favourites" %>
+                </span>
+            </div>
+            <div class="change-sort-order">
+                <img src="/img/sorting.png" alt="Change sort order">
+                <span>Change sort order</span>
+            </div>
+        </section>
     </header>
     <section class="additional-section">
+        <div class="selection">
+            <img src="/img/checklist-ticks.png" alt="Selection">
+            <span>Select all</span>
+        </div>
+        <div class="hide-word-or-translation">
+            <img src="/img/eye.png" alt="Hide word or translation">
+            <span>Hide word/translation</span>
+        </div>
+        <div class="copy-words-to-another-group">
+            <img src="/img/share.png" alt="Copy words to another group">
+            <span>Copy words to another group</span>
+        </div>
+        <div class="training">
+            <img src="/img/target.png" alt="Training">
+            <span>Training</span>
+        </div>
         <div class="delete-words">
             <img src="/img/trash-can.png" alt="Delete words">
             <span>Delete words</span>

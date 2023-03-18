@@ -24,6 +24,11 @@ export default class Group {
             // console.log(result.slice(0, 50));
             if (result.includes("view-group")) {
                 document.body.insertAdjacentHTML("afterbegin", result);
+                let viewGroupBlock = document.body.querySelector("#view-group");
+                let styles = viewGroupBlock.querySelector('link[href*="view-group.css"]');
+                styles?.addEventListener("load", event => {
+                    viewGroupBlock.classList.remove("hide");
+                }, {once: true});
                 return Group.showWords(groupName);
                 // addHandlersToViewGroupBlock(groupName);
             } else if (result === "failure") {
@@ -61,6 +66,7 @@ export default class Group {
             }
         }
         viewGroupBlock.classList.remove("hide");
+        // ↑ if styles.addEventListener("load", event => {...}) didn't remove this class for some reason
         wordsSection.classList.remove("loading");
         if (!result.success) {
             result.message = String(result?.message || "Can not get words of group " + groupName);

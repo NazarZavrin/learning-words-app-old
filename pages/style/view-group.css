@@ -120,6 +120,10 @@ h1, h2, h3, h4, h5, h6 {
   max-width: 100%;
 }
 
+#view-group.hide {
+  display: none;
+}
+
 #view-group {
   display: flex;
   flex-direction: column;
@@ -151,9 +155,6 @@ h1, h2, h3, h4, h5, h6 {
   flex-direction: row;
 }
 #view-group > header > section:first-of-type {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
   margin-bottom: 5px;
 }
 #view-group > header > section:first-of-type > .back {
@@ -198,7 +199,10 @@ h1, h2, h3, h4, h5, h6 {
 #view-group > header > section:first-of-type > .change-group-name > img {
   height: 50px;
 }
-#view-group > header > section:nth-of-type(2) > .new-word, #view-group > header > section:nth-of-type(2) > .change-status, #view-group > header > section:nth-of-type(2) > .delete-group {
+#view-group > header > section:nth-of-type(2) {
+  margin-bottom: 5px;
+}
+#view-group > header > section:nth-of-type(2) > .new-word, #view-group > header > section:nth-of-type(2) > .delete-group {
   flex-grow: 1;
   display: flex;
   flex-direction: row;
@@ -206,29 +210,49 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 5px;
   margin-right: 5px;
 }
-#view-group > header > section:nth-of-type(2) > .new-word > span, #view-group > header > section:nth-of-type(2) > .change-status > span, #view-group > header > section:nth-of-type(2) > .delete-group > span {
+#view-group > header > section:nth-of-type(2) > .new-word > span, #view-group > header > section:nth-of-type(2) > .delete-group > span {
   padding-right: 5px;
 }
-#view-group > header > section:nth-of-type(2) > .new-word:last-of-type, #view-group > header > section:nth-of-type(2) > .change-status:last-of-type, #view-group > header > section:nth-of-type(2) > .delete-group:last-of-type {
+#view-group > header > section:nth-of-type(2) > .new-word:last-of-type, #view-group > header > section:nth-of-type(2) > .delete-group:last-of-type {
   margin-right: 0;
 }
-#view-group > header > section:nth-of-type(2) > .new-word > img, #view-group > header > section:nth-of-type(2) > .change-status > img, #view-group > header > section:nth-of-type(2) > .delete-group > img {
-  height: 50px;
+#view-group > header > section:nth-of-type(2) > .new-word > img, #view-group > header > section:nth-of-type(2) > .delete-group > img {
+  height: 40px;
 }
 #view-group > header > section:nth-of-type(2) > .new-word {
   background-color: lime;
 }
-#view-group > header > section:nth-of-type(2) > .change-status {
+#view-group > header > section:nth-of-type(2) > .delete-group {
+  background-color: red;
+}
+#view-group > header > section:nth-of-type(3) > .change-status, #view-group > header > section:nth-of-type(3) > .change-sort-order {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-radius: 5px;
+  margin-right: 5px;
+}
+#view-group > header > section:nth-of-type(3) > .change-status > span, #view-group > header > section:nth-of-type(3) > .change-sort-order > span {
+  padding-right: 5px;
+}
+#view-group > header > section:nth-of-type(3) > .change-status:last-of-type, #view-group > header > section:nth-of-type(3) > .change-sort-order:last-of-type {
+  margin-right: 0;
+}
+#view-group > header > section:nth-of-type(3) > .change-status > img, #view-group > header > section:nth-of-type(3) > .change-sort-order > img {
+  height: 40px;
+}
+#view-group > header > section:nth-of-type(3) > .change-status {
   background-color: #00CF41;
 }
-#view-group > header > section:nth-of-type(2) > .change-status > div.star-icon {
+#view-group > header > section:nth-of-type(3) > .change-status > div.star-icon {
   background: no-repeat center center/auto 100% url("/img/star.png");
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   flex: 0 0 auto;
   position: relative;
 }
-#view-group > header > section:nth-of-type(2) > .change-status > div.star-icon.crossed-out::before, #view-group > header > section:nth-of-type(2) > .change-status > div.star-icon.crossed-out::after {
+#view-group > header > section:nth-of-type(3) > .change-status > div.star-icon.crossed-out::before, #view-group > header > section:nth-of-type(3) > .change-status > div.star-icon.crossed-out::after {
   content: "";
   position: absolute;
   top: 50%;
@@ -238,49 +262,61 @@ h1, h2, h3, h4, h5, h6 {
   background-color: red;
   transform-origin: center center;
 }
-#view-group > header > section:nth-of-type(2) > .change-status > div.star-icon.crossed-out::before {
+#view-group > header > section:nth-of-type(3) > .change-status > div.star-icon.crossed-out::before {
   transform: translate(-50%, -50%) rotateZ(45deg);
 }
-#view-group > header > section:nth-of-type(2) > .change-status > div.star-icon.crossed-out::after {
+#view-group > header > section:nth-of-type(3) > .change-status > div.star-icon.crossed-out::after {
   transform: translate(-50%, -50%) rotateZ(-45deg);
 }
-#view-group > header > section:nth-of-type(2) > .delete-group {
-  background-color: red;
+#view-group > header > section:nth-of-type(3) > .change-sort-order {
+  background-color: cadetblue;
 }
 #view-group > section.additional-section {
   height: -moz-fit-content;
   height: fit-content;
   display: none;
-  border: 5px solid gray;
-  background-color: gray;
+  padding: 5px 0 0 5px;
+  background-color: dimgray;
   color: white;
 }
-#view-group > section.additional-section > .delete-words {
+#view-group > section.additional-section > .selection, #view-group > section.additional-section > .copy-words-to-another-group, #view-group > section.additional-section > .hide-word-or-translation, #view-group > section.additional-section > .training, #view-group > section.additional-section > .delete-words {
   flex-grow: 1;
   display: flex;
   flex-direction: row;
   align-items: center;
   border-radius: 5px;
   margin-right: 5px;
+  margin-bottom: 5px;
 }
-#view-group > section.additional-section > .delete-words > span {
+#view-group > section.additional-section > .selection > span, #view-group > section.additional-section > .copy-words-to-another-group > span, #view-group > section.additional-section > .hide-word-or-translation > span, #view-group > section.additional-section > .training > span, #view-group > section.additional-section > .delete-words > span {
   padding-right: 5px;
 }
-#view-group > section.additional-section > .delete-words:last-of-type {
-  margin-right: 0;
+#view-group > section.additional-section > .selection > img, #view-group > section.additional-section > .copy-words-to-another-group > img, #view-group > section.additional-section > .hide-word-or-translation > img, #view-group > section.additional-section > .training > img, #view-group > section.additional-section > .delete-words > img {
+  height: 40px;
 }
-#view-group > section.additional-section > .delete-words > img {
-  height: 50px;
+#view-group > section.additional-section > .selection {
+  background-color: royalblue;
+}
+#view-group > section.additional-section > .selection > img {
+  height: 30px;
+  margin: auto 3px;
+}
+#view-group > section.additional-section > .copy-words-to-another-group {
+  background-color: dodgerblue;
+}
+#view-group > section.additional-section > .hide-word-or-translation {
+  background-color: cadetblue;
+}
+#view-group > section.additional-section > .training {
+  background-color: limegreen;
 }
 #view-group > section.additional-section > .delete-words {
   background-color: red;
 }
-#view-group > section.additional-section > .delete-words > img {
-  height: 50px;
-}
 #view-group > section.additional-section.active {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
 }
 #view-group > main {
   flex-grow: 1;
@@ -392,14 +428,44 @@ h1, h2, h3, h4, h5, h6 {
   transform: translateX(-25%) rotateZ(-145deg);
 }
 
-@media (max-width: 400px) {
-  #view-group > header > section > .change-status > span {
+@media (max-width: 570px) {
+  #view-group > section.additional-section.active > .copy-words-to-another-group {
+    flex-grow: 0;
+  }
+  #view-group > section.additional-section.active > .copy-words-to-another-group > span {
     display: none;
   }
-  #view-group > header > section > .change-group-name > span {
+  /*
+  & > .selection, & > .copy-words-to-another-group, 
+  & > .hide-word-or-translation, & > .training, 
+  & > .delete-words
+  */
+}
+@media (max-width: 400px) {
+  #view-group > header > section:nth-of-type(3) > .change-status {
+    flex-grow: 0;
+  }
+  #view-group > header > section > .change-status > span, #view-group > header > section > .change-group-name > span {
     display: none;
   }
   #view-group > header > section > .group-name {
     word-break: break-all;
+  }
+  #view-group > section.additional-section.active > .selection {
+    flex-grow: 0;
+  }
+  #view-group > section.additional-section.active > .selection > span {
+    display: none;
+  }
+  #view-group > section.additional-section.active > .selection > img {
+    margin: auto 5px;
+  }
+}
+@media (max-width: 320px) {
+  #view-group > section.additional-section.active > div[class] > span {
+    display: none;
+  }
+  #view-group > section.additional-section.active > div[class]:not(.selection) > img {
+    margin: auto;
   }
 }
