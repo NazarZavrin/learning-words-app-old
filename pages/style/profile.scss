@@ -242,59 +242,7 @@ body {
     background-color: red;
     margin-bottom: auto;// for centring elements in .profile-info
 }
-.change-password-modal-window, .check-password-modal-window, 
-.new-group-modal-window, .new-word-modal-window,
-.change-group-name-modal-window, .change-word-modal-window {
-    header {
-        text-align: center;
-        margin-bottom: 5px;
-    }
-    padding: 10px;
-    // white-space: nowrap;
-    & input:not([type="checkbox"]) {
-        font: inherit;
-        display: inline-block;
-        width: 150px;
-        border: 1px solid gray;
-        border-radius: 5px;
-        padding: 0 3px;
-    }
-    & > .old-password-block, & > .new-password-block, & > .password-block {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-bottom: 3px;
-        & > div {
-            display: flex;
-            width: max-content;
-            flex-direction: row;
-            justify-content: center;
-            align-items: center;
-            & > input {
-                margin-right: 5px;
-            }
-        }
-    }
-    & > .create-new-group-btn, & > .add-new-word-btn,
-    & > .change-group-name-btn, & > .check-password-btn,
-    & > .change-word-btn {
-        background-color: dodgerblue;
-        color: white;
-        padding: 0 5px;
-        margin-top: 5px;
-        border-radius: 3px;
-        text-align: center;
-    }
-    & .warning{
-        max-width: 100%;
-        font-style: normal;
-        display: inline-block;
-        font-size: 14px;
-        color: red;
-        text-align: left;
-        word-wrap: break-word;
-    }
-}
+
 .favourite-groups, .groups {
     width: 100%;
     display: flex;

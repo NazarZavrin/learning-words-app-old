@@ -126,7 +126,7 @@ groupsRouter.put("/add-word", (req, res, next) => {
         res.json({success: false, message: "Such word with such translation already exists."});
         return;
     }
-    let numberToSet = maxNumber > 0 ? maxNumber + 1 : 1;
+    let numberToSet = maxNumber > 0 ? Number.parseInt(maxNumber) + 1 : 1;
     // console.log(numberToSet);
     if (numberToSet > 99999.999) {// number must have 5 digits before the decimal point and 3 after it
         // console.log("getMaxFreeNumber");
@@ -171,7 +171,7 @@ groupsRouter.propfind("/get-words", (req, res, next) => {
     if (typeof words === "undefined") {
         words = [];
     }
-    res.json({success: true, words: JSON.stringify(words)});
+    res.json({success: true, words: JSON.stringify(words), sortOrder: group.sortOrder});
 })
 groupsRouter.patch("/change/name", (req, res, next) => {
     express.json({limit: req.get("content-length")})(req, res, next);
@@ -221,6 +221,27 @@ groupsRouter.patch("/change/status", (req, res, next) => {
         return;
     }
     res.json({success: true, groupIsFavoutite: !group.isFavourite});
+})
+groupsRouter.patch("/change/sort-order", (req, res, next) => {
+    express.json({limit: req.get("content-length")})(req, res, next);
+}, async (req, res) => {
+    // console.log(req.body);
+    let user = await findIfUnique(database.collection("users"), {passkey: req.passkey});
+    if (!req.passkey || user === false || !req.body.sortOrder) {
+        res.json({success: false});
+        return;
+    }
+    let group = await findIfUnique(database.collection("groups"), {ownersObjectId: user._id, name: req.body.groupName});
+    if (!req.body || group === false || !req.body.groupName) {
+        res.json({success: false});
+        return;
+    }
+    let updateResult = await database.collection("groups").updateOne({_id: group._id}, {$set: {sortOrder: req.body.sortOrder}});
+    if (!updateResult.acknowledged) {
+        res.json({success: false});
+        return;
+    }
+    res.send("");
 })
 
 groupsRouter.delete("/delete", (req, res, next) => {

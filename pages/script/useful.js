@@ -149,29 +149,3 @@ export function passwordIsCorrect(inputElement, elementForWarning = null, event 
     setWarning(elementForWarning.nextElementSibling, warningText, "password");
     return warningText.length > 0 ? false : true;
 }
-export function renderSortedWords(wordsSection, wordContainers){
-    // console.log(wordContainers);
-    // console.log(wordContainers.slice(0, 2));
-    wordContainers.sort((first, second) => {
-        first = first.querySelector(".words-number").textContent;
-        second = second.querySelector(".words-number").textContent;
-        return first - second;
-    })
-    wordsSection.innerHTML = "";
-    for (let i = 0; i < wordContainers.length; i++) {
-        wordsSection.append(wordContainers[i]);
-    }
-}
-/* 
-result.words.sort((first, second) => { // mix elements in array
-    let num = Math.round(Math.random() * 7) - 4;
-    console.log(num);
-    return num;
-})
-let clonedArray = result.words.concat();// this is required to avoid printing array, sorted by next sorting
-console.log(clonedArray);
-result.words.sort((first, second) => {
-    return first.number - second.number;
-})
-console.log(result.words);
-*/

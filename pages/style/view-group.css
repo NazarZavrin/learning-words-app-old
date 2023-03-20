@@ -69,13 +69,6 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 400;
 }
 
-.favourite-words {
-  width: 100px;
-  height: 100px;
-  background-color: dodgerblue;
-  color: white;
-}
-
 .background {
   z-index: 100;
   background-color: rgba(0, 0, 0, 0.5);
@@ -111,13 +104,128 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 30px;
-  height: 30px;
+  width: 35px;
+  height: 35px;
   background-color: red;
   border-radius: 50%;
 }
 .modal-window > .modal-window-cross > img {
   max-width: 100%;
+}
+
+.change-password-modal-window, .check-password-modal-window,
+.new-group-modal-window, .new-word-modal-window,
+.change-group-name-modal-window, .change-sort-order-modal-window,
+.change-word-modal-window {
+  padding: 10px;
+}
+.change-password-modal-window header, .check-password-modal-window header,
+.new-group-modal-window header, .new-word-modal-window header,
+.change-group-name-modal-window header, .change-sort-order-modal-window header,
+.change-word-modal-window header {
+  text-align: center;
+  margin-bottom: 5px;
+}
+.change-password-modal-window input:not([type=checkbox]), .check-password-modal-window input:not([type=checkbox]),
+.new-group-modal-window input:not([type=checkbox]), .new-word-modal-window input:not([type=checkbox]),
+.change-group-name-modal-window input:not([type=checkbox]), .change-sort-order-modal-window input:not([type=checkbox]),
+.change-word-modal-window input:not([type=checkbox]) {
+  font: inherit;
+  display: inline-block;
+  width: 150px;
+  border: 1px solid gray;
+  border-radius: 5px;
+  padding: 0 3px;
+}
+.change-password-modal-window > .create-new-group-btn, .change-password-modal-window > .add-new-word-btn, .change-password-modal-window > .change-group-name-btn, .change-password-modal-window > .check-password-btn, .change-password-modal-window > .change-sort-order-btn, .change-password-modal-window > .change-word-btn, .check-password-modal-window > .create-new-group-btn, .check-password-modal-window > .add-new-word-btn, .check-password-modal-window > .change-group-name-btn, .check-password-modal-window > .check-password-btn, .check-password-modal-window > .change-sort-order-btn, .check-password-modal-window > .change-word-btn,
+.new-group-modal-window > .create-new-group-btn,
+.new-group-modal-window > .add-new-word-btn,
+.new-group-modal-window > .change-group-name-btn,
+.new-group-modal-window > .check-password-btn,
+.new-group-modal-window > .change-sort-order-btn,
+.new-group-modal-window > .change-word-btn, .new-word-modal-window > .create-new-group-btn, .new-word-modal-window > .add-new-word-btn, .new-word-modal-window > .change-group-name-btn, .new-word-modal-window > .check-password-btn, .new-word-modal-window > .change-sort-order-btn, .new-word-modal-window > .change-word-btn,
+.change-group-name-modal-window > .create-new-group-btn,
+.change-group-name-modal-window > .add-new-word-btn,
+.change-group-name-modal-window > .change-group-name-btn,
+.change-group-name-modal-window > .check-password-btn,
+.change-group-name-modal-window > .change-sort-order-btn,
+.change-group-name-modal-window > .change-word-btn, .change-sort-order-modal-window > .create-new-group-btn, .change-sort-order-modal-window > .add-new-word-btn, .change-sort-order-modal-window > .change-group-name-btn, .change-sort-order-modal-window > .check-password-btn, .change-sort-order-modal-window > .change-sort-order-btn, .change-sort-order-modal-window > .change-word-btn,
+.change-word-modal-window > .create-new-group-btn,
+.change-word-modal-window > .add-new-word-btn,
+.change-word-modal-window > .change-group-name-btn,
+.change-word-modal-window > .check-password-btn,
+.change-word-modal-window > .change-sort-order-btn,
+.change-word-modal-window > .change-word-btn {
+  background-color: dodgerblue;
+  color: white;
+  padding: 0 7px;
+  margin-top: 5px;
+  border-radius: 3px;
+  text-align: center;
+}
+.change-password-modal-window .warning, .check-password-modal-window .warning,
+.new-group-modal-window .warning, .new-word-modal-window .warning,
+.change-group-name-modal-window .warning, .change-sort-order-modal-window .warning,
+.change-word-modal-window .warning {
+  max-width: 100%;
+  font-style: normal;
+  display: inline-block;
+  font-size: 14px;
+  color: red;
+  text-align: left;
+  word-wrap: break-word;
+}
+
+.change-password-modal-window > .old-password-block,
+.change-password-modal-window > .new-password-block,
+.change-password-modal-window > .password-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 3px;
+}
+.change-password-modal-window > .old-password-block > div,
+.change-password-modal-window > .new-password-block > div,
+.change-password-modal-window > .password-block > div {
+  display: flex;
+  width: -moz-max-content;
+  width: max-content;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+.change-password-modal-window > .old-password-block > div > input,
+.change-password-modal-window > .new-password-block > div > input,
+.change-password-modal-window > .password-block > div > input {
+  margin-right: 5px;
+}
+
+.change-sort-order-modal-window > .sort-order-blocks {
+  display: flex;
+  flex-direction: column;
+}
+.change-sort-order-modal-window > .sort-order-blocks > .sort-order-block {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border: 2px solid gray;
+  border-radius: 5px;
+  margin-bottom: 3px;
+}
+.change-sort-order-modal-window > .sort-order-blocks > .sort-order-block > img {
+  max-width: 40px;
+  background-color: dodgerblue;
+  margin: 0 3px;
+}
+.change-sort-order-modal-window > .sort-order-blocks > .sort-order-block > span {
+  width: -moz-max-content;
+  width: max-content;
+  max-width: 70vw;
+  margin: 5px 7px 5px 3px;
+}
+.change-sort-order-modal-window > .sort-order-blocks > .sort-order-block.selected {
+  background-color: gray;
+  color: white;
 }
 
 #view-group.hide {
@@ -143,7 +251,8 @@ h1, h2, h3, h4, h5, h6 {
   height: fit-content;
   display: flex;
   flex-direction: column;
-  border: 5px solid gray;
+  padding: 5px;
+  padding-bottom: 0;
   background-color: gray;
   color: white;
 }
@@ -200,23 +309,21 @@ h1, h2, h3, h4, h5, h6 {
   height: 50px;
 }
 #view-group > header > section:nth-of-type(2) {
-  margin-bottom: 5px;
+  flex-wrap: wrap;
 }
-#view-group > header > section:nth-of-type(2) > .new-word, #view-group > header > section:nth-of-type(2) > .delete-group {
-  flex-grow: 1;
+#view-group > header > section:nth-of-type(2) > .new-word, #view-group > header > section:nth-of-type(2) > .delete-group, #view-group > header > section:nth-of-type(2) > .change-status, #view-group > header > section:nth-of-type(2) > .change-sort-order {
+  flex: 1 1 auto;
   display: flex;
   flex-direction: row;
   align-items: center;
   border-radius: 5px;
-  margin-right: 5px;
+  margin: 0 2.5px 5px;
 }
-#view-group > header > section:nth-of-type(2) > .new-word > span, #view-group > header > section:nth-of-type(2) > .delete-group > span {
+#view-group > header > section:nth-of-type(2) > .new-word > span, #view-group > header > section:nth-of-type(2) > .delete-group > span, #view-group > header > section:nth-of-type(2) > .change-status > span, #view-group > header > section:nth-of-type(2) > .change-sort-order > span {
+  word-break: break-word;
   padding-right: 5px;
 }
-#view-group > header > section:nth-of-type(2) > .new-word:last-of-type, #view-group > header > section:nth-of-type(2) > .delete-group:last-of-type {
-  margin-right: 0;
-}
-#view-group > header > section:nth-of-type(2) > .new-word > img, #view-group > header > section:nth-of-type(2) > .delete-group > img {
+#view-group > header > section:nth-of-type(2) > .new-word > img, #view-group > header > section:nth-of-type(2) > .delete-group > img, #view-group > header > section:nth-of-type(2) > .change-status > img, #view-group > header > section:nth-of-type(2) > .change-sort-order > img {
   height: 40px;
 }
 #view-group > header > section:nth-of-type(2) > .new-word {
@@ -225,34 +332,17 @@ h1, h2, h3, h4, h5, h6 {
 #view-group > header > section:nth-of-type(2) > .delete-group {
   background-color: red;
 }
-#view-group > header > section:nth-of-type(3) > .change-status, #view-group > header > section:nth-of-type(3) > .change-sort-order {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  border-radius: 5px;
-  margin-right: 5px;
-}
-#view-group > header > section:nth-of-type(3) > .change-status > span, #view-group > header > section:nth-of-type(3) > .change-sort-order > span {
-  padding-right: 5px;
-}
-#view-group > header > section:nth-of-type(3) > .change-status:last-of-type, #view-group > header > section:nth-of-type(3) > .change-sort-order:last-of-type {
-  margin-right: 0;
-}
-#view-group > header > section:nth-of-type(3) > .change-status > img, #view-group > header > section:nth-of-type(3) > .change-sort-order > img {
-  height: 40px;
-}
-#view-group > header > section:nth-of-type(3) > .change-status {
+#view-group > header > section:nth-of-type(2) > .change-status {
   background-color: #00CF41;
 }
-#view-group > header > section:nth-of-type(3) > .change-status > div.star-icon {
+#view-group > header > section:nth-of-type(2) > .change-status > div.star-icon {
   background: no-repeat center center/auto 100% url("/img/star.png");
   width: 40px;
   height: 40px;
   flex: 0 0 auto;
   position: relative;
 }
-#view-group > header > section:nth-of-type(3) > .change-status > div.star-icon.crossed-out::before, #view-group > header > section:nth-of-type(3) > .change-status > div.star-icon.crossed-out::after {
+#view-group > header > section:nth-of-type(2) > .change-status > div.star-icon.crossed-out::before, #view-group > header > section:nth-of-type(2) > .change-status > div.star-icon.crossed-out::after {
   content: "";
   position: absolute;
   top: 50%;
@@ -262,13 +352,13 @@ h1, h2, h3, h4, h5, h6 {
   background-color: red;
   transform-origin: center center;
 }
-#view-group > header > section:nth-of-type(3) > .change-status > div.star-icon.crossed-out::before {
+#view-group > header > section:nth-of-type(2) > .change-status > div.star-icon.crossed-out::before {
   transform: translate(-50%, -50%) rotateZ(45deg);
 }
-#view-group > header > section:nth-of-type(3) > .change-status > div.star-icon.crossed-out::after {
+#view-group > header > section:nth-of-type(2) > .change-status > div.star-icon.crossed-out::after {
   transform: translate(-50%, -50%) rotateZ(-45deg);
 }
-#view-group > header > section:nth-of-type(3) > .change-sort-order {
+#view-group > header > section:nth-of-type(2) > .change-sort-order {
   background-color: cadetblue;
 }
 #view-group > section.additional-section {
@@ -302,10 +392,10 @@ h1, h2, h3, h4, h5, h6 {
   margin: auto 3px;
 }
 #view-group > section.additional-section > .copy-words-to-another-group {
-  background-color: dodgerblue;
+  background-color: deepskyblue;
 }
 #view-group > section.additional-section > .hide-word-or-translation {
-  background-color: cadetblue;
+  background-color: dodgerblue;
 }
 #view-group > section.additional-section > .training {
   background-color: limegreen;
@@ -428,7 +518,7 @@ h1, h2, h3, h4, h5, h6 {
   transform: translateX(-25%) rotateZ(-145deg);
 }
 
-@media (max-width: 570px) {
+@media (max-width: 560px) {
   #view-group > section.additional-section.active > .copy-words-to-another-group {
     flex-grow: 0;
   }
@@ -441,8 +531,8 @@ h1, h2, h3, h4, h5, h6 {
   & > .delete-words
   */
 }
-@media (max-width: 400px) {
-  #view-group > header > section:nth-of-type(3) > .change-status {
+@media (max-width: 450px) {
+  #view-group > header > section:nth-of-type(2) > .change-status {
     flex-grow: 0;
   }
   #view-group > header > section > .change-status > span, #view-group > header > section > .change-group-name > span {
@@ -461,7 +551,7 @@ h1, h2, h3, h4, h5, h6 {
     margin: auto 5px;
   }
 }
-@media (max-width: 320px) {
+@media (max-width: 330px) {
   #view-group > section.additional-section.active > div[class] > span {
     display: none;
   }

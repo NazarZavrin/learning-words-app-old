@@ -117,6 +117,7 @@ function addHandlersToViewGroupBlock(){
     let viewGroupBlock = document.body.querySelector("#view-group");
     let header = viewGroupBlock.querySelector("#view-group > header");
     let groupNameBlock = header.querySelector("section > .group-name");
+    let changeSortOrderBlock = header.querySelector(".change-sort-order");
     let additionalSection = viewGroupBlock.querySelector(".additional-section");
     let wordsSection = viewGroupBlock.querySelector(".words-section");
     header.addEventListener("click", async event => {
@@ -129,7 +130,7 @@ function addHandlersToViewGroupBlock(){
             viewGroupBlock.remove();
         }
         if (event.target.closest(".new-word")) {
-            Group.addWord(groupNameBlock.textContent, wordsSection);
+            Group.addWord(groupNameBlock.textContent, wordsSection, changeSortOrderBlock);
         }
         if (event.target.closest(".change-group-name") || event.target.closest(".group-name")) {
             Group.changeGroupName(groupNameBlock);
@@ -139,6 +140,9 @@ function addHandlersToViewGroupBlock(){
         }
         if (event.target.closest(".delete-group")) {
             Group.deleteGroup(groupNameBlock);
+        }
+        if (event.target.closest(".change-sort-order")) {
+            Group.changeSortOrder(groupNameBlock.textContent, wordsSection, changeSortOrderBlock);
         }
     })
     wordsSection.addEventListener("click", event => {

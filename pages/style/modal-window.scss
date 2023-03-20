@@ -1,9 +1,9 @@
-.favourite-words {
-    width: 100px;
-    height: 100px;
-    background-color: dodgerblue;
-    color: white;
-}
+// .favourite-words {
+//     width: 100px;
+//     height: 100px;
+//     background-color: dodgerblue;
+//     color: white;
+// }
 
 .background {
     z-index: 100;
@@ -37,12 +37,99 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        width: 30px;
-        height: 30px;
+        width: 35px;
+        height: 35px;
         background-color: red;
         border-radius: 50%;
         & > img {
             max-width: 100%;
         }
+    }
+}
+.change-password-modal-window, .check-password-modal-window, 
+.new-group-modal-window, .new-word-modal-window,
+.change-group-name-modal-window, .change-sort-order-modal-window, 
+.change-word-modal-window {
+    header {
+        text-align: center;
+        margin-bottom: 5px;
+    }
+    padding: 10px;
+    // white-space: nowrap;
+    & input:not([type="checkbox"]) {
+        font: inherit;
+        display: inline-block;
+        width: 150px;
+        border: 1px solid gray;
+        border-radius: 5px;
+        padding: 0 3px;
+    }
+    
+    & > .create-new-group-btn, & > .add-new-word-btn,
+    & > .change-group-name-btn, & > .check-password-btn,
+    & > .change-sort-order-btn, & > .change-word-btn {
+        background-color: dodgerblue;
+        color: white;
+        padding: 0 7px;
+        margin-top: 5px;
+        border-radius: 3px;
+        text-align: center;
+    }
+    & .warning{
+        max-width: 100%;
+        font-style: normal;
+        display: inline-block;
+        font-size: 14px;
+        color: red;
+        text-align: left;
+        word-wrap: break-word;
+    }
+}
+.change-password-modal-window > .old-password-block, 
+.change-password-modal-window > .new-password-block, 
+.change-password-modal-window > .password-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 3px;
+    & > div {
+        display: flex;
+        width: max-content;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        & > input {
+            margin-right: 5px;
+        }
+    }
+}
+.change-sort-order-modal-window {
+    & > .sort-order-blocks {
+        display: flex;
+        flex-direction: column;
+        & > .sort-order-block {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            border: 2px solid gray;
+            border-radius: 5px;
+            margin-bottom: 3px;
+            & > img {
+                max-width: 40px;
+                background-color: dodgerblue;
+                margin: 0 3px;
+            }
+            & > span {
+                // word-break: keep-all;
+                width: max-content;
+                max-width: 70vw;
+                margin: 5px 7px 5px 3px;
+            }
+            &.selected {
+                background-color: gray;
+                color: white;
+            }
+        }
+        
     }
 }
