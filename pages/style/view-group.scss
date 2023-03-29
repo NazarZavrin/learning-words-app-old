@@ -154,7 +154,7 @@
         background-color: dimgray;
         color: white;
         & > .selection, & > .copy-words-to-another-group, 
-        & > .hide-word-or-translation, & > .training, 
+        & > .change-display, & > .training, 
         & > .delete-words {
             flex-grow: 1;
             // height: 100%;
@@ -182,7 +182,7 @@
         & > .copy-words-to-another-group {
             background-color: deepskyblue;
         }
-        & > .hide-word-or-translation {
+        & > .change-display {
             background-color: dodgerblue;
         }
         & > .training {
@@ -329,7 +329,7 @@
     }
         /*
         & > .selection, & > .copy-words-to-another-group, 
-        & > .hide-word-or-translation, & > .training, 
+        & > .change-display, & > .training, 
         & > .delete-words
         */
 }

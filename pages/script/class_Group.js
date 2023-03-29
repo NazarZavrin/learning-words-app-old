@@ -29,7 +29,7 @@ export default class Group {
                 styles?.addEventListener("load", event => {
                     viewGroupBlock.classList.remove("hide");
                 }, {once: true});
-                return Group.showWords(groupName);
+                return Group.showWords(groupName, viewGroupBlock);
                 // addHandlersToViewGroupBlock(groupName);
             } else if (result === "failure") {
                 throw new Error("Couldn't get group " + groupName);
@@ -47,8 +47,7 @@ export default class Group {
             alert(error);
         })
     }
-    static async showWords(groupName) {
-        let viewGroupBlock = document.body.querySelector("#view-group");
+    static async showWords(groupName, viewGroupBlock) {
         let wordsSection = viewGroupBlock.querySelector(".words-section");
         wordsSection.classList.add("loading");
         // return;
@@ -67,10 +66,11 @@ export default class Group {
         }
         viewGroupBlock.classList.remove("hide");
         // ↑ if styles.addEventListener("load", event => {...}) didn't remove this class for some reason
-        wordsSection.classList.remove("loading");
+        
         if (!result.success) {
             result.message = String(result?.message || "Can not get words of group " + groupName);
             wordsSection.textContent = result.message;
+            wordsSection.classList.remove("loading");
             return;
         }
         // await new Promise((resolve, reject) => {
@@ -81,8 +81,8 @@ export default class Group {
         if (result.words.length === 0) {
             wordsSection.textContent = "Group doesn't contain any word.";
         } else {
-            result.words = result.words.map(wordObject => {
-                return new Word(wordObject);
+            result.words = result.words.map(wordInfo => {
+                return new Word(wordInfo);
             })
             // console.log(result);
             sortWords(result.words, result.sortOrder);
@@ -90,14 +90,15 @@ export default class Group {
             for (let i = 0; i < result.words.length; i++) {
                 wordsSection.append(result.words[i]);
             }
-            let changeSortOrderBlock = viewGroupBlock.querySelector(".change-sort-order");
-            if (result.sortOrder && changeSortOrderBlock) {
-                changeSortOrderBlock.dataset.currentSortOrder = result.sortOrder;
+            let changeSortOrderBtn = viewGroupBlock.querySelector(".change-sort-order");
+            if (result.sortOrder && changeSortOrderBtn) {
+                changeSortOrderBtn.dataset.currentSortOrder = result.sortOrder;
             }
             // renderSortedWords
         }
+        wordsSection.classList.remove("loading");
     }
-    static addWord(groupName, wordsSection, changeSortOrderBlock) {
+    static addWord(groupName, wordsSection, changeSortOrderBtn) {
         let wordLabel = createElement({name: "header", content: "Enter new word:"},);
         let wordInput = createElement({name: "input"});
         wordInput.setAttribute("autocomplete", "off");
@@ -160,7 +161,7 @@ export default class Group {
                     let wordContainers = [...wordsSection.getElementsByClassName("word-container")];
                     wordContainers.push(new Word({...requestBody, number: result.number}));
                     // console.log(wordContainers.slice(-3));
-                    sortWords(wordContainers, changeSortOrderBlock.dataset?.currentSortOrder);
+                    sortWords(wordContainers, changeSortOrderBtn.dataset?.currentSortOrder);
                     // renderSortedWords
                     wordsSection.innerHTML = "";
                     for (let i = 0; i < wordContainers.length; i++) {
@@ -265,7 +266,7 @@ export default class Group {
         showModalWindow(document.body, [newGroupNameLabel, newGroupNameInput, passwordLabel, passwordBlock, changeGroupNameBtn], 
             {className: "change-group-name-modal-window", handlers: [{eventName: "click", handler: clickModalWindow}]});
     }
-    static async changeGroupStatus(groupName, changeStatusBlock) {
+    static async changeGroupStatus(groupName, changeStatusBtn) {
         let response = await fetch(location.href + "/groups/change/status", {
             method: "PATCH",
             body: groupName,
@@ -276,8 +277,8 @@ export default class Group {
             console.log(result);
             // console.log(Date.now());
             if (result.success) {
-                let span = changeStatusBlock.querySelector("span");
-                let starIcon = changeStatusBlock.querySelector("div.star-icon");
+                let span = changeStatusBtn.querySelector("span");
+                let starIcon = changeStatusBtn.querySelector("div.star-icon");
                 if (result.groupIsFavoutite === true) {
                     span.textContent = "Remove from favourites";
                     starIcon.classList.add("crossed-out");
@@ -291,7 +292,7 @@ export default class Group {
         result.message = String(result?.message || "Updating error. Please try again.");
         alert(result?.message);
     }
-    static changeSortOrder(groupName, wordsSection, changeSortOrderBlock) {
+    static changeSortOrder(groupName, wordsSection, changeSortOrderBtn) {
         let header = createElement({name: "header", content: "Choose sort order:"},);
         let numericAscending = createElement({class: "1-9 selected"});
         numericAscending.innerHTML = '<img src="/img/sorting.png"><span>Numeric ascending sort order</span>';
@@ -308,7 +309,7 @@ export default class Group {
         sortOrderBlocks.append(alphabeticDescending);
         for (const sortOrderBlock of sortOrderBlocks.children) {
             sortOrderBlock.classList.add("sort-order-block");
-            if (sortOrderBlock.classList.contains(changeSortOrderBlock.dataset?.currentSortOrder)) {
+            if (sortOrderBlock.classList.contains(changeSortOrderBtn.dataset?.currentSortOrder)) {
                 numericAscending.classList.remove("selected");
                 sortOrderBlock.classList.add("selected");
             }
@@ -321,11 +322,11 @@ export default class Group {
             sortOrderBlocks.querySelector(".selected")?.classList?.remove("selected");
             sortOrderBlock.classList.add("selected");
         })
-        let changeSortOrderBtn = createElement({content: "Change sort order", class: "change-sort-order-btn"});
-        changeSortOrderBtn.addEventListener("click", event => {
+        let confirmChangeOfSortOrderBtn = createElement({content: "Change sort order", class: "change-sort-order-btn"});
+        confirmChangeOfSortOrderBtn.addEventListener("click", event => {
             let selectedSortOrderBlock = sortOrderBlocks.querySelector(".selected");
             let selectedSortOrder = selectedSortOrderBlock?.className?.split(" ")?.find(value => value.length === 3 && value[1] === "-");
-            if (!selectedSortOrder || selectedSortOrder === changeSortOrderBlock.dataset?.currentSortOrder) {
+            if (!selectedSortOrder || selectedSortOrder === changeSortOrderBtn.dataset?.currentSortOrder) {
                 event.target.closest(".modal-window").closeWindow();
                 return;
             }
@@ -337,7 +338,7 @@ export default class Group {
             for (let i = 0; i < wordContainers.length; i++) {
                 wordsSection.append(wordContainers[i]);
             }
-            changeSortOrderBlock.dataset.currentSortOrder = selectedSortOrder;
+            changeSortOrderBtn.dataset.currentSortOrder = selectedSortOrder;
             event.target.closest(".modal-window").closeWindow();
             let requestBody = {
                 groupName,// groupName: groupName,
@@ -352,7 +353,7 @@ export default class Group {
             })
             
         })
-        showModalWindow(document.body, [header, sortOrderBlocks, changeSortOrderBtn], 
+        showModalWindow(document.body, [header, sortOrderBlocks, confirmChangeOfSortOrderBtn], 
             {className: "change-sort-order-modal-window"});
         
     }
@@ -423,6 +424,176 @@ export default class Group {
         }
         showModalWindow(document.body, [header, passwordBlock, checkPasswordBtn], 
         {className: "check-password-modal-window", handlers: [{eventName: "click", handler: clickModalWindow}]});
+    }
+    static changeSelection(wordsSection, changeSelectionBtn){
+        console.log("changeSelection");
+    }
+    static changeDisplay(wordsSection){
+        console.log("changeDisplay");
+    }
+    static copyWordsToAnotherGroup(wordsSection, groupsParent){
+        let selectedWords = Array.from(wordsSection.getElementsByClassName("selected-word"))
+        .map(wordContainer => {
+            let wordInfo = {
+                word: wordContainer.querySelector(".word-container__word")?.textContent,
+                translation: wordContainer.querySelector(".word-container__translation")?.textContent,
+            }
+            return wordInfo;
+        })
+        let header = createElement({name: "header", content: "Enter and choose the name of the group to copy the words to:"},);
+        let groupNameInput = createElement({name: "input"});
+        groupNameInput.setAttribute("autocomplete", "off");
+        let selectGroupSection = createElement({name: "section", class: "select-group-section"});
+        let indexesOfEntriesInGroupNames = {};
+        for (const groupsContainer of groupsParent?.querySelectorAll(".group")) {
+            indexesOfEntriesInGroupNames[groupsContainer.textContent] = -1;
+        }
+        groupNameInput.addEventListener("input", event => {
+            selectGroupSection.innerHTML = "";
+            for (const groupName in indexesOfEntriesInGroupNames) {
+                indexesOfEntriesInGroupNames[groupName] = groupName?.toLocaleLowerCase().indexOf(groupNameInput.value?.toLocaleLowerCase().trim());
+            }
+            Object.entries(indexesOfEntriesInGroupNames)
+            .filter(([key, value]) => value >= 0)
+            ?.sort((entry1, entry2) => entry1[1] - entry2[1])
+            .forEach(([groupName,]) => selectGroupSection.insertAdjacentHTML("beforeend", `<div>${groupName}</div>`));
+
+        })
+        groupNameInput.dispatchEvent(new Event("input"));
+        selectGroupSection.addEventListener("click", event => {
+            if (event.target.closest(".select-group-section > div")) {
+                groupNameInput.value = event.target.closest(".select-group-section > div").textContent;
+                groupNameInput.dispatchEvent(new Event("input"));
+            }
+        })
+        let confirmCopyingBtn = createElement({content: "Copy selected words", class: "copy-words-btn"});
+        confirmCopyingBtn.addEventListener("click", async event => {
+            if (!Object.keys(indexesOfEntriesInGroupNames).includes(groupNameInput.value)) {
+                createWarningAfterElement(groupNameInput);
+                setWarning(groupNameInput.nextElementSibling, "Enter the name of an existing group.", "groupNameInput");
+                return;
+            } else {
+                setWarning(groupNameInput.nextElementSibling, "");
+            }
+            event.target.closest(".modal-window").closeWindow();
+            for (const wordInfo of selectedWords) {
+                let requestBody = Object.assign({
+                    groupName: groupNameInput.value,
+                }, wordInfo);
+                try {
+                    await fetch(location.href + "/groups/add-word", {
+                        method: "PUT",
+                        body: JSON.stringify(requestBody),
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                } catch (error) {
+                    console.log(error.message);
+                }
+            }
+        })
+        showModalWindow(document.body, [header, groupNameInput, selectGroupSection, confirmCopyingBtn], 
+            {className: "copy-words-to-another-group-modal-window"});
+    }
+    static deleteManyWords(groupName, wordsSection) {
+        let selectedWords = Array.from(wordsSection.getElementsByClassName("selected-word"))
+        .map(wordContainer => {
+            let wordInfo = {
+                word: wordContainer.querySelector(".word-container__word")?.textContent,
+                translation: wordContainer.querySelector(".word-container__translation")?.textContent,
+            }
+            return wordInfo;
+        })
+        let header = createElement({name: "header", content: "To verify personality enter your password:"},);
+        let passwordInput = createElement({name: "input"});
+        passwordInput.setAttribute("type", "password");
+        passwordInput.setAttribute("autocomplete", "off");
+        let passwordBlock = createElement({name: "form", class: "password-block"});
+        passwordBlock.innerHTML = `<div class="show-password">
+        <input type="checkbox">Show password</div>`;
+        passwordBlock.prepend(passwordInput);
+        let checkPasswordBtn = createElement({content: "Delete words", class: "check-password-btn"});
+        checkPasswordBtn.addEventListener("click", async event => {
+            createWarningAfterElement(checkPasswordBtn);
+            setWarning(checkPasswordBtn.nextElementSibling, '');
+            if (passwordInput.value.length === 0) {
+                createWarningAfterElement(passwordInput);
+                setWarning(passwordInput.nextElementSibling, "Please, enter password.", "passwordInput");
+                return;
+            } else {
+                setWarning(passwordInput.nextElementSibling, "");
+            }
+            // console.log(passwordInput.value);
+            // return;
+            //checkPasswordBtn.textContent = "-";// space to remain the button visible
+            checkPasswordBtn.classList.add("loading");
+            let deletionSuccessful = true;
+            for (const wordInfo of selectedWords) {
+                let requestBody = Object.assign({
+                    groupName,// groupName: groupName,
+                    password: passwordInput.value
+                }, wordInfo);
+                let response = {}, result = {};
+                try {
+                    response = await fetch(location.href + "/words/delete", {
+                        method: "DELETE",
+                        body: JSON.stringify(requestBody),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                } catch (error) {
+                    console.log(error.message);
+                    if (error?.message?.includes("Failed to fetch")) {
+                        result.message = "Server error.";
+                    }
+                }
+                if (response.ok) {
+                    result = await response.json();
+                    if (result.success) {
+                        for (const wordContainer of wordsSection.querySelectorAll(".selected-word")) {
+                            let currentWord = wordContainer.querySelector(".word-container__word")?.textContent;
+                            let currentTranslation = wordContainer.querySelector(".word-container__translation")?.textContent;
+                            if (currentWord === wordInfo.word && currentTranslation === wordInfo.translation) {
+                                wordContainer.remove();
+                                break;
+                            }
+                        }
+                        continue;
+                    }
+                }
+                if (result?.message?.includes("Password don't match")) {
+                    createWarningAfterElement(passwordInput);
+                    setWarning(passwordInput.nextElementSibling, result.message, "passwordInput");
+                    checkPasswordBtn.classList.remove("loading");
+                    deletionSuccessful = false;
+                    break;
+                }
+                result.message = String(result?.message || "Deletion error. Please try again.");
+                createWarningAfterElement(checkPasswordBtn);
+                setWarning(checkPasswordBtn.nextElementSibling, result.message, "checkPasswordBtn");
+                console.log(result?.message);
+                deletionSuccessful = false;
+            }// end of for (const wordInfo of selectedWords)
+
+            if (deletionSuccessful === false) {
+                return;
+            }
+            if (!wordsSection.querySelector(".word-container")) {
+                wordsSection.textContent = "Group doesn't contain any word.";
+            }
+            checkPasswordBtn.classList.remove("loading");
+            event.target.closest(".modal-window").closeWindow();
+        })
+        function clickModalWindow(event) {
+            if (passwordInput) {
+                showPassword([".show-password"], passwordInput, event);
+            }
+        }
+        showModalWindow(document.body, [header, passwordBlock, checkPasswordBtn], 
+        {className: "check-password-modal-window", handlers: [{eventName: "click", handler: clickModalWindow}]});
+    
     }
 }
 

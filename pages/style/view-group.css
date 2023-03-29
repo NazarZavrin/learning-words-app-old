@@ -116,20 +116,20 @@ h1, h2, h3, h4, h5, h6 {
 .change-password-modal-window, .check-password-modal-window,
 .new-group-modal-window, .new-word-modal-window,
 .change-group-name-modal-window, .change-sort-order-modal-window,
-.change-word-modal-window {
+.change-word-modal-window, .copy-words-to-another-group-modal-window {
   padding: 10px;
 }
 .change-password-modal-window header, .check-password-modal-window header,
 .new-group-modal-window header, .new-word-modal-window header,
 .change-group-name-modal-window header, .change-sort-order-modal-window header,
-.change-word-modal-window header {
+.change-word-modal-window header, .copy-words-to-another-group-modal-window header {
   text-align: center;
   margin-bottom: 5px;
 }
 .change-password-modal-window input:not([type=checkbox]), .check-password-modal-window input:not([type=checkbox]),
 .new-group-modal-window input:not([type=checkbox]), .new-word-modal-window input:not([type=checkbox]),
 .change-group-name-modal-window input:not([type=checkbox]), .change-sort-order-modal-window input:not([type=checkbox]),
-.change-word-modal-window input:not([type=checkbox]) {
+.change-word-modal-window input:not([type=checkbox]), .copy-words-to-another-group-modal-window input:not([type=checkbox]) {
   font: inherit;
   display: inline-block;
   width: 150px;
@@ -137,25 +137,28 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 5px;
   padding: 0 3px;
 }
-.change-password-modal-window > .create-new-group-btn, .change-password-modal-window > .add-new-word-btn, .change-password-modal-window > .change-group-name-btn, .change-password-modal-window > .check-password-btn, .change-password-modal-window > .change-sort-order-btn, .change-password-modal-window > .change-word-btn, .check-password-modal-window > .create-new-group-btn, .check-password-modal-window > .add-new-word-btn, .check-password-modal-window > .change-group-name-btn, .check-password-modal-window > .check-password-btn, .check-password-modal-window > .change-sort-order-btn, .check-password-modal-window > .change-word-btn,
+.change-password-modal-window > .create-new-group-btn, .change-password-modal-window > .add-new-word-btn, .change-password-modal-window > .change-group-name-btn, .change-password-modal-window > .check-password-btn, .change-password-modal-window > .change-sort-order-btn, .change-password-modal-window > .change-word-btn, .change-password-modal-window > .copy-words-btn, .check-password-modal-window > .create-new-group-btn, .check-password-modal-window > .add-new-word-btn, .check-password-modal-window > .change-group-name-btn, .check-password-modal-window > .check-password-btn, .check-password-modal-window > .change-sort-order-btn, .check-password-modal-window > .change-word-btn, .check-password-modal-window > .copy-words-btn,
 .new-group-modal-window > .create-new-group-btn,
 .new-group-modal-window > .add-new-word-btn,
 .new-group-modal-window > .change-group-name-btn,
 .new-group-modal-window > .check-password-btn,
 .new-group-modal-window > .change-sort-order-btn,
-.new-group-modal-window > .change-word-btn, .new-word-modal-window > .create-new-group-btn, .new-word-modal-window > .add-new-word-btn, .new-word-modal-window > .change-group-name-btn, .new-word-modal-window > .check-password-btn, .new-word-modal-window > .change-sort-order-btn, .new-word-modal-window > .change-word-btn,
+.new-group-modal-window > .change-word-btn,
+.new-group-modal-window > .copy-words-btn, .new-word-modal-window > .create-new-group-btn, .new-word-modal-window > .add-new-word-btn, .new-word-modal-window > .change-group-name-btn, .new-word-modal-window > .check-password-btn, .new-word-modal-window > .change-sort-order-btn, .new-word-modal-window > .change-word-btn, .new-word-modal-window > .copy-words-btn,
 .change-group-name-modal-window > .create-new-group-btn,
 .change-group-name-modal-window > .add-new-word-btn,
 .change-group-name-modal-window > .change-group-name-btn,
 .change-group-name-modal-window > .check-password-btn,
 .change-group-name-modal-window > .change-sort-order-btn,
-.change-group-name-modal-window > .change-word-btn, .change-sort-order-modal-window > .create-new-group-btn, .change-sort-order-modal-window > .add-new-word-btn, .change-sort-order-modal-window > .change-group-name-btn, .change-sort-order-modal-window > .check-password-btn, .change-sort-order-modal-window > .change-sort-order-btn, .change-sort-order-modal-window > .change-word-btn,
+.change-group-name-modal-window > .change-word-btn,
+.change-group-name-modal-window > .copy-words-btn, .change-sort-order-modal-window > .create-new-group-btn, .change-sort-order-modal-window > .add-new-word-btn, .change-sort-order-modal-window > .change-group-name-btn, .change-sort-order-modal-window > .check-password-btn, .change-sort-order-modal-window > .change-sort-order-btn, .change-sort-order-modal-window > .change-word-btn, .change-sort-order-modal-window > .copy-words-btn,
 .change-word-modal-window > .create-new-group-btn,
 .change-word-modal-window > .add-new-word-btn,
 .change-word-modal-window > .change-group-name-btn,
 .change-word-modal-window > .check-password-btn,
 .change-word-modal-window > .change-sort-order-btn,
-.change-word-modal-window > .change-word-btn {
+.change-word-modal-window > .change-word-btn,
+.change-word-modal-window > .copy-words-btn, .copy-words-to-another-group-modal-window > .create-new-group-btn, .copy-words-to-another-group-modal-window > .add-new-word-btn, .copy-words-to-another-group-modal-window > .change-group-name-btn, .copy-words-to-another-group-modal-window > .check-password-btn, .copy-words-to-another-group-modal-window > .change-sort-order-btn, .copy-words-to-another-group-modal-window > .change-word-btn, .copy-words-to-another-group-modal-window > .copy-words-btn {
   background-color: dodgerblue;
   color: white;
   padding: 0 7px;
@@ -163,10 +166,16 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 3px;
   text-align: center;
 }
+.change-password-modal-window > .check-password-btn, .check-password-modal-window > .check-password-btn,
+.new-group-modal-window > .check-password-btn, .new-word-modal-window > .check-password-btn,
+.change-group-name-modal-window > .check-password-btn, .change-sort-order-modal-window > .check-password-btn,
+.change-word-modal-window > .check-password-btn, .copy-words-to-another-group-modal-window > .check-password-btn {
+  margin-top: 0;
+}
 .change-password-modal-window .warning, .check-password-modal-window .warning,
 .new-group-modal-window .warning, .new-word-modal-window .warning,
 .change-group-name-modal-window .warning, .change-sort-order-modal-window .warning,
-.change-word-modal-window .warning {
+.change-word-modal-window .warning, .copy-words-to-another-group-modal-window .warning {
   max-width: 100%;
   font-style: normal;
   display: inline-block;
@@ -175,18 +184,21 @@ h1, h2, h3, h4, h5, h6 {
   text-align: left;
   word-wrap: break-word;
 }
+.change-password-modal-window > .check-password-btn.loading, .check-password-modal-window > .check-password-btn.loading,
+.new-group-modal-window > .check-password-btn.loading, .new-word-modal-window > .check-password-btn.loading,
+.change-group-name-modal-window > .check-password-btn.loading, .change-sort-order-modal-window > .check-password-btn.loading,
+.change-word-modal-window > .check-password-btn.loading, .copy-words-to-another-group-modal-window > .check-password-btn.loading {
+  color: rgba(0, 0, 0, 0);
+  background: no-repeat center center/auto 90% url("/img/rounded-blocks.gif") dodgerblue;
+}
 
-.change-password-modal-window > .old-password-block,
-.change-password-modal-window > .new-password-block,
-.change-password-modal-window > .password-block {
+.change-password-modal-window > .old-password-block, .change-password-modal-window > .new-password-block, .change-password-modal-window > .password-block, .check-password-modal-window > .old-password-block, .check-password-modal-window > .new-password-block, .check-password-modal-window > .password-block {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-bottom: 3px;
 }
-.change-password-modal-window > .old-password-block > div,
-.change-password-modal-window > .new-password-block > div,
-.change-password-modal-window > .password-block > div {
+.change-password-modal-window > .old-password-block > div, .change-password-modal-window > .new-password-block > div, .change-password-modal-window > .password-block > div, .check-password-modal-window > .old-password-block > div, .check-password-modal-window > .new-password-block > div, .check-password-modal-window > .password-block > div {
   display: flex;
   width: -moz-max-content;
   width: max-content;
@@ -194,9 +206,7 @@ h1, h2, h3, h4, h5, h6 {
   justify-content: center;
   align-items: center;
 }
-.change-password-modal-window > .old-password-block > div > input,
-.change-password-modal-window > .new-password-block > div > input,
-.change-password-modal-window > .password-block > div > input {
+.change-password-modal-window > .old-password-block > div > input, .change-password-modal-window > .new-password-block > div > input, .change-password-modal-window > .password-block > div > input, .check-password-modal-window > .old-password-block > div > input, .check-password-modal-window > .new-password-block > div > input, .check-password-modal-window > .password-block > div > input {
   margin-right: 5px;
 }
 
@@ -226,6 +236,35 @@ h1, h2, h3, h4, h5, h6 {
 .change-sort-order-modal-window > .sort-order-blocks > .sort-order-block.selected {
   background-color: gray;
   color: white;
+  transition: all 0.1s ease;
+}
+
+.copy-words-to-another-group-modal-window > input[autocomplete] {
+  min-width: 80%;
+}
+.copy-words-to-another-group-modal-window > .select-group-section {
+  width: -moz-max-content;
+  width: max-content;
+  min-width: 90%;
+  height: -moz-fit-content;
+  height: fit-content;
+  max-height: 150px;
+  overflow: auto;
+  margin-top: 5px;
+  border: 3px solid gray;
+  border-radius: 5px;
+}
+.copy-words-to-another-group-modal-window > .select-group-section > div {
+  width: 100%;
+  padding: 0 3px;
+  border-bottom: 1px solid dimgray;
+}
+.copy-words-to-another-group-modal-window > .select-group-section > div:last-of-type {
+  border-bottom: 0;
+}
+.copy-words-to-another-group-modal-window > .select-group-section > div:hover {
+  background-color: lightgray;
+  transition: background-color 0.25s ease;
 }
 
 #view-group.hide {
@@ -369,7 +408,7 @@ h1, h2, h3, h4, h5, h6 {
   background-color: dimgray;
   color: white;
 }
-#view-group > section.additional-section > .selection, #view-group > section.additional-section > .copy-words-to-another-group, #view-group > section.additional-section > .hide-word-or-translation, #view-group > section.additional-section > .training, #view-group > section.additional-section > .delete-words {
+#view-group > section.additional-section > .selection, #view-group > section.additional-section > .copy-words-to-another-group, #view-group > section.additional-section > .change-display, #view-group > section.additional-section > .training, #view-group > section.additional-section > .delete-words {
   flex-grow: 1;
   display: flex;
   flex-direction: row;
@@ -378,10 +417,10 @@ h1, h2, h3, h4, h5, h6 {
   margin-right: 5px;
   margin-bottom: 5px;
 }
-#view-group > section.additional-section > .selection > span, #view-group > section.additional-section > .copy-words-to-another-group > span, #view-group > section.additional-section > .hide-word-or-translation > span, #view-group > section.additional-section > .training > span, #view-group > section.additional-section > .delete-words > span {
+#view-group > section.additional-section > .selection > span, #view-group > section.additional-section > .copy-words-to-another-group > span, #view-group > section.additional-section > .change-display > span, #view-group > section.additional-section > .training > span, #view-group > section.additional-section > .delete-words > span {
   padding-right: 5px;
 }
-#view-group > section.additional-section > .selection > img, #view-group > section.additional-section > .copy-words-to-another-group > img, #view-group > section.additional-section > .hide-word-or-translation > img, #view-group > section.additional-section > .training > img, #view-group > section.additional-section > .delete-words > img {
+#view-group > section.additional-section > .selection > img, #view-group > section.additional-section > .copy-words-to-another-group > img, #view-group > section.additional-section > .change-display > img, #view-group > section.additional-section > .training > img, #view-group > section.additional-section > .delete-words > img {
   height: 40px;
 }
 #view-group > section.additional-section > .selection {
@@ -394,7 +433,7 @@ h1, h2, h3, h4, h5, h6 {
 #view-group > section.additional-section > .copy-words-to-another-group {
   background-color: deepskyblue;
 }
-#view-group > section.additional-section > .hide-word-or-translation {
+#view-group > section.additional-section > .change-display {
   background-color: dodgerblue;
 }
 #view-group > section.additional-section > .training {
@@ -527,7 +566,7 @@ h1, h2, h3, h4, h5, h6 {
   }
   /*
   & > .selection, & > .copy-words-to-another-group, 
-  & > .hide-word-or-translation, & > .training, 
+  & > .change-display, & > .training, 
   & > .delete-words
   */
 }

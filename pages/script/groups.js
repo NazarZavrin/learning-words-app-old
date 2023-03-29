@@ -117,7 +117,7 @@ function addHandlersToViewGroupBlock(){
     let viewGroupBlock = document.body.querySelector("#view-group");
     let header = viewGroupBlock.querySelector("#view-group > header");
     let groupNameBlock = header.querySelector("section > .group-name");
-    let changeSortOrderBlock = header.querySelector(".change-sort-order");
+    let changeSortOrderBtn = header.querySelector(".change-sort-order");
     let additionalSection = viewGroupBlock.querySelector(".additional-section");
     let wordsSection = viewGroupBlock.querySelector(".words-section");
     header.addEventListener("click", async event => {
@@ -130,7 +130,7 @@ function addHandlersToViewGroupBlock(){
             viewGroupBlock.remove();
         }
         if (event.target.closest(".new-word")) {
-            Group.addWord(groupNameBlock.textContent, wordsSection, changeSortOrderBlock);
+            Group.addWord(groupNameBlock.textContent, wordsSection, changeSortOrderBtn);
         }
         if (event.target.closest(".change-group-name") || event.target.closest(".group-name")) {
             Group.changeGroupName(groupNameBlock);
@@ -142,7 +142,18 @@ function addHandlersToViewGroupBlock(){
             Group.deleteGroup(groupNameBlock);
         }
         if (event.target.closest(".change-sort-order")) {
-            Group.changeSortOrder(groupNameBlock.textContent, wordsSection, changeSortOrderBlock);
+            Group.changeSortOrder(groupNameBlock.textContent, wordsSection, changeSortOrderBtn);
+        }
+    })
+    additionalSection.addEventListener("click", event => {
+        if (event.target.closest(".selection")) {
+            Group.changeSelection(wordsSection, event.target.closest(".selection"));
+        } else if (event.target.closest(".change-display")) {
+            Group.changeDisplay(wordsSection);
+        } else if (event.target.closest(".copy-words-to-another-group")) {
+            Group.copyWordsToAnotherGroup(wordsSection, content);
+        } else if (event.target.closest(".delete-words")) {
+            Group.deleteManyWords(groupNameBlock.textContent, wordsSection);
         }
     })
     wordsSection.addEventListener("click", event => {
@@ -154,6 +165,11 @@ function addHandlersToViewGroupBlock(){
             event.target.closest(".word-container").classList.toggle("selected-word");
             if (wordsSection.getElementsByClassName("selected-word").length > 0) {
                 additionalSection.classList.add("active");
+                if (wordsSection.querySelector(".word-container:not(.selected-word)")) {
+                    additionalSection.querySelector(".selection > span").textContent = "Select all";
+                } else {
+                    additionalSection.querySelector(".selection > span").textContent = "Deselect all";
+                }
             } else {
                 additionalSection.classList.remove("active");
             }
@@ -178,10 +194,10 @@ function addHandlersToViewGroupBlock(){
         if (event.target.closest(".words-number")) {
             let oldNumber = event.target.textContent;
             // console.log(oldNumber);
-            event.target.addEventListener("focusout", async event => {
-                let message = await Word.changeNumber(groupNameBlock.textContent, event.target, oldNumber);
+            event.target.closest(".words-number").addEventListener("focusout", async event => {
+                let message = await Word.changeNumber(groupNameBlock.textContent, event.target.closest(".words-number"), oldNumber);
                 if (message?.includes("Number was changed")) {
-                    await Group.showWords(groupNameBlock.textContent);
+                    await Group.showWords(groupNameBlock.textContent, viewGroupBlock);
                     // console.log("showed");
                 }
             }, {once: true});

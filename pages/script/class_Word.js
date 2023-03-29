@@ -3,10 +3,11 @@ import { setWarning, createWarningAfterElement, showModalWindow, createElement, 
 
 
 export default class Word {
-    constructor(wordObj) {
+    constructor(wordInfo) {
+        // wordInfo: {word:..., translation..., number:...,}
         let wordContainer = createElement({class: "word-container"});
-        let wordElement = createElement({content: wordObj.word, class: "word-container__word"});
-        let translationElement = createElement({content: wordObj.translation, class: "word-container__translation"});
+        let wordElement = createElement({content: wordInfo.word, class: "word-container__word"});
+        let translationElement = createElement({content: wordInfo.translation, class: "word-container__translation"});
         wordContainer.append(wordElement);
         wordContainer.append(translationElement);
         let buttons1 = createElement({class: "word-container__btns"});// delete or edit word
@@ -20,7 +21,7 @@ export default class Word {
         let buttons2 = createElement({class: "word-container__auxiliary"});
         let select = createElement({class: "select-this-word"});
         let wordsNumber = createElement({class: "words-number"});
-        wordsNumber.textContent = wordObj.number;
+        wordsNumber.textContent = wordInfo.number;
         wordsNumber.setAttribute("contenteditable", "true");
         buttons2.append(select);
         buttons2.append(wordsNumber);
@@ -28,25 +29,25 @@ export default class Word {
         return wordContainer;
     }
     static changeWord(groupName, wordContainer) {
-        let wordObject = {}, wordElement, translationElement;
+        let wordInfo = {}, wordElement, translationElement;
         for (const element of wordContainer.children) {
             if (element.className?.includes("__word")) {
-                wordObject.word = element.textContent;
+                wordInfo.word = element.textContent;
                 wordElement = element;
             }
             if (element.className?.includes("__translation")) {
-                wordObject.translation = element.textContent;
+                wordInfo.translation = element.textContent;
                 translationElement = element;
             }
         }
         let newWordLabel = createElement({name: "header", content: "Enter changed word:"},);
         let newWordInput = createElement({name: "input"});
         newWordInput.setAttribute("autocomplete", "off");
-        newWordInput.value = wordObject.word;
+        newWordInput.value = wordInfo.word;
         let newTranslationLabel = createElement({name: "header", content: "Enter changed translation:"},);
         let newTranslationInput = createElement({name: "input"});
         newTranslationInput.setAttribute("autocomplete", "off");
-        newTranslationInput.value = wordObject.translation;
+        newTranslationInput.value = wordInfo.translation;
         let passwordLabel = createElement({name: "header", content: "To verify personality enter your password:"},);
         let passwordInput = createElement({name: "input"});
         passwordInput.setAttribute("type", "password");
@@ -91,7 +92,7 @@ export default class Word {
             } else {
                 setWarning(passwordInput.nextElementSibling, "");
             }
-            if (newWordInput.value === wordObject.word && newTranslationInput.value === wordObject.translation) {
+            if (newWordInput.value === wordInfo.word && newTranslationInput.value === wordInfo.translation) {
                 createWarningAfterElement(changeWordBtn);
                 setWarning(changeWordBtn.nextElementSibling, "Old and new word and translation coincide.");
                 everythingIsCorrect = false;
@@ -101,7 +102,7 @@ export default class Word {
             }
             // console.log(newGroupNameInput.value);
             let requestBody = {
-                oldWord: wordObject,
+                oldWord: wordInfo,
                 newWord: {
                     word: newWordInput.value,
                     translation: newTranslationInput.value
@@ -154,17 +155,17 @@ export default class Word {
             return;
         }
         numberInput.textContent = newNumber;
-        let wordObject = {}, wordContainer = numberInput.closest(".word-container");
+        let wordInfo = {}, wordContainer = numberInput.closest(".word-container");
         for (const element of wordContainer.children) {
             if (element.className?.includes("__word")) {
-                wordObject.word = element.textContent;
+                wordInfo.word = element.textContent;
             }
             if (element.className?.includes("__translation")) {
-                wordObject.translation = element.textContent;
+                wordInfo.translation = element.textContent;
             }
         }
         let requestBody = {
-            ...wordObject,// add here entries of wordObject
+            ...wordInfo,// add here entries of object wordInfo
             groupName,// groupName: groupName,
         };
         // return;
@@ -191,16 +192,10 @@ export default class Word {
         }
     }
     static deleteWord(groupName, wordContainer){
-        let wordObject = {};
-        for (const element of wordContainer.children) {
-            if (element.className?.includes("__word")) {
-                wordObject.word = element.textContent;
-            }
-            if (element.className?.includes("__translation")) {
-                wordObject.translation = element.textContent;
-            }
-        }
-        // console.log(wordObject);
+        let wordInfo = {};
+        wordInfo.word = wordContainer.querySelector(".word-container__word")?.textContent;
+        wordInfo.translation = wordContainer.querySelector(".word-container__translation")?.textContent;
+        // console.log(wordInfo);
         let header = createElement({name: "header", content: "To verify personality enter your password:"},);
         let passwordInput = createElement({name: "input"});
         passwordInput.setAttribute("type", "password");
@@ -229,7 +224,7 @@ export default class Word {
             let requestBody = Object.assign({
                 groupName,// groupName: groupName,
                 password: passwordInput.value
-            }, wordObject);
+            }, wordInfo);
             let response = {}, result = {};
             try {
                 response = await fetch(location.href + "/words/delete", {

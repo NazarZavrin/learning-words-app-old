@@ -107,14 +107,14 @@ groupsRouter.put("/add-word", (req, res, next) => {
         res.json({success: false});
         return;
     }
-    let wordObject = {
+    let wordInfo = {
         word: req.body.word,
         translation: req.body.translation,
     }
     let suchWordExists = false, maxNumber = -1;
     for (let i = 0; i < group.words?.length; i++) {
         let currentWord = group.words[i];
-        if (currentWord.word === wordObject.word && currentWord.translation === wordObject.translation) {
+        if (currentWord.word === wordInfo.word && currentWord.translation === wordInfo.translation) {
             suchWordExists = true;
             break;
         }
@@ -143,13 +143,13 @@ groupsRouter.put("/add-word", (req, res, next) => {
         return;
     }
     // console.log(numberToSet);
-    Object.assign(wordObject, { groupsObjectId: group._id, ownersObjectId: user._id, number: numberToSet, creationTime: Date.now(), });
-    let updateResult = await database.collection("groups").updateOne({_id: group._id}, {$push: {words: wordObject}});
+    Object.assign(wordInfo, { groupsObjectId: group._id, ownersObjectId: user._id, number: numberToSet, creationTime: Date.now(), });
+    let updateResult = await database.collection("groups").updateOne({_id: group._id}, {$push: {words: wordInfo}});
     if (!updateResult.acknowledged) {
         res.json({success: false});
         return;
     }
-    console.log(numberToSet);
+    //console.log(numberToSet);
     res.json({success: true, number: numberToSet});
 })
 groupsRouter.propfind("/get-words", (req, res, next) => {
@@ -165,8 +165,8 @@ groupsRouter.propfind("/get-words", (req, res, next) => {
         res.json({success: false});
         return;
     }
-    let words = group?.words?.map(wordObject => {
-        return {word: wordObject.word, translation: wordObject.translation, number: wordObject.number}
+    let words = group?.words?.map(wordInfo => {
+        return {word: wordInfo.word, translation: wordInfo.translation, number: wordInfo.number}
     })
     if (typeof words === "undefined") {
         words = [];

@@ -49,7 +49,7 @@
 .change-password-modal-window, .check-password-modal-window, 
 .new-group-modal-window, .new-word-modal-window,
 .change-group-name-modal-window, .change-sort-order-modal-window, 
-.change-word-modal-window {
+.change-word-modal-window, .copy-words-to-another-group-modal-window {
     header {
         text-align: center;
         margin-bottom: 5px;
@@ -67,13 +67,17 @@
     
     & > .create-new-group-btn, & > .add-new-word-btn,
     & > .change-group-name-btn, & > .check-password-btn,
-    & > .change-sort-order-btn, & > .change-word-btn {
+    & > .change-sort-order-btn, & > .change-word-btn,
+    & > .copy-words-btn {
         background-color: dodgerblue;
         color: white;
         padding: 0 7px;
         margin-top: 5px;
         border-radius: 3px;
         text-align: center;
+    }
+    & > .check-password-btn {
+        margin-top: 0;
     }
     & .warning{
         max-width: 100%;
@@ -84,22 +88,26 @@
         text-align: left;
         word-wrap: break-word;
     }
+    & > .check-password-btn.loading {
+        color: rgb(0, 0, 0, 0);// transparent text
+        background: no-repeat center center / auto 90% url("/img/rounded-blocks.gif") dodgerblue;
+    }
 }
-.change-password-modal-window > .old-password-block, 
-.change-password-modal-window > .new-password-block, 
-.change-password-modal-window > .password-block {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 3px;
-    & > div {
+.change-password-modal-window, .check-password-modal-window {
+    & > .old-password-block, & > .new-password-block, & > .password-block{
         display: flex;
-        width: max-content;
-        flex-direction: row;
-        justify-content: center;
+        flex-direction: column;
         align-items: center;
-        & > input {
-            margin-right: 5px;
+        margin-bottom: 3px;
+        & > div {
+            display: flex;
+            width: max-content;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            & > input {
+                margin-right: 5px;
+            }
         }
     }
 }
@@ -128,8 +136,39 @@
             &.selected {
                 background-color: gray;
                 color: white;
+                transition: all 0.1s ease;
             }
         }
         
+    }
+}
+.copy-words-to-another-group-modal-window {
+    & > input[autocomplete] {
+        min-width: 80%;
+    }
+    & > .select-group-section{
+        // display: flex;
+        // flex-direction: column;
+        // flex-grow: 1;
+        width: max-content;
+        min-width: 90%;
+        height: fit-content;
+        max-height: 150px;
+        overflow: auto;
+        margin-top: 5px;
+        border: 3px solid gray;
+        border-radius: 5px;
+        & > div {
+            width: 100%;
+            padding: 0 3px;
+            border-bottom: 1px solid dimgray;
+            &:last-of-type {
+                border-bottom: 0;
+            }
+            &:hover {
+                background-color: lightgray;
+                transition: background-color 0.25s ease;
+            }
+        }
     }
 }
