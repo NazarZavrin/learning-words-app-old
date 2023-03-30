@@ -149,7 +149,7 @@ function addHandlersToViewGroupBlock(){
         if (event.target.closest(".selection")) {
             Group.changeSelection(wordsSection, event.target.closest(".selection"));
         } else if (event.target.closest(".change-display")) {
-            Group.changeDisplay(wordsSection);
+            Group.changeDisplay(wordsSection, event.target.closest(".change-display"));
         } else if (event.target.closest(".copy-words-to-another-group")) {
             Group.copyWordsToAnotherGroup(wordsSection, content);
         } else if (event.target.closest(".delete-words")) {
@@ -175,18 +175,18 @@ function addHandlersToViewGroupBlock(){
             }
         }
     })
-    wordsSection.addEventListener("mousedown", event => {
+    wordsSection.addEventListener("pointerdown", event => {
         // let time = Date.now();
         if (event.target.closest(".word-container")) {
             let timeoutID = setTimeout(() => {
                 event.target.closest(".word-container").getElementsByClassName("select-this-word")?.[0]?.click();
             }, 750);
-            event.target.closest(".word-container").onmouseup = event.target.closest(".word-container").onmouseleave = function (event) {
-                // console.log(this.onmouseup && typeof this.onmouseup, this.onmouseleave && typeof this.onmouseleave);
+            event.target.closest(".word-container").onpointerup = event.target.closest(".word-container").onpointerleave = function (event) {
+                // console.log(this.onpointerup && typeof this.onpointerup, this.onpointerleave && typeof this.onpointerleave);
                 clearTimeout(timeoutID);
-                this.onmouseup = null;
-                this.onmouseleave = null;
-                // console.log(this.onmouseup && typeof this.onmouseup, this.onmouseleave && typeof this.onmouseleave);
+                this.onpointerup = null;
+                this.onpointerleave = null;
+                // console.log(this.onpointerup && typeof this.onpointerup, this.onpointerleave && typeof this.onpointerleave);
             }
         }
     })

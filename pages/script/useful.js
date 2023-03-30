@@ -149,3 +149,25 @@ export function passwordIsCorrect(inputElement, elementForWarning = null, event 
     setWarning(elementForWarning.nextElementSibling, warningText, "password");
     return warningText.length > 0 ? false : true;
 }
+
+function addEventListenerN(eventType, handler, options) {
+    // function take the same parameters ↑, as addEventListener
+    if (this && this.addEventListener) {
+        // ↑ if element exists and has addEventListener method
+        this.addEventListener(eventType, handler, options);
+        let removeEventListenerN = () => {
+            this.removeEventListener(eventType, handler, options);
+            // ↑ delete this element's handler
+        }
+        return removeEventListenerN;
+        // ↑ return function for deletion
+    }
+}
+EventTarget.prototype.addEventListenerN = addEventListenerN;
+/* ↑
+add addEventListenerN in EventTarget.prototype,
+so that all elements which are able to generate events and can have events
+could call addEventListenerN method.
+Don't export addEventListenerN, because this method is already 
+acessible in EventTarget.prototype
+*/

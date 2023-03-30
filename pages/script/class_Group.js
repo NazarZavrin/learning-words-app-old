@@ -428,8 +428,65 @@ export default class Group {
     static changeSelection(wordsSection, changeSelectionBtn){
         console.log("changeSelection");
     }
-    static changeDisplay(wordsSection){
-        console.log("changeDisplay");
+    static changeDisplay(wordsSection, changeDisplayBtn){
+        let selectDisplayWindow = changeDisplayBtn.querySelector(".select-display");
+        if (selectDisplayWindow.classList.contains("active")) {
+            return;
+        }
+        selectDisplayWindow.classList.add("active");
+        let checkboxForWord = selectDisplayWindow.querySelector("#checkbox-for-word");
+        let checkboxForTranslation = selectDisplayWindow.querySelector("#checkbox-for-translation");
+        checkboxForWord.checked = checkboxForTranslation.checked = false;
+        let deleteClickHandler;
+        setTimeout(() => {
+            deleteClickHandler = document.addEventListenerN("click", event => {
+                if (event.target.closest(".select-display")) {
+                    if (event.target.closest(".select-display__btns__apply")) {
+                        for (const wordContainer of wordsSection.getElementsByClassName("selected-word")) {
+                            if (checkboxForWord?.checked) {
+                                wordContainer.classList.remove("hide-translation");
+                                wordContainer.classList.add("hide-word");
+                            } else {
+                                wordContainer.classList.remove("hide-word");
+                            }
+                            if (checkboxForTranslation?.checked) {
+                                wordContainer.classList.remove("hide-word");
+                                wordContainer.classList.add("hide-translation");
+                            } else {
+                                wordContainer.classList.remove("hide-translation");
+                            }
+                            
+                            
+                        }
+                        selectDisplayWindow.classList.remove("active");
+                        let selectedWords = Array.from(wordsSection.getElementsByClassName("selected-word"))
+                        .map(wordContainer => {
+                            let wordInfo = {
+                                word: wordContainer.querySelector(".word-container__word")?.textContent,
+                                translation: wordContainer.querySelector(".word-container__translation")?.textContent,
+                            }
+                            return wordInfo;
+                        })
+                        
+                        let hideTranslation = checkboxForTranslation?.checked;
+                        let hideWord = hideTranslation ? false : checkboxForWord?.checked;
+                        console.log(hideWord, hideTranslation);
+                        // fetch
+                        deleteClickHandler();// remove this event listener
+                    } else if (event.target.closest(".select-display__btns__cancel")){
+                        selectDisplayWindow.classList.remove("active");
+                        deleteClickHandler();// remove this event listener
+                    }
+                } else {
+                    selectDisplayWindow.classList.remove("active");
+                    deleteClickHandler();// remove this event listener
+                }
+            })
+        }, 0);
+        
+        
+        
+        
     }
     static copyWordsToAnotherGroup(wordsSection, groupsParent){
         let selectedWords = Array.from(wordsSection.getElementsByClassName("selected-word"))
@@ -515,6 +572,9 @@ export default class Group {
         passwordBlock.prepend(passwordInput);
         let checkPasswordBtn = createElement({content: "Delete words", class: "check-password-btn"});
         checkPasswordBtn.addEventListener("click", async event => {
+            if (checkPasswordBtn.classList.contains("loading")) {
+                return;
+            }
             createWarningAfterElement(checkPasswordBtn);
             setWarning(checkPasswordBtn.nextElementSibling, '');
             if (passwordInput.value.length === 0) {
