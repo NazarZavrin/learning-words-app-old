@@ -169,6 +169,29 @@ wordsRouter.delete("/delete", (req, res, next) => {
     }
 })
 
+wordsRouter.patch("/change-display", (req, res, next) => {
+    express.json({limit: req.get("content-length")})(req, res, next);
+}, async (req, res) => {
+    // console.log(req.body);
+    let user = await findIfUnique(database.collection("users"), {passkey: req.passkey});
+    if (!req.passkey || user === false || !req.body?.groupName) {
+        res.json({success: false});
+        return;
+    }
+    let group = await findIfUnique(database.collection("groups"), {ownersObjectId: user._id, name: req.body.groupName});
+    if (group === false) {
+        res.json({success: false});
+        return;
+    }
+    let updateResult = await database.collection("groups").updateOne({_id: group._id}, 
+        {$set: {"words.$[elem].hideWord": req.body.hideWord, "words.$[elem].hideTranslation": req.body.hideTranslation}}, 
+        {arrayFilters: [{"elem.word": req.body.word, "elem.translation": req.body.translation}]});
+    if (!updateResult.acknowledged) {
+        res.json({success: false});
+    }
+    res.send({success: true});
+});
+
 module.exports = {wordsRouter};
 
 function getNormalNumber(numberInString){

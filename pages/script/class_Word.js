@@ -271,7 +271,24 @@ export default class Word {
         showModalWindow(document.body, [header, passwordBlock, checkPasswordBtn], 
         {className: "check-password-modal-window", handlers: [{eventName: "click", handler: clickModalWindow}]});
     }
-
+    static async changeDisplay(groupName, wordContainer, selectedDisplay = {}){
+        try {
+            await fetch(location.href + "/words/change-display", {
+                method: "PATCH",
+                body: JSON.stringify({
+                    word: wordContainer.querySelector(".word-container__word")?.textContent,
+                    translation: wordContainer.querySelector(".word-container__translation")?.textContent,
+                    groupName,// groupName: groupName,
+                    ...selectedDisplay,// add here key-value pairs of selectedDisplay
+                }),
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
 }
 
 function getNormalNumber(numberInString){

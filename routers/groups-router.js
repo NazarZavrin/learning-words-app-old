@@ -166,7 +166,12 @@ groupsRouter.propfind("/get-words", (req, res, next) => {
         return;
     }
     let words = group?.words?.map(wordInfo => {
-        return {word: wordInfo.word, translation: wordInfo.translation, number: wordInfo.number}
+        return {word: wordInfo.word, 
+            translation: wordInfo.translation, 
+            number: wordInfo.number,
+            hideWord: wordInfo.hideWord,
+            hideTranslation: wordInfo.hideTranslation,
+        }
     })
     if (typeof words === "undefined") {
         words = [];
@@ -227,12 +232,12 @@ groupsRouter.patch("/change/sort-order", (req, res, next) => {
 }, async (req, res) => {
     // console.log(req.body);
     let user = await findIfUnique(database.collection("users"), {passkey: req.passkey});
-    if (!req.passkey || user === false || !req.body.sortOrder) {
+    if (!req.passkey || user === false || !req.body?.groupName || !req.body?.sortOrder) {
         res.json({success: false});
         return;
     }
     let group = await findIfUnique(database.collection("groups"), {ownersObjectId: user._id, name: req.body.groupName});
-    if (!req.body || group === false || !req.body.groupName) {
+    if (group === false) {
         res.json({success: false});
         return;
     }
@@ -241,7 +246,7 @@ groupsRouter.patch("/change/sort-order", (req, res, next) => {
         res.json({success: false});
         return;
     }
-    res.send("");
+    res.send({success: true});
 })
 
 groupsRouter.delete("/delete", (req, res, next) => {
@@ -249,12 +254,12 @@ groupsRouter.delete("/delete", (req, res, next) => {
 }, async (req, res) => {
     // console.log(req.body);
     let user = await findIfUnique(database.collection("users"), {passkey: req.passkey});
-    if (!req.passkey || !req.body.password || user === false) {
+    if (!req.passkey || !req.body.password || !req.body.groupName || user === false) {
         res.json({success: false});
         return;
     }
     let group = await findIfUnique(database.collection("groups"), {ownersObjectId: user._id, name: req.body.groupName});
-    if (!req.body.groupName || group === false) {
+    if (group === false) {
         res.json({success: false});
         return;
     }

@@ -585,14 +585,12 @@ h1, h2, h3, h4, h5, h6 {
   grid-row-end: -1;
 }
 #view-group > main > .word-container.hide-word > .word-container__word {
-  color: transparent;
   display: none;
 }
 #view-group > main > .word-container.hide-translation > .word-container__word {
   grid-row-end: -1;
 }
 #view-group > main > .word-container.hide-translation > .word-container__translation {
-  color: transparent;
   display: none;
 }
 #view-group > main > .word-container.hide-translation > .word-container__word {

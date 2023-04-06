@@ -340,7 +340,6 @@
                     grid-row-end: -1;
                 }
                 & > .word-container__word {
-                    color: transparent;
                     display: none;
                 }
             }
@@ -349,13 +348,13 @@
                     grid-row-end: -1;
                 }
                 & > .word-container__translation {
-                    color: transparent;
                     display: none;
                 }
             }
-            //&.hide-word > .word-container__word,
             &.hide-translation > .word-container__word {
                 border-bottom: none;
+                // when &.hide-word, then .word-container__word has display: none;
+                // and his border-bottom disappears without additional styles
             }
             & > .word-container__btns {
                 // grid-column-start: 3;

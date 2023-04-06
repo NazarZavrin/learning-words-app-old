@@ -61,7 +61,7 @@ export default class Group {
             // console.log(result);
             if (typeof result.words === "string") {
                 result.words = JSON.parse(result.words);
-                // console.log(result.words);
+                console.log(result.words);
             }
         }
         viewGroupBlock.classList.remove("hide");
@@ -82,7 +82,13 @@ export default class Group {
             wordsSection.textContent = "Group doesn't contain any word.";
         } else {
             result.words = result.words.map(wordInfo => {
-                return new Word(wordInfo);
+                let wordContainer = new Word(wordInfo);
+                if (wordInfo.hideTranslation) {
+                    wordContainer.classList.add("hide-translation");
+                } else if (wordInfo.hideWord) {
+                    wordContainer.classList.add("hide-word");
+                }
+                return wordContainer;
             })
             // console.log(result);
             sortWords(result.words, result.sortOrder);
@@ -351,7 +357,6 @@ export default class Group {
                     'Content-Type': 'application/json',
                 }
             })
-            
         })
         showModalWindow(document.body, [header, sortOrderBlocks, confirmChangeOfSortOrderBtn], 
             {className: "change-sort-order-modal-window"});
@@ -426,9 +431,20 @@ export default class Group {
         {className: "check-password-modal-window", handlers: [{eventName: "click", handler: clickModalWindow}]});
     }
     static changeSelection(wordsSection, changeSelectionBtn){
-        console.log("changeSelection");
+        
+        let action = changeSelectionBtn.querySelector("span")?.textContent;
+        console.log(action);
+        if (action?.startsWith("Select")) {
+            for (const wordContainer of wordsSection.querySelectorAll(".word-container:not(.selected-word)")) {
+                wordContainer.querySelector(".select-this-word")?.click();
+            }
+        } else if (action?.startsWith("Deselect")) {
+            for (const wordContainer of wordsSection.querySelectorAll(".word-container.selected-word")) {
+                wordContainer.querySelector(".select-this-word")?.click();
+            }
+        }
     }
-    static changeDisplay(wordsSection, changeDisplayBtn){
+    static changeDisplayOfSelectedWords(groupName, wordsSection, changeDisplayBtn){
         let selectDisplayWindow = changeDisplayBtn.querySelector(".select-display");
         if (selectDisplayWindow.classList.contains("active")) {
             return;
@@ -439,7 +455,7 @@ export default class Group {
         checkboxForWord.checked = checkboxForTranslation.checked = false;
         let deleteClickHandler;
         setTimeout(() => {
-            deleteClickHandler = document.addEventListenerN("click", event => {
+            deleteClickHandler = document.addEventListenerN("click", async event => {
                 if (event.target.closest(".select-display")) {
                     if (event.target.closest(".select-display__btns__apply")) {
                         for (const wordContainer of wordsSection.getElementsByClassName("selected-word")) {
@@ -459,19 +475,13 @@ export default class Group {
                             
                         }
                         selectDisplayWindow.classList.remove("active");
-                        let selectedWords = Array.from(wordsSection.getElementsByClassName("selected-word"))
-                        .map(wordContainer => {
-                            let wordInfo = {
-                                word: wordContainer.querySelector(".word-container__word")?.textContent,
-                                translation: wordContainer.querySelector(".word-container__translation")?.textContent,
-                            }
-                            return wordInfo;
-                        })
-                        
+                        let selectedWords = wordsSection.getElementsByClassName("selected-word");
                         let hideTranslation = checkboxForTranslation?.checked;
                         let hideWord = hideTranslation ? false : checkboxForWord?.checked;
-                        console.log(hideWord, hideTranslation);
-                        // fetch
+                        // console.log(hideWord, hideTranslation);
+                        for (const wordContainer of selectedWords) {
+                            await Word.changeDisplay(groupName, wordContainer, {hideWord, hideTranslation});
+                        }
                         deleteClickHandler();// remove this event listener
                     } else if (event.target.closest(".select-display__btns__cancel")){
                         selectDisplayWindow.classList.remove("active");

@@ -122,7 +122,6 @@ function addHandlersToViewGroupBlock(){
     let wordsSection = viewGroupBlock.querySelector(".words-section");
     header.addEventListener("click", async event => {
         if (event.target.closest(".back")) {
-            
             // ↓ if group info was changed or/and this group was added to / removed from "Favourite groups"
             // ↓ or was deleted, it must be displayed
             await updateGroups(true);
@@ -149,7 +148,7 @@ function addHandlersToViewGroupBlock(){
         if (event.target.closest(".selection")) {
             Group.changeSelection(wordsSection, event.target.closest(".selection"));
         } else if (event.target.closest(".change-display")) {
-            Group.changeDisplay(wordsSection, event.target.closest(".change-display"));
+            Group.changeDisplayOfSelectedWords(groupNameBlock.textContent, wordsSection, event.target.closest(".change-display"));
         } else if (event.target.closest(".copy-words-to-another-group")) {
             Group.copyWordsToAnotherGroup(wordsSection, content);
         } else if (event.target.closest(".delete-words")) {

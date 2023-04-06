@@ -573,6 +573,15 @@ body {
   max-height: 100%;
 }
 
+.hide {
+  display: none !important;
+}
+
+@media (max-width: 310px) {
+  .favourite-groups > *[class*=header] > *[class*=groups__label], .groups > *[class*=header] > *[class*=groups__label] {
+    display: none;
+  }
+}
 @media (max-width: 1200px) {
   /* Стили CSS для ширины от 992px до 1200px */
   /* Устройства со средним экраном (ноутбуки и компьютеры)*/
@@ -584,7 +593,4 @@ body {
 @media (max-width: 767px) {
   /* Стили CSS для ширины до 768px */
   /* Устройства с очень маленьким экраном (смартфоны) */
-}
-.hide {
-  display: none !important;
 }
