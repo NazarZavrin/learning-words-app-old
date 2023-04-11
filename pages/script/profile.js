@@ -17,9 +17,14 @@ import { setWarning, createWarningAfterElement, showModalWindow, createElement, 
 import "./change-profile-info.js";
 import "./groups.js";
 
-const infoBtn = document.querySelector(".header__info-btn");
 const profileLabel = document.querySelector(".header__profile-label");
+
+const content = document.querySelector(".content");
+const infoBtn = document.querySelector(".header__info-btn");
 const infoSidebar = document.querySelector(".profile-info");
+
+const favouriteGroupsContent = content.querySelector(".favourite-groups__groups");
+const groupsContent = content.querySelector(".groups__groups");
 
 infoBtn.classList.remove("active");// when page loads remove
 infoSidebar.classList.remove("active");// when page loads remove
@@ -100,3 +105,31 @@ deleteAccountBtn.addEventListener("click", async event => {
     
 })
 
+let searchGroupsBtn = document.querySelector("#search-groups-btn");
+searchGroupsBtn.addEventListener("click", event => {
+    let searchInput = searchGroupsBtn.previousElementSibling;
+    if (!searchInput || searchInput?.tagName?.toLowerCase() !== "input") {
+        return;
+    }
+    if (searchGroupsBtn.classList.contains("cancel") || searchInput.value === "") {
+        searchGroupsBtn.classList.remove("cancel");
+        for (const groupContainer of groupsContent.querySelectorAll(".group")) {
+            groupContainer.classList.remove("hide");
+        }
+        for (const groupContainer of favouriteGroupsContent.querySelectorAll(".group")) {
+            groupContainer.classList.remove("hide");
+        }
+    } else {
+        searchGroupsBtn.classList.add("cancel");
+        for (const groupContainer of groupsContent.querySelectorAll(".group")) {
+            if (!groupContainer.textContent.includes(searchInput.value)) {
+                groupContainer.classList.add("hide");
+            }
+        }
+        for (const groupContainer of favouriteGroupsContent.querySelectorAll(".group")) {
+            if (!groupContainer.textContent.includes(searchInput.value)) {
+                groupContainer.classList.add("hide");
+            }
+        }
+    }
+})

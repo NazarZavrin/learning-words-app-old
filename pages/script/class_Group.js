@@ -2,8 +2,53 @@
 import Word from "./class_Word.js";
 import { setWarning, createWarningAfterElement, showModalWindow, createElement, showPassword} from "./useful.js";
 export default class Group {
-    constructor(params) {
-        // group creation
+    constructor(addingFavouriteGroup = false, updateGroupsFunc) {
+        let header = createElement({name: "header", content: "Enter the name of new group:"},);
+        let groupNameInput = createElement({name: "input"});
+        groupNameInput.setAttribute("autocomplete", "off");
+        let createNewGroupBtn = createElement({content: "Create new group", class: "create-new-group-btn"});
+        createNewGroupBtn.addEventListener("click", async event => {
+            let everythingIsCorrect = true;
+            if (groupNameInput.value.length == 0) {
+                createWarningAfterElement(groupNameInput);
+                setWarning(groupNameInput.nextElementSibling, "Please, enter the name of the group.", "groupNameInput");
+                everythingIsCorrect = false;
+            } else if (groupNameInput.value.length > 20) {
+                createWarningAfterElement(groupNameInput);
+                setWarning(groupNameInput.nextElementSibling, "Name of the group must not exceed 20 characters.", "groupNameInput");
+                everythingIsCorrect = false;
+            } else {
+                setWarning(groupNameInput.nextElementSibling, "");
+            }
+            if (everythingIsCorrect === false) {
+                return;
+            }
+            console.log(groupNameInput.value);
+            // return;
+            let requestUrl = location.href + "/groups";
+            requestUrl += addingFavouriteGroup ? "/favourite-groups" : "";
+            let response = await fetch(requestUrl, {
+                method: "POST",
+                body: groupNameInput.value,
+            })
+            let result = {};
+            if (response.ok) {
+                result = await response.json();
+                console.log(result);
+                // console.log(Date.now());
+                if (result.success) {
+                    event.target.closest(".modal-window").closeWindow();
+                    await updateGroupsFunc(addingFavouriteGroup);
+                    return;
+                }
+            }
+            result.message = String(result?.message || "Creation error. Please try again.");
+            createWarningAfterElement(groupNameInput);
+            setWarning(groupNameInput.nextElementSibling, result.message, "groupNameInput");
+            console.log(result?.message);
+        })
+        showModalWindow(document.body, [header, groupNameInput, createNewGroupBtn], 
+            {className: "new-group-modal-window"});
     }
     static viewGroup(groupName, ...synchronousCallbacks){
         if (!groupName) {
@@ -61,7 +106,7 @@ export default class Group {
             // console.log(result);
             if (typeof result.words === "string") {
                 result.words = JSON.parse(result.words);
-                console.log(result.words);
+                // console.log(result.words);
             }
         }
         viewGroupBlock.classList.remove("hide");
@@ -301,13 +346,13 @@ export default class Group {
     static changeSortOrder(groupName, wordsSection, changeSortOrderBtn) {
         let header = createElement({name: "header", content: "Choose sort order:"},);
         let numericAscending = createElement({class: "1-9 selected"});
-        numericAscending.innerHTML = '<img src="/img/sorting.png"><span>Numeric ascending sort order</span>';
+        numericAscending.innerHTML = '<div class="sorting-icon"></div><span>Numeric ascending sort order</span>';
         let numericDescending = createElement({class: "9-1"});
-        numericDescending.innerHTML = '<img src="/img/sorting.png"><span>Numeric descending sort order</span>';
+        numericDescending.innerHTML = '<div class="sorting-icon"></div><span>Numeric descending sort order</span>';
         let alphabeticAscending = createElement({class: "a-z"});
-        alphabeticAscending.innerHTML = '<img src="/img/sorting.png"><span>Alphabetic ascending sort order</span>';
+        alphabeticAscending.innerHTML = '<div class="sorting-icon"></div><span>Alphabetic ascending sort order</span>';
         let alphabeticDescending = createElement({class: "z-a"});
-        alphabeticDescending.innerHTML = '<img src="/img/sorting.png"><span>Alphabetic descending sort order</span>';
+        alphabeticDescending.innerHTML = '<div class="sorting-icon"></div><span>Alphabetic descending sort order</span>';
         let sortOrderBlocks = createElement({class: "sort-order-blocks"});
         sortOrderBlocks.append(numericAscending);
         sortOrderBlocks.append(numericDescending);
@@ -361,6 +406,27 @@ export default class Group {
         showModalWindow(document.body, [header, sortOrderBlocks, confirmChangeOfSortOrderBtn], 
             {className: "change-sort-order-modal-window"});
         
+    }
+    static searchWords(wordsSection, searchWordsBtn) {
+        let searchInput = searchWordsBtn.previousElementSibling;
+        if (!searchInput || searchInput?.tagName?.toLowerCase() !== "input") {
+            return;
+        }
+        if (searchWordsBtn.classList.contains("cancel") || searchInput.value === "") {
+            searchWordsBtn.classList.remove("cancel");
+            for (const wordContainer of wordsSection.querySelectorAll(".word-container")) {
+                wordContainer.classList.remove("hide");
+            }
+        } else {
+            searchWordsBtn.classList.add("cancel");
+            for (const wordContainer of wordsSection.querySelectorAll(".word-container")) {
+                let currentWord = wordContainer.querySelector(".word-container__word")?.textContent;
+                let currentTranslation = wordContainer.querySelector(".word-container__translation")?.textContent;
+                if (!currentWord.includes(searchInput.value) && !currentTranslation.includes(searchInput.value)) {
+                    wordContainer.classList.add("hide");
+                }
+            }
+        }
     }
     static deleteGroup(groupNameBlock){
         let header = createElement({name: "header", content: "To verify personality enter your password:"},);

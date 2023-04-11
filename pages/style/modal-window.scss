@@ -93,7 +93,8 @@
         background: no-repeat center center / auto 90% url("/img/rounded-blocks.gif") dodgerblue;
     }
 }
-.change-password-modal-window, .check-password-modal-window {
+.change-password-modal-window, .check-password-modal-window,
+.change-group-name-modal-window {
     & > .old-password-block, & > .new-password-block, & > .password-block{
         display: flex;
         flex-direction: column;
@@ -122,10 +123,22 @@
             border: 2px solid gray;
             border-radius: 5px;
             margin-bottom: 3px;
-            & > img {
-                max-width: 40px;
-                background-color: dodgerblue;
+            & > div.sorting-icon {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
                 margin: 0 3px;
+                background: no-repeat center center / auto 65% url("/img/numeric-ascending-sorting.png") dodgerblue;
+                border: 3px solid blue;
+            }
+            &:nth-of-type(2) > div.sorting-icon {
+                background-image: url("/img/numeric-descending-sorting.png");
+            }
+            &:nth-of-type(3) > div.sorting-icon {
+                background-image: url("/img/alphabetic-ascending-sorting.png");
+            }
+            &:nth-of-type(4) > div.sorting-icon {
+                background-image: url("/img/alphabetic-descending-sorting.png");
             }
             & > span {
                 // word-break: keep-all;

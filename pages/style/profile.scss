@@ -242,7 +242,35 @@ body {
     background-color: red;
     margin-bottom: auto;// for centring elements in .profile-info
 }
-
+#search-groups {
+    width: 100%;
+    padding: 7px;
+    background-color: lightslategray;
+    // margin: 0 2.5px 5px;
+    & > div {
+        width: 100%;
+        height: 30px;
+        display: flex;
+        flex-direction: row;
+        border-radius: 5px;
+        overflow: hidden;// to display border-radius
+        & > input {
+            width: 100%;
+            height: 100%;
+            font: inherit;
+            padding: 0 3px;
+        }
+        & > #search-groups-btn {
+            width: 40px;
+            height: 100%;
+            background: no-repeat center center / auto 95% url("/img/search.png") dodgerblue;
+            &.cancel {
+                background-image: url("/img/cross.png");
+            }
+        }
+    }
+    
+}
 .favourite-groups, .groups {
     width: 100%;
     display: flex;

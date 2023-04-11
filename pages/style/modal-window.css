@@ -121,13 +121,19 @@
   background: no-repeat center center/auto 90% url("/img/rounded-blocks.gif") dodgerblue;
 }
 
-.change-password-modal-window > .old-password-block, .change-password-modal-window > .new-password-block, .change-password-modal-window > .password-block, .check-password-modal-window > .old-password-block, .check-password-modal-window > .new-password-block, .check-password-modal-window > .password-block {
+.change-password-modal-window > .old-password-block, .change-password-modal-window > .new-password-block, .change-password-modal-window > .password-block, .check-password-modal-window > .old-password-block, .check-password-modal-window > .new-password-block, .check-password-modal-window > .password-block,
+.change-group-name-modal-window > .old-password-block,
+.change-group-name-modal-window > .new-password-block,
+.change-group-name-modal-window > .password-block {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-bottom: 3px;
 }
-.change-password-modal-window > .old-password-block > div, .change-password-modal-window > .new-password-block > div, .change-password-modal-window > .password-block > div, .check-password-modal-window > .old-password-block > div, .check-password-modal-window > .new-password-block > div, .check-password-modal-window > .password-block > div {
+.change-password-modal-window > .old-password-block > div, .change-password-modal-window > .new-password-block > div, .change-password-modal-window > .password-block > div, .check-password-modal-window > .old-password-block > div, .check-password-modal-window > .new-password-block > div, .check-password-modal-window > .password-block > div,
+.change-group-name-modal-window > .old-password-block > div,
+.change-group-name-modal-window > .new-password-block > div,
+.change-group-name-modal-window > .password-block > div {
   display: flex;
   width: -moz-max-content;
   width: max-content;
@@ -135,7 +141,10 @@
   justify-content: center;
   align-items: center;
 }
-.change-password-modal-window > .old-password-block > div > input, .change-password-modal-window > .new-password-block > div > input, .change-password-modal-window > .password-block > div > input, .check-password-modal-window > .old-password-block > div > input, .check-password-modal-window > .new-password-block > div > input, .check-password-modal-window > .password-block > div > input {
+.change-password-modal-window > .old-password-block > div > input, .change-password-modal-window > .new-password-block > div > input, .change-password-modal-window > .password-block > div > input, .check-password-modal-window > .old-password-block > div > input, .check-password-modal-window > .new-password-block > div > input, .check-password-modal-window > .password-block > div > input,
+.change-group-name-modal-window > .old-password-block > div > input,
+.change-group-name-modal-window > .new-password-block > div > input,
+.change-group-name-modal-window > .password-block > div > input {
   margin-right: 5px;
 }
 
@@ -151,10 +160,22 @@
   border-radius: 5px;
   margin-bottom: 3px;
 }
-.change-sort-order-modal-window > .sort-order-blocks > .sort-order-block > img {
-  max-width: 40px;
-  background-color: dodgerblue;
+.change-sort-order-modal-window > .sort-order-blocks > .sort-order-block > div.sorting-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
   margin: 0 3px;
+  background: no-repeat center center/auto 65% url("/img/numeric-ascending-sorting.png") dodgerblue;
+  border: 3px solid blue;
+}
+.change-sort-order-modal-window > .sort-order-blocks > .sort-order-block:nth-of-type(2) > div.sorting-icon {
+  background-image: url("/img/numeric-descending-sorting.png");
+}
+.change-sort-order-modal-window > .sort-order-blocks > .sort-order-block:nth-of-type(3) > div.sorting-icon {
+  background-image: url("/img/alphabetic-ascending-sorting.png");
+}
+.change-sort-order-modal-window > .sort-order-blocks > .sort-order-block:nth-of-type(4) > div.sorting-icon {
+  background-image: url("/img/alphabetic-descending-sorting.png");
 }
 .change-sort-order-modal-window > .sort-order-blocks > .sort-order-block > span {
   width: -moz-max-content;

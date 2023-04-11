@@ -192,13 +192,19 @@ h1, h2, h3, h4, h5, h6 {
   background: no-repeat center center/auto 90% url("/img/rounded-blocks.gif") dodgerblue;
 }
 
-.change-password-modal-window > .old-password-block, .change-password-modal-window > .new-password-block, .change-password-modal-window > .password-block, .check-password-modal-window > .old-password-block, .check-password-modal-window > .new-password-block, .check-password-modal-window > .password-block {
+.change-password-modal-window > .old-password-block, .change-password-modal-window > .new-password-block, .change-password-modal-window > .password-block, .check-password-modal-window > .old-password-block, .check-password-modal-window > .new-password-block, .check-password-modal-window > .password-block,
+.change-group-name-modal-window > .old-password-block,
+.change-group-name-modal-window > .new-password-block,
+.change-group-name-modal-window > .password-block {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-bottom: 3px;
 }
-.change-password-modal-window > .old-password-block > div, .change-password-modal-window > .new-password-block > div, .change-password-modal-window > .password-block > div, .check-password-modal-window > .old-password-block > div, .check-password-modal-window > .new-password-block > div, .check-password-modal-window > .password-block > div {
+.change-password-modal-window > .old-password-block > div, .change-password-modal-window > .new-password-block > div, .change-password-modal-window > .password-block > div, .check-password-modal-window > .old-password-block > div, .check-password-modal-window > .new-password-block > div, .check-password-modal-window > .password-block > div,
+.change-group-name-modal-window > .old-password-block > div,
+.change-group-name-modal-window > .new-password-block > div,
+.change-group-name-modal-window > .password-block > div {
   display: flex;
   width: -moz-max-content;
   width: max-content;
@@ -206,7 +212,10 @@ h1, h2, h3, h4, h5, h6 {
   justify-content: center;
   align-items: center;
 }
-.change-password-modal-window > .old-password-block > div > input, .change-password-modal-window > .new-password-block > div > input, .change-password-modal-window > .password-block > div > input, .check-password-modal-window > .old-password-block > div > input, .check-password-modal-window > .new-password-block > div > input, .check-password-modal-window > .password-block > div > input {
+.change-password-modal-window > .old-password-block > div > input, .change-password-modal-window > .new-password-block > div > input, .change-password-modal-window > .password-block > div > input, .check-password-modal-window > .old-password-block > div > input, .check-password-modal-window > .new-password-block > div > input, .check-password-modal-window > .password-block > div > input,
+.change-group-name-modal-window > .old-password-block > div > input,
+.change-group-name-modal-window > .new-password-block > div > input,
+.change-group-name-modal-window > .password-block > div > input {
   margin-right: 5px;
 }
 
@@ -222,10 +231,22 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 5px;
   margin-bottom: 3px;
 }
-.change-sort-order-modal-window > .sort-order-blocks > .sort-order-block > img {
-  max-width: 40px;
-  background-color: dodgerblue;
+.change-sort-order-modal-window > .sort-order-blocks > .sort-order-block > div.sorting-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
   margin: 0 3px;
+  background: no-repeat center center/auto 65% url("/img/numeric-ascending-sorting.png") dodgerblue;
+  border: 3px solid blue;
+}
+.change-sort-order-modal-window > .sort-order-blocks > .sort-order-block:nth-of-type(2) > div.sorting-icon {
+  background-image: url("/img/numeric-descending-sorting.png");
+}
+.change-sort-order-modal-window > .sort-order-blocks > .sort-order-block:nth-of-type(3) > div.sorting-icon {
+  background-image: url("/img/alphabetic-ascending-sorting.png");
+}
+.change-sort-order-modal-window > .sort-order-blocks > .sort-order-block:nth-of-type(4) > div.sorting-icon {
+  background-image: url("/img/alphabetic-descending-sorting.png");
 }
 .change-sort-order-modal-window > .sort-order-blocks > .sort-order-block > span {
   width: -moz-max-content;
@@ -265,10 +286,6 @@ h1, h2, h3, h4, h5, h6 {
 .copy-words-to-another-group-modal-window > .select-group-section > div:hover {
   background-color: lightgray;
   transition: background-color 0.25s ease;
-}
-
-#view-group.hide {
-  display: none;
 }
 
 #view-group {
@@ -399,6 +416,29 @@ h1, h2, h3, h4, h5, h6 {
 }
 #view-group > header > section:nth-of-type(2) > .change-sort-order {
   background-color: cadetblue;
+}
+#view-group > header > section:nth-of-type(2) > .search-words {
+  width: 100%;
+  height: 30px;
+  display: flex;
+  flex-direction: row;
+  border-radius: 5px;
+  overflow: hidden;
+  margin: 0 2.5px 5px;
+}
+#view-group > header > section:nth-of-type(2) > .search-words > input {
+  width: 100%;
+  height: 100%;
+  font: inherit;
+  padding: 0 3px;
+}
+#view-group > header > section:nth-of-type(2) > .search-words > .search-words-btn {
+  width: 40px;
+  height: 100%;
+  background: no-repeat center center/auto 95% url("/img/search.png") dodgerblue;
+}
+#view-group > header > section:nth-of-type(2) > .search-words > .search-words-btn.cancel {
+  background-image: url("/img/cross.png");
 }
 #view-group > section.additional-section {
   height: -moz-fit-content;
@@ -672,6 +712,10 @@ h1, h2, h3, h4, h5, h6 {
 #view-group > main > .word-container.selected-word .select-this-word::after {
   transform-origin: center top;
   transform: translateX(-25%) rotateZ(-145deg);
+}
+
+.hide {
+  display: none;
 }
 
 @media (max-width: 560px) {
