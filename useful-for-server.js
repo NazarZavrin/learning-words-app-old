@@ -3,6 +3,11 @@ async function findIfUnique(collection, filter){
     let result = await cursor.toArray();
     cursor.close();
     return result.length === 1 ? result[0] : false;
+    /* collection.findOne() returns the first matching document
+    if there are a few matching documents in the DB.
+    function findIfUnique returns false 
+    if there are a few matching documents in the DB.
+    */
 }
 function getMaxFreeNumber(wordsArray) {
     let numberToSet = 99999.999;

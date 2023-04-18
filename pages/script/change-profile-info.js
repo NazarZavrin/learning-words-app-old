@@ -6,7 +6,7 @@ const infoSidebar = document.querySelector(".profile-info");
 
 infoSidebar.addEventListener("click", async event => {
     if (event.target.closest(".edit-btn")) {
-        if (event.target.closest(".edit-btn")?.previousElementSibling?.textContent?.includes("password")) {
+        if (event.target.closest(".edit-btn")?.previousElementSibling?.textContent.includes?.("password")) {
             changePassword(event);
             return;
         }
@@ -126,7 +126,7 @@ function changePassword(event){
                 return;
             }
         }
-        if (result?.message.includes("password don't match")) {
+        if (result?.message.includes?.("password don't match")) {
             createWarningAfterElement(oldPasswordInput);
             setWarning(oldPasswordInput.nextElementSibling, result.message, "oldPasswordInput");
             return;
@@ -140,7 +140,7 @@ function changePassword(event){
         }
         if (newPasswordInput) {
             showPassword([".show-new-password"], newPasswordInput, event);
-        }        
+        }
     }
     showModalWindow(document.body, 
         [header, oldPasswordLabel, oldPasswordBlock, newPasswordLabel, newPasswordBlock, changePasswordBtn], 

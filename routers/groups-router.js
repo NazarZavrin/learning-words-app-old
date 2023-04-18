@@ -2,7 +2,7 @@ const express = require('express');
 const groupsRouter = express.Router();
 const {findIfUnique, getMaxFreeNumber, getMinFreeNumber} = require('../useful-for-server.js');
 
-let database;
+let database, session;
 let {connectToDb} = require("../connect-to-db.js");
 
 groupsRouter.use(async (req, res, next) => {
@@ -43,16 +43,27 @@ groupsRouter.post(/\/(favourite-groups)?/, (req, res, next) => {
     // console.log(req.method, req.url);
     let addingGroupToFavourites = req.url.includes("favourite-groups");
     Object.assign(groupObject, {isFavourite: addingGroupToFavourites, creationTime: Date.now(), });
-    let insertResult = await database.collection("groups").insertOne(groupObject);
-    if (!insertResult.acknowledged) {
+    session = client.startSession();// begin session
+    try {
+        const transactionResults = await session.withTransaction(async () => {// start transaction
+            let insertResult = await database.collection("groups").insertOne(groupObject, {session: session});
+            if (!insertResult.acknowledged) {
+                throw new Error("Failed to add group to the DB.");
+            }
+            let updateResult = await database.collection("users").updateOne({_id: groupObject.ownersObjectId}, {$push: {groups: insertResult.insertedId}}, {session: session});
+            if (!updateResult.acknowledged || !insertResult.insertedId) {
+                throw new Error("Failed to add group's ObjectId to user.groups array after insertion of group to the DB.");
+            }
+        })
+    } catch (error) {
+        console.log("Error in transaction (group wasn't added to the DB and it's ObjectId wasn't added to user.groups array).");
+        console.log(error);
+        console.log("groupObject: " + JSON.stringify(groupObject));
+        await session.endSession();// end session
         res.json({success: false});
         return;
     }
-    let updateResult = await database.collection("users").updateOne({_id: groupObject.ownersObjectId}, {$push: {groups: insertResult.insertedId}});
-    if (!updateResult.acknowledged || !insertResult.insertedId) {
-        res.json({success: false});
-        return;
-    }
+    await session.endSession();// end session
     res.json({success: true});
 })
 groupsRouter.get(/^\/(favourite-groups)?$/, async (req, res) => {
@@ -165,7 +176,7 @@ groupsRouter.propfind("/get-words", (req, res, next) => {
         res.json({success: false});
         return;
     }
-    let words = group?.words?.map(wordInfo => {
+    let words = group?.words.map?.(wordInfo => {
         return {word: wordInfo.word, 
             translation: wordInfo.translation, 
             number: wordInfo.number,
@@ -264,22 +275,37 @@ groupsRouter.delete("/delete", (req, res, next) => {
         return;
     }
     if (req.body.password === user.password) {
-        let deleteResult = await database.collection("groups").deleteOne({_id: group._id});
-        if (deleteResult.acknowledged) {
-            let updateResult = await database.collection("users").updateOne({_id: user._id}, {$pull: {groups: group._id}});
-            if (!updateResult.acknowledged) {
-                let error = {
-                    message: "Could not delete group's ObjectId from user.groups array after deletion of group.",
-                    userObjectId: user._id,
-                    groupsObjectId: group._id,
-                    DateUTC: new Date().toUTCString(),
+        session = client.startSession();// begin session
+        let errorDetails = {// details of a potential error
+            userObjectId: user._id,
+            groupObjectId: group._id,
+            dateTimeUTC: new Date().toUTCString(),
+        };
+        try {
+            const transactionResults = await session.withTransaction(async () => {// start transaction
+                let deleteResult = await database.collection("groups").deleteOne({_id: group._id}, {session: session});
+                if (!deleteResult.acknowledged) {
+                    throw new Error("Failed to delete group from the DB.");
                 };
-                await database.collection("errors").insertOne(error);
-            }
-            res.json({success: true});
-        } else {
+                let updateResult = await database.collection("users").updateOne({_id: user._id}, {$pull: {groups: group._id}}, {session: session});
+                if (!updateResult.acknowledged) {
+                    throw new Error("Failed to remove group's ObjectId from user.groups array after deletion of group from the DB.");
+                }
+            })
+        } catch (error) {
+            console.log("Error in transaction (group wasn't deleted from the DB and it's ObjectId wasn't removed from user.groups array).");
+            console.log(error);
+            console.log("errorDetails: " + JSON.stringify(errorDetails));
+            await database.collection("errors").insertOne({
+                ...errorDetails,
+                message: error.message,
+            });
+            await session.endSession();// end session
             res.json({success: false});
+            return;
         }
+        await session.endSession();// end session
+        res.json({success: true});
     } else {
         res.json({success: false, message: "Password don't match."});
     }

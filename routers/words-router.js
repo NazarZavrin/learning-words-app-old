@@ -2,9 +2,8 @@ const express = require('express');
 const wordsRouter = express.Router();
 const {findIfUnique, getMinFreeNumber} = require('../useful-for-server.js');
 
-let database;
+let database, session;
 let {connectToDb} = require("../connect-to-db.js");
-
 
 wordsRouter.use(async (req, res, next) => {
     let connectionResult = await connectToDb(req, res);
@@ -71,66 +70,82 @@ wordsRouter.patch("/change-number", (req, res, next) => {
     // console.log("newNumber", newNumber);
     // console.log("word.number === newNumber", result);
     if (result) {// if some word already has number = newNumber
-        // Task №1: find minimal free number after newNumber
-        let minFreeNumber = getMinFreeNumber(group.words, newNumber);// minFreeNumber = minimal free number after newNumber
-        minFreeNumber = minFreeNumber <= 0 ? 99999.999 : minFreeNumber;// if getMinFreeNumber() returned < 0, minFreeNumber = 99999.999
-        // console.log("minFreeNumber", minFreeNumber);
-        // Task №2: increasing by 0.001 word's numbers that are greater than newNumber but less then minFreeNumber
-        let updateResult = await database.collection("groups").updateOne({_id: group._id}, 
-        {$inc: {"words.$[element].number": 0.001}},
-        {arrayFilters: [{"element.number": {$gte: newNumber, $lte: minFreeNumber}}]});
-        if (!updateResult.acknowledged) {
+        session = client.startSession();// begin session
+        try {
+            const transactionResults = await session.withTransaction(async () => {// start transaction
+                // Task №1: find minimal free number after newNumber
+                let minFreeNumber = getMinFreeNumber(group.words, newNumber);// minFreeNumber = minimal free number after newNumber
+                minFreeNumber = minFreeNumber <= 0 ? 99999.999 : minFreeNumber;// if getMinFreeNumber() returned < 0, minFreeNumber = 99999.999
+                // console.log("minFreeNumber", minFreeNumber);
+                // Task №2: increasing by 0.001 word's numbers that are greater than newNumber but less then minFreeNumber
+                let updateResult = await database.collection("groups").updateOne({_id: group._id}, 
+                {$inc: {"words.$[element].number": 0.001}},
+                {arrayFilters: [{"element.number": {$gte: newNumber, $lte: minFreeNumber}}], session: session});
+                if (!updateResult.acknowledged) {
+                    throw new Error("Failed to complete Task №2 (increasing by 0.001 word's numbers that are greater than newNumber but less then minFreeNumber).");
+                }
+                // Task №3: fix numbers which have decimal part's length greater than 3 after increase
+                // getting all words of group (can't use group.words because group.words in DB was updated in Task №2)
+                let cursor = await database.collection("groups").find({_id: group._id});// 99999.999
+                let result = await cursor.project({_id: 0, words: 1}).toArray();
+                cursor.close();
+                result = result[0].words;
+                // finding words that have decimal part's length greater than 3
+                let wordsWithLongDecimals = result.filter(wordObj => String(wordObj.number).split(".")[1]?.length > 3);
+                // console.log("long", wordsWithLongDecimals);
+                // fixing decimal parts
+                for (let i = 0; i < wordsWithLongDecimals?.length; i++) {
+                    console.log("fix: oldNumber", wordsWithLongDecimals[i].number, wordsWithLongDecimals[i].word);
+                    updateResult = await database.collection("groups").updateOne({_id: group._id}, 
+                        {$set: {"words.$[element].number": +wordsWithLongDecimals[i].number.toFixed(3)}},
+                        {arrayFilters: [{"element.number": wordsWithLongDecimals[i].number}]});
+                    if (!updateResult.acknowledged) {
+                        throw new Error("Failed to complete Task №3 (fix numbers which have decimal part's length greater than 3 after increase).");
+                    }
+                    console.log("newNumber", +wordsWithLongDecimals[i].number.toFixed(3));
+                }
+                // Task №4: find words with numbers that are greater than 99999.999 and push them in the beginning
+                // getting group if it has word(s) with number(s) greater than 99999.999
+                cursor = await database.collection("groups").find({_id: group._id, "words.number": {$gt: 99999.999}});
+                result = await cursor.toArray();
+                cursor.close();
+                if (result?.length !== 0) {// if there is at least one group which has word(s) with number(s) greater than 99999.999
+                    let wordsArray = result[0].words;
+                    let wordsWithBigNumbers = wordsArray.filter((wordObj) => {// finding words with numbers that are greater than 99999.999
+                        // console.log("value", value, );
+                        if (wordObj.number > 99999.999) {
+                            // console.log(wordObj.word, wordObj.number);
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    });
+                    // console.log("wordsWithBigNumbers", wordsWithBigNumbers);
+                    // pushing words with numbers that are greater than 99999.999 in the beginning
+                    for (let i = 0; i < wordsWithBigNumbers?.length; i++) {
+                        let minFreeNumber = getMinFreeNumber(wordsArray);
+                        minFreeNumber = minFreeNumber <= 0 ? 99999.999 : minFreeNumber;// if getMinFreeNumber() returned < 0, minFreeNumber = 99999.999
+                        // console.log("minFreeNumber", minFreeNumber);
+                        // console.log("wordWithBigNumber", wordsWithBigNumbers[i]);
+                        updateResult = await database.collection("groups").updateOne({_id: group._id}, 
+                            {$set: {"words.$[element].number": minFreeNumber}},
+                            {arrayFilters: [{"element.number": wordsWithBigNumbers[i].number}]});
+                        if (!updateResult.acknowledged) {
+                            throw new Error("Failed to complete Task №4 (find words with numbers that are greater than 99999.999 and push them in the beginning).");
+                        }
+                        wordsArray.push({number: minFreeNumber});// to forbid getMinFreeNumber generate same number again
+                        // console.log("push", wordsArray.slice(-2));
+                    }
+                }
+            })
+        } catch (error) {
+            console.log("Error in transaction (failed to update numbers of words in the DB).");
+            console.log(error);
+            await session.endSession();// end session
             res.json({success: false});
             return;
         }
-        // Task №3: fix numbers which have decimal part's length greater than 3 after increase
-        // getting all words of group
-        let cursor = await database.collection("groups").find({_id: group._id});// 99999.999
-        let result = await cursor.project({_id: 0, words: 1}).toArray();
-        cursor.close();
-        result = result[0].words;
-        // finding words that have decimal part's length greater than 3
-        let wordsWithLongDecimals = result.filter(wordObj => String(wordObj.number).split(".")[1]?.length > 3);
-        // console.log("long", wordsWithLongDecimals);
-        // fixing decimal parts
-        for (let i = 0; i < wordsWithLongDecimals?.length; i++) {
-            console.log("fix: oldNumber", wordsWithLongDecimals[i].number, wordsWithLongDecimals[i].word);
-            updateResult = await database.collection("groups").updateOne({_id: group._id}, 
-                {$set: {"words.$[element].number": +wordsWithLongDecimals[i].number.toFixed(3)}},
-                {arrayFilters: [{"element.number": wordsWithLongDecimals[i].number}]});
-            console.log("newNumber", +wordsWithLongDecimals[i].number.toFixed(3));
-        }
-        // Task №4: find words with numbers that are greater than 99999.999 and push them in the beginning
-        // getting group if it has word(s) with number(s) greater than 99999.999
-        cursor = await database.collection("groups").find({_id: group._id, "words.number": {$gt: 99999.999}});
-        result = await cursor.toArray();
-        cursor.close();
-        if (result?.length !== 0) {// if there is at least one group which has word(s) with number(s) greater than 99999.999
-            let wordsArray = result[0].words;
-            let wordsWithBigNumbers = wordsArray.filter((wordObj) => {// finding words with numbers that are greater than 99999.999
-                // console.log("value", value, );
-                if (wordObj.number > 99999.999) {
-                    // console.log(wordObj.word, wordObj.number);
-                    return true;
-                } else {
-                    return false;
-                }
-            });
-            // console.log("wordsWithBigNumbers", wordsWithBigNumbers);
-            // pushing words with numbers that are greater than 99999.999 in the beginning
-            for (let i = 0; i < wordsWithBigNumbers?.length; i++) {
-                let minFreeNumber = getMinFreeNumber(wordsArray);
-                minFreeNumber = minFreeNumber <= 0 ? 99999.999 : minFreeNumber;// if getMinFreeNumber() returned < 0, minFreeNumber = 99999.999
-                // console.log("minFreeNumber", minFreeNumber);
-                // console.log("wordWithBigNumber", wordsWithBigNumbers[i]);
-                updateResult = await database.collection("groups").updateOne({_id: group._id}, 
-                    {$set: {"words.$[element].number": minFreeNumber}},
-                    {arrayFilters: [{"element.number": wordsWithBigNumbers[i].number}]});
-                wordsArray.push({number: minFreeNumber});// to forbid getMinFreeNumber generate same number again
-                // console.log("push", wordsArray.slice(-2));
-                
-            }
-        }
+        await session.endSession();// end session
     }
     // assigning newNumber to the chosen word
     let updateResult = await database.collection("groups").updateOne({_id: group._id}, 
@@ -195,8 +210,8 @@ wordsRouter.patch("/change-display", (req, res, next) => {
 module.exports = {wordsRouter};
 
 function getNormalNumber(numberInString){
-    let numParts = numberInString?.split(",");
-    let newNumber = Number(numParts?.join("."));
+    let numParts = numberInString.split?.(",");
+    let newNumber = Number(numParts.join?.("."));
     if (Number.isNaN(newNumber)) {
         return "Incorrect number!";
     }

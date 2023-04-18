@@ -7,7 +7,7 @@ const { wordsRouter } = require('./words-router.js');
 const { findIfUnique } = require('../useful-for-server.js');
 
 
-let database;
+let database, session;
 let {connectToDb} = require("../connect-to-db.js");
 
 profileRouter.use(async (req, res, next) => {
@@ -34,19 +34,16 @@ profileRouter.use("/:passkey/words", (req, res, next) => {
 }, wordsRouter)
 
 profileRouter.get("/:passkey", async (req, res) => {
-    let cursor = database.collection("users").find({passkey: req.params.passkey});
-    let result = await cursor.toArray();
-    cursor.close();
-    if (result.length === 1) {
-        // res.send(result.pop());
-        res.render("profile", {user: result.pop(), });
-    } else {
+    let userInfo = await findIfUnique(database.collection("users"), {passkey: req.params.passkey});
+    if (!req.params.passkey || userInfo === false) {
         res.render("error", {
             message: "Log in error. Try again.", 
             linkText: "To the main page",
             divStyle: `font:20px"Calibri",monospace;margin-bottom:3px`
         });
+        return;
     }
+    res.render("profile", {user: userInfo});
 })
 profileRouter.patch("/:passkey/change/:infoPart", (req, res, next) => {
     express.text({
@@ -73,19 +70,15 @@ profileRouter.patch("/:passkey/change/:infoPart", (req, res, next) => {
     } else if (req.params.infoPart === 'password') {
         req.body = JSON.parse(req.body);
         // ↓ old password check
-        let cursor = database.collection("users").find({passkey: req.params.passkey});
-        let result = await cursor.toArray();
-        cursor.close();
-        if (result.length === 1) {
-            let user = result[0];
-            if (req.body.oldPassword === user.password) {
-                req.body = req.body.newPassword;
-            } else {
-                res.json({success: false, message: "Old password don't match."});
-                return;
-            }
-        } else {
+        let user = await findIfUnique(database.collection("users"), {passkey: req.params.passkey});
+        if (!req.params.passkey || user === false) {
             res.json({success: false});
+            return;
+        }
+        if (req.body.oldPassword === user.password) {
+            req.body = req.body.newPassword;
+        } else {
+            res.json({success: false, message: "Old password don't match."});
             return;
         }
     } else if (req.params.infoPart !== "username") {
@@ -116,21 +109,36 @@ profileRouter.delete("/:passkey/delete", (req, res, next) => {
         return;
     }
     if (req.body.password === user.password) {
-        let deleteResult = await database.collection("users").deleteOne({passkey: req.params.passkey});
-        if (deleteResult.acknowledged) {
-            deleteResult = await database.collection("groups").deleteMany({ownersObjectId: user._id});
-            if (!deleteResult.acknowledged) {
-                let error = {
-                    message: "Could not delete groups after deletion of account.",
-                    userObjectId: user._id,
-                    DateUTC: new Date().toUTCString(),
+        session = client.startSession();// begin session
+        let errorDetails = {// details of a potential error
+            userObjectId: user._id,
+            dateTimeUTC: new Date().toUTCString(),
+        };
+        try {
+            const transactionResults = await session.withTransaction(async () => {// start transaction
+                let deleteResult = await database.collection("users").deleteOne({passkey: req.params.passkey}, {session: session});
+                if (!deleteResult.acknowledged) {
+                    throw new Error("Failed to delete user from the DB.");
                 };
-                await database.collection("errors").insertOne(error);
-            }
-            res.json({success: true});
-        } else {
+                deleteResult = await database.collection("groups").deleteMany({ownersObjectId: user._id}, {session: session});
+                if (!deleteResult.acknowledged) {
+                    throw new Error("Failed to delete user's groups from the DB after deletion of the account.");
+                }
+            })
+        } catch (error) {
+            console.log("Error in transaction (user and his groups weren't deleted from the DB).");
+            console.log(error);
+            console.log("errorDetails: " + JSON.stringify(errorDetails));
+            await database.collection("errors").insertOne({
+                ...errorDetails,
+                message: error.message,
+            });
+            await session.endSession();// end session
             res.json({success: false});
+            return;
         }
+        await session.endSession();// end session
+        res.json({success: true});
     } else {
         res.json({success: false, message: "Password don't match."});
     }
