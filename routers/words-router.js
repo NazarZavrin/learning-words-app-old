@@ -2,7 +2,7 @@ const express = require('express');
 const wordsRouter = express.Router();
 const {findIfUnique, getMinFreeNumber} = require('../useful-for-server.js');
 
-let database, session;
+let database, client;
 let {connectToDb} = require("../connect-to-db.js");
 
 wordsRouter.use(async (req, res, next) => {
@@ -11,7 +11,7 @@ wordsRouter.use(async (req, res, next) => {
         res.send(connectionResult);
         return;
     } else {
-        database = connectionResult;
+        ({database, client} = connectionResult);
         next();
     }
 });
@@ -70,7 +70,7 @@ wordsRouter.patch("/change-number", (req, res, next) => {
     // console.log("newNumber", newNumber);
     // console.log("word.number === newNumber", result);
     if (result) {// if some word already has number = newNumber
-        session = client.startSession();// begin session
+        let session = client.startSession();// begin session
         try {
             const transactionResults = await session.withTransaction(async () => {// start transaction
                 // Task №1: find minimal free number after newNumber

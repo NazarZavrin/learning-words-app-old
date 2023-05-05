@@ -1,11 +1,12 @@
 // ↓ connecting to the database
 const { MongoClient, ServerApiVersion } = require('mongodb'); 
-let database;
+let database, client;
+
 async function connectToDb(req, res, next) {
     // console.log("Connect to db if needed. URL: " + req.originalUrl);
     if (database === undefined) {
         let uri = "mongodb+srv://nazar:learnwords@main-cluster.dlb856s.mongodb.net/?retryWrites=true&w=majority";
-        let client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+        client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
         try {
             await client.connect();
             database = client.db("userData");
@@ -35,6 +36,7 @@ async function connectToDb(req, res, next) {
             return "Database connection error.";
         }
     }
-    return database;
+    return {database, client};
 }
+
 module.exports = {connectToDb};

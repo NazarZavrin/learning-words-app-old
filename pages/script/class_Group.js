@@ -83,13 +83,13 @@ export default class Group {
                 throw new Error(result);
             }
         })
-        .then(result => {
+        .catch(error => {
+            alert(error);
+        })
+        .finally(() => {
             for (const callback of synchronousCallbacks) {
                 callback(groupName);
             }
-        })
-        .catch(error => {
-            alert(error);
         })
     }
     static async showWords(groupName, viewGroupBlock) {
@@ -420,9 +420,9 @@ export default class Group {
         } else {
             searchWordsBtn.classList.add("cancel");
             for (const wordContainer of wordsSection.querySelectorAll(".word-container")) {
-                let currentWord = wordContainer.querySelector(".word-container__word")?.textContent;
-                let currentTranslation = wordContainer.querySelector(".word-container__translation")?.textContent;
-                if (!currentWord.includes(searchInput.value) && !currentTranslation.includes(searchInput.value)) {
+                let currentWord = wordContainer.querySelector(".word-container__word")?.textContent?.toLocaleLowerCase?.();
+                let currentTranslation = wordContainer.querySelector(".word-container__translation")?.textContent?.toLocaleLowerCase?.();
+                if (!currentWord.includes(searchInput.value?.toLocaleLowerCase?.()) && !currentTranslation.includes(searchInput.value?.toLocaleLowerCase?.())) {
                     wordContainer.classList.add("hide");
                 }
             }

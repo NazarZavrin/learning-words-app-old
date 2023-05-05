@@ -7,7 +7,7 @@ const { wordsRouter } = require('./words-router.js');
 const { findIfUnique } = require('../useful-for-server.js');
 
 
-let database, session;
+let database, client;
 let {connectToDb} = require("../connect-to-db.js");
 
 profileRouter.use(async (req, res, next) => {
@@ -18,7 +18,7 @@ profileRouter.use(async (req, res, next) => {
         res.send(connectionResult);
         return;
     } else {
-        database = connectionResult;
+        ({database, client} = connectionResult);
         // console.log(typeof database);
         next();
     }
@@ -43,7 +43,9 @@ profileRouter.get("/:passkey", async (req, res) => {
         });
         return;
     }
-    res.render("profile", {user: userInfo});
+    let fileName = userInfo.userId === "@admin" ? "admin" : "profile";
+    // ↑ if user - admin, then fileName will be "admin", else - "profile"
+    res.render(fileName, {user: userInfo});
 })
 profileRouter.patch("/:passkey/change/:infoPart", (req, res, next) => {
     express.text({
@@ -104,12 +106,12 @@ profileRouter.delete("/:passkey/delete", (req, res, next) => {
     // console.log(req.body);
     // ↓ password check
     let user = await findIfUnique(database.collection("users"), {passkey: req.params.passkey});
-    if (!req.passkey || user === false) {
-        res.json({success: false});
+    if (!req.params.passkey || user === false) {
+        res.json({success: false, message: "Server error1"});
         return;
     }
     if (req.body.password === user.password) {
-        session = client.startSession();// begin session
+        let session = client.startSession();// begin session
         let errorDetails = {// details of a potential error
             userObjectId: user._id,
             dateTimeUTC: new Date().toUTCString(),
@@ -134,7 +136,7 @@ profileRouter.delete("/:passkey/delete", (req, res, next) => {
                 message: error.message,
             });
             await session.endSession();// end session
-            res.json({success: false});
+            res.json({success: false, message: "Server error"});
             return;
         }
         await session.endSession();// end session

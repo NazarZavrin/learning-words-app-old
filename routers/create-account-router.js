@@ -14,7 +14,7 @@ createAccountRouter.use(async (req, res, next) => {
         res.send(connectionResult);
         return;
     } else {
-        database = connectionResult;
+        database = connectionResult.database;
         // console.log(typeof database);
         next();
     }

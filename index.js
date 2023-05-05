@@ -17,7 +17,7 @@ app.use(async (req, res, next) => {
         res.send(connectionResult);
         return;
     } else {
-        database = connectionResult;
+        database = connectionResult.database;
         // console.log(typeof database);
         next();
     }
@@ -97,5 +97,3 @@ async function getRandomHexStr(){
     let randomBuffer = await randomBytesPromise(16);
     return randomBuffer.toString('hex');
 }
-
-// module.exports = {client, connectToDb};

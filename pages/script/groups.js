@@ -34,8 +34,12 @@ window.addEventListener("load", async event => {
 async function updateGroups(updateFavouriteGroups = false) {
     let requestUrl = location.href + '/groups';
     requestUrl += updateFavouriteGroups ? "/favourite-groups" : "";
-    let response = await fetch(requestUrl);
-    let result = {};
+    let response = {}, result = {}
+    try {
+        response = await fetch(requestUrl);
+    } catch (error) {
+        console.log(error);
+    }
     let groupsParent = updateFavouriteGroups ? favouriteGroupsContent : groupsContent;
     if (response.ok) {
         result = await response.json();
@@ -104,6 +108,8 @@ function addHandlersToViewGroupBlock(){
             Group.changeDisplayOfSelectedWords(groupNameBlock.textContent, wordsSection, event.target.closest(".change-display"));
         } else if (event.target.closest(".copy-words-to-another-group")) {
             Group.copyWordsToAnotherGroup(wordsSection, content);
+        } else if (event.target.closest(".training")) {
+            alert("Coming soon...");
         } else if (event.target.closest(".delete-words")) {
             Group.deleteManyWords(groupNameBlock.textContent, wordsSection);
         }

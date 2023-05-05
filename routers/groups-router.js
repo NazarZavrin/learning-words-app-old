@@ -2,7 +2,7 @@ const express = require('express');
 const groupsRouter = express.Router();
 const {findIfUnique, getMaxFreeNumber, getMinFreeNumber} = require('../useful-for-server.js');
 
-let database, session;
+let database, client;
 let {connectToDb} = require("../connect-to-db.js");
 
 groupsRouter.use(async (req, res, next) => {
@@ -13,7 +13,7 @@ groupsRouter.use(async (req, res, next) => {
         res.send(connectionResult);
         return;
     } else {
-        database = connectionResult;
+        ({database, client} = connectionResult);
         // console.log(typeof database);
         next();
     }
@@ -43,7 +43,7 @@ groupsRouter.post(/\/(favourite-groups)?/, (req, res, next) => {
     // console.log(req.method, req.url);
     let addingGroupToFavourites = req.url.includes("favourite-groups");
     Object.assign(groupObject, {isFavourite: addingGroupToFavourites, creationTime: Date.now(), });
-    session = client.startSession();// begin session
+    let session = client.startSession();// begin session
     try {
         const transactionResults = await session.withTransaction(async () => {// start transaction
             let insertResult = await database.collection("groups").insertOne(groupObject, {session: session});
@@ -176,7 +176,7 @@ groupsRouter.propfind("/get-words", (req, res, next) => {
         res.json({success: false});
         return;
     }
-    let words = group?.words.map?.(wordInfo => {
+    let words = group?.words?.map?.(wordInfo => {
         return {word: wordInfo.word, 
             translation: wordInfo.translation, 
             number: wordInfo.number,
@@ -275,7 +275,7 @@ groupsRouter.delete("/delete", (req, res, next) => {
         return;
     }
     if (req.body.password === user.password) {
-        session = client.startSession();// begin session
+        let session = client.startSession();// begin session
         let errorDetails = {// details of a potential error
             userObjectId: user._id,
             groupObjectId: group._id,

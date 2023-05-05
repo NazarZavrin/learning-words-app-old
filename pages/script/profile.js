@@ -1,16 +1,11 @@
 "use strict";
-console.log(HTMLElement.prototype);
 console.log("now:");
-// console.log("send name of group in request body instead of headers");
-console.log("group creation in class Group");
-console.log("copy (duplicate) selected word to another group");
-console.log('<section class="checkboxes"></section> to hide word/translation using height: 0');
-console.log("during studying at college:");
+console.log("develop root-user:");
 console.log("как отправлять запросы (например пост) в node js? (study node-fetch)");
 console.log("make a route, which checks if password is correct and returns correct/incorrect. use it while changing profile's info and delete account");
 console.log("at the end of developping:");
 console.log("forgot password? we will email you with temp password (node-emailer or smth else).");
-console.log("enter password to change infoPart");
+console.log("enter password to change infoPart, logout logic");
 console.log("add modals instead of alert()");
 
 import { setWarning, createWarningAfterElement, showModalWindow, createElement, showPassword, } from "./useful.js";
@@ -82,12 +77,12 @@ deleteAccountBtn.addEventListener("click", async event => {
             result = await response.json();
             console.log(result);
             if (result.success) {
-                event.target.closest(".modal-window").closeWindow();
+                event.target.closest(".modal-window")?.closeWindow?.();
                 location.href = "/";
                 return;
             }
         }
-        if (result.message.includes("Password don't match")) {
+        if (result?.message?.includes?.("Password don't match")) {
             createWarningAfterElement(passwordInput);
             setWarning(passwordInput.nextElementSibling, result.message, "passwordInput");
             return;
@@ -108,7 +103,7 @@ deleteAccountBtn.addEventListener("click", async event => {
 let searchGroupsBtn = document.querySelector("#search-groups-btn");
 searchGroupsBtn.addEventListener("click", event => {
     let searchInput = searchGroupsBtn.previousElementSibling;
-    if (!searchInput || searchInput?.tagName?.toLowerCase() !== "input") {
+    if (!searchInput || searchInput?.tagName?.toLowerCase?.() !== "input") {
         return;
     }
     if (searchGroupsBtn.classList.contains("cancel") || searchInput.value === "") {
@@ -122,12 +117,12 @@ searchGroupsBtn.addEventListener("click", event => {
     } else {
         searchGroupsBtn.classList.add("cancel");
         for (const groupContainer of groupsContent.querySelectorAll(".group")) {
-            if (!groupContainer.textContent.includes(searchInput.value)) {
+            if (!groupContainer.textContent.toLocaleLowerCase().includes(searchInput.value.toLocaleLowerCase())) {
                 groupContainer.classList.add("hide");
             }
         }
         for (const groupContainer of favouriteGroupsContent.querySelectorAll(".group")) {
-            if (!groupContainer.textContent.includes(searchInput.value)) {
+            if (!groupContainer.textContent.toLocaleLowerCase().includes(searchInput.value.toLocaleLowerCase())) {
                 groupContainer.classList.add("hide");
             }
         }
