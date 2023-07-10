@@ -1,5 +1,5 @@
 "use strict";
-import { setWarning, createWarningAfterElement, showModalWindow, createElement, showPassword} from "./useful.js";
+import { setWarning, createWarningAfterElement, showModalWindow, createElement, showPassword, normalizeUrl} from "./useful.js";
 
 
 export default class Word {
@@ -111,7 +111,7 @@ export default class Word {
                 password: passwordInput.value,
             };
             // return;
-            let response = await fetch(location.href + "/words/change", {
+            let response = await fetch(normalizeUrl(location.href) + "/words/change", {
                 method: "PATCH",
                 body: JSON.stringify(requestBody),
                 headers: {
@@ -169,7 +169,7 @@ export default class Word {
             groupName,// groupName: groupName,
         };
         // return;
-        let response = await fetch(location.href + "/words/change-number", {
+        let response = await fetch(normalizeUrl(location.href) + "/words/change-number", {
             method: "PATCH",
             body: JSON.stringify(requestBody),
             headers: {
@@ -227,7 +227,7 @@ export default class Word {
             }, wordInfo);
             let response = {}, result = {};
             try {
-                response = await fetch(location.href + "/words/delete", {
+                response = await fetch(normalizeUrl(location.href) + "/words/delete", {
                     method: "DELETE",
                     body: JSON.stringify(requestBody),
                     headers: {
@@ -273,7 +273,7 @@ export default class Word {
     }
     static async changeDisplay(groupName, wordContainer, selectedDisplay = {}){
         try {
-            await fetch(location.href + "/words/change-display", {
+            await fetch(normalizeUrl(location.href) + "/words/change-display", {
                 method: "PATCH",
                 body: JSON.stringify({
                     word: wordContainer.querySelector(".word-container__word")?.textContent,

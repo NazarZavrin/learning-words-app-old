@@ -150,6 +150,15 @@ export function passwordIsCorrect(inputElement, elementForWarning = null, event 
     return warningText.length > 0 ? false : true;
 }
 
+export function normalizeUrl(url) {
+    if (url.endsWith("/")) {
+        url = url.slice(0, -1);// omit "/" in the end
+    }
+    let passkeyIndex = url.lastIndexOf("/") + 1;
+    let passkey = url.slice(passkeyIndex, passkeyIndex + 32);
+    return url.slice(0, passkeyIndex) + passkey;
+}
+
 function addEventListenerN(eventType, handler, options) {
     // function take the same parameters ↑, as addEventListener
     if (this && this.addEventListener) {

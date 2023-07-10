@@ -1,8 +1,8 @@
 "use strict";
 
-import Group from "./class_Group.js";
+import Group, { sortWords } from "./class_Group.js";
 import Word from "./class_Word.js";
-import { setWarning, createWarningAfterElement, showModalWindow, createElement, } from "./useful.js";
+import { setWarning, createWarningAfterElement, showModalWindow, createElement, normalizeUrl, } from "./useful.js";
 
 
 const content = document.querySelector(".content");
@@ -32,42 +32,42 @@ window.addEventListener("load", async event => {
 })
 
 async function updateGroups(updateFavouriteGroups = false) {
-    let requestUrl = location.href + '/groups';
+    let requestUrl = normalizeUrl(location.href) + '/groups';
     requestUrl += updateFavouriteGroups ? "/favourite-groups" : "";
-    let response = {}, result = {}
+    let groupsParent = updateFavouriteGroups ? favouriteGroupsContent : groupsContent;
+    let response = {}, result = {};
     try {
         response = await fetch(requestUrl);
-    } catch (error) {
-        console.log(error);
-    }
-    let groupsParent = updateFavouriteGroups ? favouriteGroupsContent : groupsContent;
-    if (response.ok) {
-        result = await response.json();
-        // console.log(result);
-        if (result.success && result.groups) {
-            // await new Promise((resolve, reject) => {
-            //     setTimeout(() => resolve(1), 1000);// to see how the loading icon works
-            // })
-            groupsParent.innerHTML = "";
-            if (result.groups.length === 0) {
-                let message = "No one ";
-                message += updateFavouriteGroups ? "favourite " : "";
-                groupsParent.textContent = message + "group was found.";
-            } else {
-                result.groups.forEach(group => {
-                    let groupContainer = createElement({content: String(group.name), class: 'group'});
-                    groupsParent.append(groupContainer);
-                })
+        if (response.ok) {
+            result = await response.json();
+            // console.log(result);
+            if (result.success && result.groups) {
+                // await new Promise((resolve, reject) => {
+                //     setTimeout(() => resolve(1), 1000);// to see how the loading icon works
+                // })
+                groupsParent.innerHTML = "";
+                if (result.groups.length === 0) {
+                    let message = "No one ";
+                    message += updateFavouriteGroups ? "favourite " : "";
+                    groupsParent.textContent = message + "group was found.";
+                } else {
+                    result.groups.forEach(group => {
+                        let groupContainer = createElement({ content: String(group.name), class: 'group' });
+                        groupsParent.append(groupContainer);
+                    })
+                }
+                return;
             }
-            return;
         }
+    } catch (error) {
+        console.error(error);
     }
     result.message = String(result?.message || "Can not get groups. Please try again.");
     groupsParent.textContent = result.message;
     console.log(result?.message);
 }
 
-function addHandlersToViewGroupBlock(){
+function addHandlersToViewGroupBlock() {
     let viewGroupBlock = document.body.querySelector("#view-group");
     let header = viewGroupBlock.querySelector("#view-group > header");
     let groupNameBlock = header.querySelector("section > .group-name");
@@ -155,10 +155,18 @@ function addHandlersToViewGroupBlock(){
             event.target.closest(".words-number").addEventListener("focusout", async event => {
                 let message = await Word.changeNumber(groupNameBlock.textContent, event.target.closest(".words-number"), oldNumber);
                 if (message?.includes("Number was changed")) {
-                    await Group.showWords(groupNameBlock.textContent, viewGroupBlock);
+                    // await Group.showWords(groupNameBlock.textContent, viewGroupBlock);
+                    /* ↑ if you use that, then all words will be displayed, even those, 
+                    which do not match the search string */
+                    let wordContainers = [...wordsSection.getElementsByClassName("word-container")];
+                    sortWords(wordContainers, changeSortOrderBtn.dataset?.currentSortOrder);
+                    wordsSection.innerHTML = "";
+                    for (let i = 0; i < wordContainers.length; i++) {
+                        wordsSection.append(wordContainers[i]);
+                    }
                     // console.log("showed");
                 }
-            }, {once: true});
+            }, { once: true });
         }
     })
 }

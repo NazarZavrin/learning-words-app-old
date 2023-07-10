@@ -67,6 +67,8 @@ groupsRouter.post(/\/(favourite-groups)?/, (req, res, next) => {
     res.json({success: true});
 })
 groupsRouter.get(/^\/(favourite-groups)?$/, async (req, res) => {
+    
+    // console.log("groupsRouter.get(/^\/(favourite-groups)?$/,");
     // console.log(req.passkey);
     // console.log("/view/buildings".match(/\/(favourite-groups)?/));
     // console.log(req.method, req.url);

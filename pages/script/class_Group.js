@@ -1,6 +1,6 @@
 "use strict";
 import Word from "./class_Word.js";
-import { setWarning, createWarningAfterElement, showModalWindow, createElement, showPassword} from "./useful.js";
+import { setWarning, createWarningAfterElement, showModalWindow, createElement, showPassword, normalizeUrl} from "./useful.js";
 export default class Group {
     constructor(addingFavouriteGroup = false, updateGroupsFunc) {
         let header = createElement({name: "header", content: "Enter the name of new group:"},);
@@ -25,7 +25,7 @@ export default class Group {
             }
             console.log(groupNameInput.value);
             // return;
-            let requestUrl = location.href + "/groups";
+            let requestUrl = normalizeUrl(location.href) + "/groups";
             requestUrl += addingFavouriteGroup ? "/favourite-groups" : "";
             let response = await fetch(requestUrl, {
                 method: "POST",
@@ -54,7 +54,7 @@ export default class Group {
         if (!groupName) {
             console.log("viewGroup() error: groupName is " + groupName);
         }
-        fetch(location.href + '/groups/view', {
+        fetch(normalizeUrl(location.href) + '/groups/view', {
             method: 'PROPFIND',
             body: groupName,
         })
@@ -96,7 +96,7 @@ export default class Group {
         let wordsSection = viewGroupBlock.querySelector(".words-section");
         wordsSection.classList.add("loading");
         // return;
-        let response = await fetch(location.href + '/groups/get-words', {
+        let response = await fetch(normalizeUrl(location.href) + '/groups/get-words', {
             method: 'PROPFIND',
             body: groupName,
         })
@@ -193,7 +193,7 @@ export default class Group {
                 translation: translationInput.value,
             };
             // return;
-            let response = await fetch(location.href + "/groups/add-word", {
+            let response = await fetch(normalizeUrl(location.href) + "/groups/add-word", {
                 method: "PUT",
                 body: JSON.stringify(requestBody),
                 headers: {
@@ -281,7 +281,7 @@ export default class Group {
                 password: passwordInput.value,
             };
             // return;
-            let response = await fetch(location.href + "/groups/change/name", {
+            let response = await fetch(normalizeUrl(location.href) + "/groups/change/name", {
                 method: "PATCH",
                 body: JSON.stringify(requestBody),
                 headers: {
@@ -318,7 +318,7 @@ export default class Group {
             {className: "change-group-name-modal-window", handlers: [{eventName: "click", handler: clickModalWindow}]});
     }
     static async changeGroupStatus(groupName, changeStatusBtn) {
-        let response = await fetch(location.href + "/groups/change/status", {
+        let response = await fetch(normalizeUrl(location.href) + "/groups/change/status", {
             method: "PATCH",
             body: groupName,
         })
@@ -395,7 +395,7 @@ export default class Group {
                 groupName,// groupName: groupName,
                 sortOrder: selectedSortOrder,
             };
-            fetch(location.href + "/groups/change/sort-order", {
+            fetch(normalizeUrl(location.href) + "/groups/change/sort-order", {
                 method: "PATCH",
                 body: JSON.stringify(requestBody),
                 headers: {
@@ -454,7 +454,7 @@ export default class Group {
             }
             // console.log(passwordInput.value);
             // return;
-            let response = await fetch(location.href + "/groups/delete", {
+            let response = await fetch(normalizeUrl(location.href) + "/groups/delete", {
                 method: "DELETE",
                 body: JSON.stringify({
                     groupName: groupNameBlock.textContent,
@@ -614,7 +614,7 @@ export default class Group {
                     groupName: groupNameInput.value,
                 }, wordInfo);
                 try {
-                    await fetch(location.href + "/groups/add-word", {
+                    await fetch(normalizeUrl(location.href) + "/groups/add-word", {
                         method: "PUT",
                         body: JSON.stringify(requestBody),
                         headers: {
@@ -672,7 +672,7 @@ export default class Group {
                 }, wordInfo);
                 let response = {}, result = {};
                 try {
-                    response = await fetch(location.href + "/words/delete", {
+                    response = await fetch(normalizeUrl(location.href) + "/words/delete", {
                         method: "DELETE",
                         body: JSON.stringify(requestBody),
                         headers: {
@@ -733,7 +733,7 @@ export default class Group {
     }
 }
 
-function sortWords(wordContainers, sortOrder = "1-9"){
+export function sortWords(wordContainers, sortOrder = "1-9"){
     // console.log(wordContainers);
     // console.log(wordContainers.slice(0, 2));
     if (!wordContainers) {

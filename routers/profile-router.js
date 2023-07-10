@@ -34,6 +34,7 @@ profileRouter.use("/:passkey/words", (req, res, next) => {
 }, wordsRouter)
 
 profileRouter.get("/:passkey", async (req, res) => {
+    // console.log('profileRouter.get("/:passkey"', req.params.passkey.length);
     let userInfo = await findIfUnique(database.collection("users"), {passkey: req.params.passkey});
     if (!req.params.passkey || userInfo === false) {
         res.render("error", {

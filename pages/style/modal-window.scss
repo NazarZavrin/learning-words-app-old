@@ -94,7 +94,7 @@
     }
 }
 .change-password-modal-window, .check-password-modal-window,
-.change-group-name-modal-window {
+.change-group-name-modal-window, .change-word-modal-window {
     & > .old-password-block, & > .new-password-block, & > .password-block{
         display: flex;
         flex-direction: column;

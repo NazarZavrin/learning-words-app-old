@@ -1,7 +1,6 @@
 "use strict";
-console.log("now:");
+console.log("now: ");
 console.log("develop root-user:");
-console.log("как отправлять запросы (например пост) в node js? (study node-fetch)");
 console.log("make a route, which checks if password is correct and returns correct/incorrect. use it while changing profile's info and delete account");
 console.log("at the end of developping:");
 console.log("forgot password? we will email you with temp password (node-emailer or smth else).");
