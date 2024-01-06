@@ -154,17 +154,18 @@ function addHandlersToViewGroupBlock() {
             // console.log(oldNumber);
             event.target.closest(".words-number").addEventListener("focusout", async event => {
                 let message = await Word.changeNumber(groupNameBlock.textContent, event.target.closest(".words-number"), oldNumber);
+                console.log(message);
                 if (message?.includes("Number was changed")) {
-                    // await Group.showWords(groupNameBlock.textContent, viewGroupBlock);
+                    await Group.showWords(groupNameBlock.textContent, viewGroupBlock);
                     /* ↑ if you use that, then all words will be displayed, even those, 
                     which do not match the search string */
-                    let wordContainers = [...wordsSection.getElementsByClassName("word-container")];
+                    /*let wordContainers = [...wordsSection.getElementsByClassName("word-container")];
                     sortWords(wordContainers, changeSortOrderBtn.dataset?.currentSortOrder);
                     wordsSection.innerHTML = "";
                     for (let i = 0; i < wordContainers.length; i++) {
                         wordsSection.append(wordContainers[i]);
-                    }
-                    // console.log("showed");
+                    }*/
+                    console.log("showed");
                 }
             }, { once: true });
         }

@@ -6,6 +6,7 @@ const crypto = require('crypto');
 const { createAccountRouter } = require('./routers/create-account-router.js');
 const { profileRouter } = require('./routers/profile-router.js');
 
+const PORT = process.env.PORT || 3000;
 let database;
 let {connectToDb} = require("./connect-to-db.js");
 
@@ -25,7 +26,6 @@ app.use(async (req, res, next) => {
 
 app.use(express.static(path.join(path.resolve(), 'pages'), {index: "main.html"}));
 
-const PORT = process.env.PORT || 3000;
 app.set('view engine', 'ejs');
 app.set('views', path.join(path.resolve(), 'pages'));
 

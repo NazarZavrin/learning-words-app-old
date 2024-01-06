@@ -29,7 +29,7 @@ async function connectToDb(req, res, next) {
                 }
                 
             }*/
-            // console.log("Connected to the db.");
+            console.log("Connected to the db.");
         } catch (error) {
             console.log(error);
             await client.close();

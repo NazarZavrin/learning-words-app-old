@@ -6,6 +6,7 @@ let database, client;
 let {connectToDb} = require("../connect-to-db.js");
 
 groupsRouter.use(async (req, res, next) => {
+    // console.log("groupsRouter.use");
     // console.log(typeof connectToDb);
     // console.log(typeof database);
     let connectionResult = await connectToDb(req, res);

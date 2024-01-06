@@ -136,6 +136,7 @@ export default class Group {
                 return wordContainer;
             })
             // console.log(result);
+            // renderSortedWords
             sortWords(result.words, result.sortOrder);
             wordsSection.innerHTML = "";
             for (let i = 0; i < result.words.length; i++) {
@@ -145,7 +146,6 @@ export default class Group {
             if (result.sortOrder && changeSortOrderBtn) {
                 changeSortOrderBtn.dataset.currentSortOrder = result.sortOrder;
             }
-            // renderSortedWords
         }
         wordsSection.classList.remove("loading");
     }

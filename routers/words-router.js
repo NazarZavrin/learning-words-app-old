@@ -6,6 +6,7 @@ let database, client;
 let {connectToDb} = require("../connect-to-db.js");
 
 wordsRouter.use(async (req, res, next) => {
+    // console.log("wordsRouter.use");
     let connectionResult = await connectToDb(req, res);
     if (typeof connectionResult === 'string') {
         res.send(connectionResult);

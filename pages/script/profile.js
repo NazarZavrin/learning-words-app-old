@@ -1,6 +1,7 @@
 "use strict";
 console.log("now: ");
 console.log("develop root-user:");
+console.log("changing word numbers: move from decimals to integers because db can't handle them well (transaction error occurs)");
 console.log("make a route, which checks if password is correct and returns correct/incorrect. use it while changing profile's info and delete account");
 console.log("at the end of developping:");
 console.log("forgot password? we will email you with temp password (node-emailer or smth else).");
